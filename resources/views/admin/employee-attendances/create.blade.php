@@ -24,6 +24,8 @@
                 <span id="locationAlertText">Please enable location permission.</span>
             </div>
 
+            @include('admin.partials.alerts')
+
             {{-- Today's Status Header --}}
             <div class="text-center mb-4">
                 <h5 class="text-secondary fw-semibold mb-2">Today's Date</h5>
@@ -44,7 +46,7 @@
             <div class="row g-3">
                 {{-- Punch In Form --}}
                 <div class="col-6">
-                    <form action="{{ route('employee-attendances.store') }}" method="POST" id="punchInForm">
+                    <form action="{{ route('employee.attendance.punch-in') }}" method="POST" id="punchInForm">
                         @csrf
                         <input type="hidden" name="latitude" class="lat-field">
                         <input type="hidden" name="longitude" class="lon-field">
@@ -62,7 +64,7 @@
                 {{-- Punch Out Form --}}
                 <div class="col-6">
                     @if($todayAttendance)
-                        <form action="{{ route('employee-attendances.update', $todayAttendance->id) }}" method="POST" id="punchOutForm">
+                        <form action="{{ route('employee.attendance.punch-out', $todayAttendance->id) }}" method="POST" id="punchOutForm">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="latitude" class="lat-field">

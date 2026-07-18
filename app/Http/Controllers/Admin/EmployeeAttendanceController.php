@@ -62,7 +62,7 @@ class EmployeeAttendanceController extends Controller
     {
         $user = Auth::user();
         $todayAttendance = EmployeeAttendance::where('employee_id', $user->id)
-            ->whereDate('attendance_date', Carbon::today())
+            ->whereDate('attendance_date', Carbon::today()->toDateString())
             ->first();
 
         return view('admin.employee-attendances.create', compact('user', 'todayAttendance'));
@@ -77,7 +77,7 @@ class EmployeeAttendanceController extends Controller
         
         // Validation: One Punch In per day only
         $existing = EmployeeAttendance::where('employee_id', $user->id)
-            ->whereDate('attendance_date', Carbon::today())
+            ->whereDate('attendance_date', Carbon::today()->toDateString())
             ->first();
 
         if ($existing) {
@@ -99,7 +99,7 @@ class EmployeeAttendanceController extends Controller
 
         EmployeeAttendance::create([
             'employee_id' => $user->id,
-            'attendance_date' => Carbon::today(),
+            'attendance_date' => Carbon::today()->toDateString(),
             'punch_in_time' => Carbon::now()->toTimeString(),
             'check_in_time' => Carbon::now()->toTimeString(), // Maintain check_in_time for existing system logic
             'status' => 'Present',

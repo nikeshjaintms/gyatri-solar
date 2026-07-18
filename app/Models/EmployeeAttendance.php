@@ -28,12 +28,24 @@ class EmployeeAttendance extends Model
     ];
 
     protected $casts = [
-        'attendance_date' => 'date',
+        // Removed attendance_date date cast to prevent UTC timezone conversion shift
     ];
 
     /**
      * Get the employee associated with the attendance.
      */
+    public function getAttendanceDateAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value) : null;
+    }
+
+    public function setAttendanceDateAttribute($value)
+    {
+        $this->attributes['attendance_date'] = $value instanceof \Carbon\Carbon 
+            ? $value->toDateString() 
+            : date('Y-m-d', strtotime($value));
+    }
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'employee_id');
