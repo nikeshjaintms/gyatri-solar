@@ -232,6 +232,7 @@
                 </div>
             </div>
 
+            @include('admin.quotations.proposal_fields')
         </div>
 
         <div class="form-footer">
@@ -412,7 +413,56 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('lbl_total_discount').innerText = totalDiscount.toFixed(2);
         document.getElementById('lbl_total_tax').innerText = totalTax.toFixed(2);
         document.getElementById('lbl_grand_total').innerText = grandTotal.toFixed(2);
+
+        // Auto-update proposal pricing details
+        const rooftopInput = document.querySelector('input[name="rooftop_amount"]');
+        if (rooftopInput) {
+            rooftopInput.value = grandTotal.toFixed(2);
+        }
+
+        const projectCostInput = document.querySelector('input[name="savings_project_cost"]');
+        if (projectCostInput) {
+            projectCostInput.value = 'Rs. ' + Math.round(grandTotal).toLocaleString('en-IN');
+        }
+
+        updateProposalCalculations(grandTotal);
     }
+
+    function updateProposalCalculations(grandTotalVal) {
+        const grandTotal = typeof grandTotalVal === 'number' ? grandTotalVal : (parseFloat(document.getElementById('lbl_grand_total').innerText) || 0);
+        
+        // Per kW Rate calculation
+        const systemSizeInput = document.querySelector('input[name="system_size"]');
+        const perKwInput = document.querySelector('input[name="per_kw_rate"]');
+        if (systemSizeInput && perKwInput) {
+            const sizeNum = parseFloat(systemSizeInput.value) || 0;
+            if (sizeNum > 0) {
+                const perKw = Math.round(grandTotal / sizeNum);
+                perKwInput.value = perKw.toLocaleString('en-IN');
+            }
+        }
+
+        // Final effective cost calculation
+        const subsidyInput = document.querySelector('input[name="mnre_subsidy"]');
+        const finalCostInput = document.querySelector('input[name="final_effective_cost"]');
+        if (subsidyInput && finalCostInput) {
+            const subsidyVal = parseFloat(subsidyInput.value.replace(/,/g, '')) || 0;
+            const finalCost = Math.round(grandTotal - subsidyVal);
+            finalCostInput.value = finalCost.toLocaleString('en-IN');
+        }
+    }
+
+    // Attach listener to system size and subsidy inputs to recalculate dynamically
+    setTimeout(() => {
+        const systemSizeInput = document.querySelector('input[name="system_size"]');
+        if (systemSizeInput) {
+            systemSizeInput.addEventListener('input', () => updateProposalCalculations());
+        }
+        const subsidyInput = document.querySelector('input[name="mnre_subsidy"]');
+        if (subsidyInput) {
+            subsidyInput.addEventListener('input', () => updateProposalCalculations());
+        }
+    }, 500);
 
     // Init existing rows
     document.querySelectorAll('.item-row').forEach(row => bindRowEvents(row));

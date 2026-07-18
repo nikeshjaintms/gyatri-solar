@@ -66,12 +66,58 @@ class QuotationController extends Controller
         return view('admin.quotations.create', compact('enquiries', 'customers', 'quotationNumber', 'products'));
     }
 
-    /**
-     * Store a newly created quotation.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $proposalRules = [
+            'system_size' => ['nullable', 'string', 'max:255'],
+            'created_by_name' => ['nullable', 'string', 'max:255'],
+            'created_by_phone' => ['nullable', 'string', 'max:255'],
+            'per_kw_rate' => ['nullable', 'string', 'max:255'],
+            'rooftop_amount' => ['nullable', 'string', 'max:255'],
+            'net_metering_cost' => ['nullable', 'string', 'max:255'],
+            'mnre_subsidy' => ['nullable', 'string', 'max:255'],
+            'final_effective_cost' => ['nullable', 'string', 'max:255'],
+            'bank_name' => ['nullable', 'string', 'max:255'],
+            'bank_account_name' => ['nullable', 'string', 'max:255'],
+            'bank_account_no' => ['nullable', 'string', 'max:255'],
+            'bank_ifsc' => ['nullable', 'string', 'max:255'],
+            'bank_branch' => ['nullable', 'string', 'max:255'],
+            'bank_gst_no' => ['nullable', 'string', 'max:255'],
+            'panel_watt_peak' => ['nullable', 'string', 'max:255'],
+            'panel_qty' => ['nullable', 'string', 'max:255'],
+            'panel_type' => ['nullable', 'string', 'max:255'],
+            'panel_make' => ['nullable', 'string', 'max:255'],
+            'inverter_size' => ['nullable', 'string', 'max:255'],
+            'inverter_qty' => ['nullable', 'string', 'max:255'],
+            'inverter_make' => ['nullable', 'string', 'max:255'],
+            'cable_ac' => ['nullable', 'string', 'max:255'],
+            'cable_ac_qty' => ['nullable', 'string', 'max:255'],
+            'cable_dc' => ['nullable', 'string', 'max:255'],
+            'cable_dc_qty' => ['nullable', 'string', 'max:255'],
+            'cable_earthing' => ['nullable', 'string', 'max:255'],
+            'cable_earthing_qty' => ['nullable', 'string', 'max:255'],
+            'cable_la' => ['nullable', 'string', 'max:255'],
+            'cable_la_qty' => ['nullable', 'string', 'max:255'],
+            'structure_height' => ['nullable', 'string', 'max:255'],
+            'structure_material' => ['nullable', 'string', 'max:5000'],
+            'bos_acdb' => ['nullable', 'string', 'max:5000'],
+            'bos_dcdb' => ['nullable', 'string', 'max:5000'],
+            'bos_earthing' => ['nullable', 'string', 'max:5000'],
+            'bos_la' => ['nullable', 'string', 'max:5000'],
+            'bos_misc' => ['nullable', 'string', 'max:5000'],
+            'warranty_panel' => ['nullable', 'string', 'max:255'],
+            'warranty_performance' => ['nullable', 'string', 'max:255'],
+            'warranty_inverter' => ['nullable', 'string', 'max:255'],
+            'warranty_system' => ['nullable', 'string', 'max:255'],
+            'savings_payback' => ['nullable', 'string', 'max:255'],
+            'savings_yearly_generation' => ['nullable', 'string', 'max:255'],
+            'savings_annual_savings' => ['nullable', 'string', 'max:255'],
+            'savings_project_cost' => ['nullable', 'string', 'max:255'],
+            'savings_trees_saved' => ['nullable', 'string', 'max:255'],
+            'savings_co2_reduction' => ['nullable', 'string', 'max:255'],
+        ];
+
+        $validated = $request->validate(array_merge([
             'quotation_number' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:quotations,quotation_number'],
             'enquiry_id' => ['nullable', 'exists:enquiries,id'],
             'customer_id' => ['required', 'exists:customers,id'],
@@ -87,7 +133,7 @@ class QuotationController extends Controller
             'items.*.discount_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'items.*.tax_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'items.*.description' => ['nullable', 'string', 'max:1000'],
-        ]);
+        ], $proposalRules));
 
         DB::transaction(function () use ($request) {
             $subtotal = 0;
@@ -123,7 +169,20 @@ class QuotationController extends Controller
 
             $grandTotal = $subtotal - $totalDiscount + $totalTax;
 
-            $quotation = Quotation::create([
+            $proposalFields = [
+                'system_size', 'created_by_name', 'created_by_phone',
+                'per_kw_rate', 'rooftop_amount', 'net_metering_cost', 'mnre_subsidy', 'final_effective_cost',
+                'bank_name', 'bank_account_name', 'bank_account_no', 'bank_ifsc', 'bank_branch', 'bank_gst_no',
+                'panel_watt_peak', 'panel_qty', 'panel_type', 'panel_make',
+                'inverter_size', 'inverter_qty', 'inverter_make',
+                'cable_ac', 'cable_ac_qty', 'cable_dc', 'cable_dc_qty', 'cable_earthing', 'cable_earthing_qty', 'cable_la', 'cable_la_qty',
+                'structure_height', 'structure_material',
+                'bos_acdb', 'bos_dcdb', 'bos_earthing', 'bos_la', 'bos_misc',
+                'warranty_panel', 'warranty_performance', 'warranty_inverter', 'warranty_system',
+                'savings_payback', 'savings_yearly_generation', 'savings_annual_savings', 'savings_project_cost', 'savings_trees_saved', 'savings_co2_reduction'
+            ];
+
+            $quotationData = [
                 'quotation_number' => trim(strip_tags($request->quotation_number)),
                 'enquiry_id' => $request->enquiry_id,
                 'customer_id' => $request->customer_id,
@@ -137,7 +196,15 @@ class QuotationController extends Controller
                 'terms_conditions' => trim(strip_tags($request->terms_conditions)),
                 'notes' => trim(strip_tags($request->notes)),
                 'status' => $request->status,
-            ]);
+            ];
+
+            foreach ($proposalFields as $field) {
+                if ($request->has($field)) {
+                    $quotationData[$field] = $request->input($field);
+                }
+            }
+
+            $quotation = Quotation::create($quotationData);
 
             foreach ($itemsData as $itemData) {
                 $quotation->items()->create($itemData);
@@ -169,14 +236,58 @@ class QuotationController extends Controller
         return view('admin.quotations.edit', compact('quotation', 'enquiries', 'customers', 'products'));
     }
 
-    /**
-     * Update the specified quotation in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $quotation = Quotation::findOrFail($id);
+        $proposalRules = [
+            'system_size' => ['nullable', 'string', 'max:255'],
+            'created_by_name' => ['nullable', 'string', 'max:255'],
+            'created_by_phone' => ['nullable', 'string', 'max:255'],
+            'per_kw_rate' => ['nullable', 'string', 'max:255'],
+            'rooftop_amount' => ['nullable', 'string', 'max:255'],
+            'net_metering_cost' => ['nullable', 'string', 'max:255'],
+            'mnre_subsidy' => ['nullable', 'string', 'max:255'],
+            'final_effective_cost' => ['nullable', 'string', 'max:255'],
+            'bank_name' => ['nullable', 'string', 'max:255'],
+            'bank_account_name' => ['nullable', 'string', 'max:255'],
+            'bank_account_no' => ['nullable', 'string', 'max:255'],
+            'bank_ifsc' => ['nullable', 'string', 'max:255'],
+            'bank_branch' => ['nullable', 'string', 'max:255'],
+            'bank_gst_no' => ['nullable', 'string', 'max:255'],
+            'panel_watt_peak' => ['nullable', 'string', 'max:255'],
+            'panel_qty' => ['nullable', 'string', 'max:255'],
+            'panel_type' => ['nullable', 'string', 'max:255'],
+            'panel_make' => ['nullable', 'string', 'max:255'],
+            'inverter_size' => ['nullable', 'string', 'max:255'],
+            'inverter_qty' => ['nullable', 'string', 'max:255'],
+            'inverter_make' => ['nullable', 'string', 'max:255'],
+            'cable_ac' => ['nullable', 'string', 'max:255'],
+            'cable_ac_qty' => ['nullable', 'string', 'max:255'],
+            'cable_dc' => ['nullable', 'string', 'max:255'],
+            'cable_dc_qty' => ['nullable', 'string', 'max:255'],
+            'cable_earthing' => ['nullable', 'string', 'max:255'],
+            'cable_earthing_qty' => ['nullable', 'string', 'max:255'],
+            'cable_la' => ['nullable', 'string', 'max:255'],
+            'cable_la_qty' => ['nullable', 'string', 'max:255'],
+            'structure_height' => ['nullable', 'string', 'max:255'],
+            'structure_material' => ['nullable', 'string', 'max:5000'],
+            'bos_acdb' => ['nullable', 'string', 'max:5000'],
+            'bos_dcdb' => ['nullable', 'string', 'max:5000'],
+            'bos_earthing' => ['nullable', 'string', 'max:5000'],
+            'bos_la' => ['nullable', 'string', 'max:5000'],
+            'bos_misc' => ['nullable', 'string', 'max:5000'],
+            'warranty_panel' => ['nullable', 'string', 'max:255'],
+            'warranty_performance' => ['nullable', 'string', 'max:255'],
+            'warranty_inverter' => ['nullable', 'string', 'max:255'],
+            'warranty_system' => ['nullable', 'string', 'max:255'],
+            'savings_payback' => ['nullable', 'string', 'max:255'],
+            'savings_yearly_generation' => ['nullable', 'string', 'max:255'],
+            'savings_annual_savings' => ['nullable', 'string', 'max:255'],
+            'savings_project_cost' => ['nullable', 'string', 'max:255'],
+            'savings_trees_saved' => ['nullable', 'string', 'max:255'],
+            'savings_co2_reduction' => ['nullable', 'string', 'max:255'],
+        ];
 
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             'quotation_number' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-\_]+$/', Rule::unique('quotations', 'quotation_number')->ignore($quotation->id)],
             'enquiry_id' => ['nullable', 'exists:enquiries,id'],
             'customer_id' => ['required', 'exists:customers,id'],
@@ -192,7 +303,7 @@ class QuotationController extends Controller
             'items.*.discount_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'items.*.tax_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'items.*.description' => ['nullable', 'string', 'max:1000'],
-        ]);
+        ], $proposalRules));
 
         DB::transaction(function () use ($request, $quotation) {
             // Delete old items
@@ -231,7 +342,20 @@ class QuotationController extends Controller
 
             $grandTotal = $subtotal - $totalDiscount + $totalTax;
 
-            $quotation->update([
+            $proposalFields = [
+                'system_size', 'created_by_name', 'created_by_phone',
+                'per_kw_rate', 'rooftop_amount', 'net_metering_cost', 'mnre_subsidy', 'final_effective_cost',
+                'bank_name', 'bank_account_name', 'bank_account_no', 'bank_ifsc', 'bank_branch', 'bank_gst_no',
+                'panel_watt_peak', 'panel_qty', 'panel_type', 'panel_make',
+                'inverter_size', 'inverter_qty', 'inverter_make',
+                'cable_ac', 'cable_ac_qty', 'cable_dc', 'cable_dc_qty', 'cable_earthing', 'cable_earthing_qty', 'cable_la', 'cable_la_qty',
+                'structure_height', 'structure_material',
+                'bos_acdb', 'bos_dcdb', 'bos_earthing', 'bos_la', 'bos_misc',
+                'warranty_panel', 'warranty_performance', 'warranty_inverter', 'warranty_system',
+                'savings_payback', 'savings_yearly_generation', 'savings_annual_savings', 'savings_project_cost', 'savings_trees_saved', 'savings_co2_reduction'
+            ];
+
+            $updateData = [
                 'quotation_number' => trim(strip_tags($request->quotation_number)),
                 'enquiry_id' => $request->enquiry_id,
                 'customer_id' => $request->customer_id,
@@ -245,7 +369,15 @@ class QuotationController extends Controller
                 'terms_conditions' => trim(strip_tags($request->terms_conditions)),
                 'notes' => trim(strip_tags($request->notes)),
                 'status' => $request->status,
-            ]);
+            ];
+
+            foreach ($proposalFields as $field) {
+                if ($request->has($field)) {
+                    $updateData[$field] = $request->input($field);
+                }
+            }
+
+            $quotation->update($updateData);
 
             foreach ($itemsData as $itemData) {
                 $quotation->items()->create($itemData);
