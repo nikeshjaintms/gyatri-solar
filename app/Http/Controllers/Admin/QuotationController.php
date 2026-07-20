@@ -57,13 +57,14 @@ class QuotationController extends Controller
         $enquiries = Enquiry::whereNotIn('status', ['Closed', 'Cancelled'])->orderBy('enquiry_number', 'desc')->get();
         $customers = Customer::orderBy('name')->get();
         $products = \App\Models\Product::where('status', 'Active')->orderBy('name')->get();
+        $quotation = new Quotation();
 
         // Auto-generate unique Quotation Number
         $latest = Quotation::latest('id')->first();
         $nextId = $latest ? ($latest->id + 1) : 1;
         $quotationNumber = 'QT-' . date('Ym') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
 
-        return view('admin.quotations.create', compact('enquiries', 'customers', 'quotationNumber', 'products'));
+        return view('admin.quotations.create', compact('enquiries', 'customers', 'quotationNumber', 'products', 'quotation'));
     }
 
     public function store(Request $request)
@@ -115,6 +116,13 @@ class QuotationController extends Controller
             'savings_project_cost' => ['nullable', 'string', 'max:255'],
             'savings_trees_saved' => ['nullable', 'string', 'max:255'],
             'savings_co2_reduction' => ['nullable', 'string', 'max:255'],
+            'panel_open_circuit_voltage' => ['nullable', 'string', 'max:255'],
+            'panel_max_voltage' => ['nullable', 'string', 'max:255'],
+            'panel_short_circuit_current' => ['nullable', 'string', 'max:255'],
+            'panel_max_current' => ['nullable', 'string', 'max:255'],
+            'bos_protection_system' => ['nullable', 'string', 'max:1000'],
+            'bos_lt_ht_panels' => ['nullable', 'string', 'max:1000'],
+            'bos_metering' => ['nullable', 'string', 'max:1000'],
         ];
 
         $validated = $request->validate(array_merge([
@@ -179,7 +187,9 @@ class QuotationController extends Controller
                 'structure_height', 'structure_material',
                 'bos_acdb', 'bos_dcdb', 'bos_earthing', 'bos_la', 'bos_misc',
                 'warranty_panel', 'warranty_performance', 'warranty_inverter', 'warranty_system',
-                'savings_payback', 'savings_yearly_generation', 'savings_annual_savings', 'savings_project_cost', 'savings_trees_saved', 'savings_co2_reduction'
+                'savings_payback', 'savings_yearly_generation', 'savings_annual_savings', 'savings_project_cost', 'savings_trees_saved', 'savings_co2_reduction',
+                'panel_open_circuit_voltage', 'panel_max_voltage', 'panel_short_circuit_current', 'panel_max_current',
+                'bos_protection_system', 'bos_lt_ht_panels', 'bos_metering'
             ];
 
             $quotationData = [
@@ -238,6 +248,7 @@ class QuotationController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $quotation = Quotation::findOrFail($id);
         $proposalRules = [
             'system_size' => ['nullable', 'string', 'max:255'],
             'created_by_name' => ['nullable', 'string', 'max:255'],
@@ -352,7 +363,9 @@ class QuotationController extends Controller
                 'structure_height', 'structure_material',
                 'bos_acdb', 'bos_dcdb', 'bos_earthing', 'bos_la', 'bos_misc',
                 'warranty_panel', 'warranty_performance', 'warranty_inverter', 'warranty_system',
-                'savings_payback', 'savings_yearly_generation', 'savings_annual_savings', 'savings_project_cost', 'savings_trees_saved', 'savings_co2_reduction'
+                'savings_payback', 'savings_yearly_generation', 'savings_annual_savings', 'savings_project_cost', 'savings_trees_saved', 'savings_co2_reduction',
+                'panel_open_circuit_voltage', 'panel_max_voltage', 'panel_short_circuit_current', 'panel_max_current',
+                'bos_protection_system', 'bos_lt_ht_panels', 'bos_metering'
             ];
 
             $updateData = [

@@ -348,7 +348,9 @@
                 });
 
                 form.find('input[name*="pan"]').each(function() {
-                    $(this).rules('add', { pan: true });
+                    if ($(this).attr('name').indexOf('panel') === -1) {
+                        $(this).rules('add', { pan: true });
+                    }
                 });
 
                 form.find('input[name*="pincode"], input[name*="pin_code"]').each(function() {

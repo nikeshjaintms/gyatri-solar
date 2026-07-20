@@ -122,6 +122,23 @@
                         <input type="text" name="panel_make" class="form-field" value="{{ old('panel_make', $quotation->panel_make ?? 'TATA') }}">
                     </div>
 
+                    <div class="col-12 col-md-3">
+                        <label class="field-label">Open Circuit Voltage (V)</label>
+                        <input type="text" name="panel_open_circuit_voltage" class="form-field" value="{{ old('panel_open_circuit_voltage', $quotation->panel_open_circuit_voltage ?? '52.31') }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="field-label">Maximum Voltage (V)</label>
+                        <input type="text" name="panel_max_voltage" class="form-field" value="{{ old('panel_max_voltage', $quotation->panel_max_voltage ?? '43.71') }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="field-label">Short Circuit Current (A)</label>
+                        <input type="text" name="panel_short_circuit_current" class="form-field" value="{{ old('panel_short_circuit_current', $quotation->panel_short_circuit_current ?? '14.11') }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="field-label">Maximum Current (A)</label>
+                        <input type="text" name="panel_max_current" class="form-field" value="{{ old('panel_max_current', $quotation->panel_max_current ?? '13.27') }}">
+                    </div>
+
                     <div class="col-12 mt-3"><hr><h6>Inverter Specification</h6></div>
                     <div class="col-12 col-md-4">
                         <label class="field-label">Inverter Size</label>
@@ -204,6 +221,18 @@
                     <div class="col-12">
                         <label class="field-label">Lightning Arrestor Details</label>
                         <textarea name="bos_la" class="form-field form-field-textarea" rows="1">{{ old('bos_la', $quotation->bos_la ?? "SINGLE SPIKE - 14MM/1MTR, (As per NFC-17-102:2011/IEC 62305 Standards)") }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="field-label">Protection System Details</label>
+                        <textarea name="bos_protection_system" class="form-field form-field-textarea" rows="2">{{ old('bos_protection_system', $quotation->bos_protection_system ?? "Schneider + Elmex | Surge Protecting Devices, MCCBs, Relays etc.") }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="field-label">LT/ HT Panels Details</label>
+                        <textarea name="bos_lt_ht_panels" class="form-field form-field-textarea" rows="2">{{ old('bos_lt_ht_panels', $quotation->bos_lt_ht_panels ?? "Tata Power Approved | Air Circuit Breakers, Switching Devices, Bus Bars etc. RPR Not considered- if required that will be in client scope") }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="field-label">Metering Details</label>
+                        <textarea name="bos_metering" class="form-field form-field-textarea" rows="2">{{ old('bos_metering', $quotation->bos_metering ?? "SECURE/HPL/L&T | As per Solar Policy") }}</textarea>
                     </div>
                     <div class="col-12">
                         <label class="field-label">Miscellaneous Item Details</label>

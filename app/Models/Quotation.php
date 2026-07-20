@@ -68,6 +68,13 @@ class Quotation extends Model
         'savings_project_cost',
         'savings_trees_saved',
         'savings_co2_reduction',
+        'panel_open_circuit_voltage',
+        'panel_max_voltage',
+        'panel_short_circuit_current',
+        'panel_max_current',
+        'bos_protection_system',
+        'bos_lt_ht_panels',
+        'bos_metering',
     ];
 
     protected $casts = [
