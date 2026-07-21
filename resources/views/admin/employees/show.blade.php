@@ -64,7 +64,27 @@
     </div>
 
     <div class="detail-card">
-        <div class="detail-card-icon icon-solar-blue"><i class="bi bi-briefcase"></i></div>
+        <div class="detail-card-icon icon-solar-blue"><i class="bi bi-card-heading"></i></div>
+        <div>
+            <div class="detail-label">Aadhaar Number</div>
+            <div class="detail-value {{ !$employee->aadhaar_number ? 'empty' : '' }}">
+                {{ $employee->aadhaar_number ?? 'Not provided' }}
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-card">
+        <div class="detail-card-icon icon-solar-purple"><i class="bi bi-receipt"></i></div>
+        <div>
+            <div class="detail-label">UTR Number</div>
+            <div class="detail-value {{ !$employee->utr_number ? 'empty' : '' }}">
+                {{ $employee->utr_number ?? 'Not provided' }}
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-card">
+        <div class="detail-card-icon icon-solar-teal"><i class="bi bi-briefcase"></i></div>
         <div>
             <div class="detail-label">Designation</div>
             <div class="detail-value">
@@ -74,7 +94,7 @@
     </div>
 
     <div class="detail-card">
-        <div class="detail-card-icon icon-solar-purple"><i class="bi bi-calendar-check"></i></div>
+        <div class="detail-card-icon icon-solar-orange"><i class="bi bi-calendar-check"></i></div>
         <div>
             <div class="detail-label">Joining Date</div>
             <div class="detail-value">
@@ -84,7 +104,7 @@
     </div>
 
     <div class="detail-card">
-        <div class="detail-card-icon icon-solar-teal"><i class="bi bi-cash-stack"></i></div>
+        <div class="detail-card-icon icon-solar-green"><i class="bi bi-cash-stack"></i></div>
         <div>
             <div class="detail-label">Monthly Salary</div>
             <div class="detail-value">
@@ -94,7 +114,7 @@
     </div>
 
     <div class="detail-card">
-        <div class="detail-card-icon icon-solar-orange"><i class="bi bi-shield-lock"></i></div>
+        <div class="detail-card-icon icon-solar-purple"><i class="bi bi-shield-lock"></i></div>
         <div>
             <div class="detail-label">Role</div>
             <div class="detail-value">

@@ -21,6 +21,8 @@ class EmployeeController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('employee_id', 'like', '%' . $search . '%')
+                  ->orWhere('aadhaar_number', 'like', '%' . $search . '%')
+                  ->orWhere('utr_number', 'like', '%' . $search . '%')
                   ->orWhere('department', 'like', '%' . $search . '%')
                   ->orWhere('designation', 'like', '%' . $search . '%')
                   ->orWhereHas('user', function ($uq) use ($search) {
@@ -62,6 +64,8 @@ class EmployeeController extends Controller
             'mobile_number' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:users,mobile_number'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'aadhaar_number' => ['required', 'numeric', 'digits:12', 'unique:employees,aadhaar_number'],
+            'utr_number' => ['nullable', 'string', 'max:50'],
             'department' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'designation' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'joining_date' => ['required', 'date', 'before_or_equal:today'],
@@ -92,6 +96,8 @@ class EmployeeController extends Controller
                 Employee::create([
                     'user_id' => $user->id,
                     'employee_id' => $this->generateEmployeeId(),
+                    'aadhaar_number' => trim(strip_tags($request->aadhaar_number)),
+                    'utr_number' => $request->utr_number ? trim(strip_tags($request->utr_number)) : null,
                     'department' => trim(strip_tags($request->department)),
                     'designation' => trim(strip_tags($request->designation)),
                     'joining_date' => $request->joining_date,
@@ -129,6 +135,13 @@ class EmployeeController extends Controller
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'aadhaar_number' => [
+                'required',
+                'numeric',
+                'digits:12',
+                Rule::unique('employees', 'aadhaar_number')->ignore($employee->id),
+            ],
+            'utr_number' => ['nullable', 'string', 'max:50'],
             'department' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'designation' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'joining_date' => ['required', 'date', 'before_or_equal:today'],
@@ -164,6 +177,8 @@ class EmployeeController extends Controller
                 $user->update($userUpdateData);
 
                 $employee->update([
+                    'aadhaar_number' => trim(strip_tags($request->aadhaar_number)),
+                    'utr_number' => $request->utr_number ? trim(strip_tags($request->utr_number)) : null,
                     'department' => trim(strip_tags($request->department)),
                     'designation' => trim(strip_tags($request->designation)),
                     'joining_date' => $request->joining_date,

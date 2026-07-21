@@ -23,7 +23,7 @@
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control"
-                           placeholder="Search Employee ID, Name, Email, Mobile..."
+                           placeholder="Search ID, Name, Email, Aadhaar, UTR..."
                            value="{{ request('search') }}">
                 </div>
             </div>
@@ -63,7 +63,7 @@
 {{-- ── Table Card ── --}}
 <div class="table-card">
     <div class="table-responsive">
-        <table class="table" style="min-width: 1000px;">
+        <table class="table" style="min-width: 1100px;">
             <thead>
                 <tr>
                     <th style="width:70px;">ID</th>
@@ -71,6 +71,8 @@
                     <th>Full Name</th>
                     <th>Email Address</th>
                     <th>Mobile</th>
+                    <th>Aadhaar No.</th>
+                    <th>UTR No.</th>
                     <th>Department</th>
                     <th>Designation</th>
                     <th>Status</th>
@@ -104,6 +106,8 @@
                         </td>
                         <td style="color:#6B7280;">{{ $employee->user->email ?? '—' }}</td>
                         <td style="color:#6B7280;">{{ $employee->user->mobile_number ?? '—' }}</td>
+                        <td style="color:#4B5563; font-size:0.88rem;">{{ $employee->aadhaar_number ?? '—' }}</td>
+                        <td style="color:#4B5563; font-size:0.88rem;">{{ $employee->utr_number ?? '—' }}</td>
                         <td>
                             <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.8rem;">
                                 {{ $employee->department }}
@@ -149,7 +153,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9">
+                        <td colspan="11">
                             <div class="empty-state">
                                 <div class="empty-state-icon"><i class="bi bi-person-workspace"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No employee records found</h6>

@@ -10,6 +10,8 @@ class Employee extends Model
     protected $fillable = [
         'user_id',
         'employee_id',
+        'aadhaar_number',
+        'utr_number',
         'department',
         'designation',
         'joining_date',

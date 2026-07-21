@@ -100,6 +100,32 @@
                     </div>
                 </div>
 
+                {{-- Aadhaar Number --}}
+                <div class="col-12 col-md-6">
+                    <label class="field-label">Aadhaar Number <span class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-card-heading field-icon"></i>
+                        <input type="text" name="aadhaar_number"
+                               class="form-field @error('aadhaar_number') is-invalid @enderror"
+                               value="{{ old('aadhaar_number', $employee->aadhaar_number) }}"
+                               placeholder="e.g. 123456789012" maxlength="12" required>
+                    </div>
+                    @error('aadhaar_number')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+                {{-- UTR Number --}}
+                <div class="col-12 col-md-6">
+                    <label class="field-label">UTR Number (Optional)</label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-receipt field-icon"></i>
+                        <input type="text" name="utr_number"
+                               class="form-field @error('utr_number') is-invalid @enderror"
+                               value="{{ old('utr_number', $employee->utr_number) }}"
+                               placeholder="e.g. UTR123456789" maxlength="50">
+                    </div>
+                    @error('utr_number')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
                 {{-- Department --}}
                 <div class="col-12 col-md-6">
                     <label class="field-label">Department <span class="req">*</span></label>
