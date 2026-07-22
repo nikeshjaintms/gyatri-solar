@@ -15,10 +15,10 @@ class AdminUserSeeder extends Seeder
     {
         // Create or update the default Super Admin user
         $user = User::updateOrCreate(
-            ['email' => 'admin@gayatrisolar.com'],
+            ['email' => 'gayatrisolar@gmail.com'],
             [
-                'name' => 'Super Admin',
-                'password' => Hash::make('admin123'),
+                'name' => 'Gayatri Solar',
+                'password' => Hash::make('12345678'),
                 'role' => 'Super Admin', // Seeding the role enum field directly
                 'status' => 'Active',
             ]
