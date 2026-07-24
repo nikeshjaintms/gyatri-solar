@@ -2,6 +2,9 @@
 
 @section('content')
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <div class="form-page-header">
     <h1 class="form-page-title">
         <span class="title-icon"><i class="bi bi-clock-history"></i></span>
@@ -98,13 +101,17 @@
 
             {{-- Live Location Detail Card --}}
             <div class="mt-4 p-3 rounded-3 border" style="background: #fafafa;">
-                <div class="d-flex align-items-center gap-2 mb-2 text-secondary">
-                    <i class="bi bi-geo-alt-fill text-warning"></i>
-                    <span class="small fw-semibold">Live GPS Location Details</span>
+                <div class="d-flex align-items-center justify-content-between mb-2 text-secondary">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-geo-alt-fill text-warning"></i>
+                        <span class="small fw-semibold">Live GPS Location Details</span>
+                    </div>
+                    <span id="gpsAccuracyBadge" class="badge bg-secondary small">Accuracy: --</span>
                 </div>
-                <div id="gpsStatus" class="small text-muted">
+                <div id="gpsStatus" class="small text-muted mb-2">
                     Checking location permissions...
                 </div>
+                <div id="liveMap" style="height: 200px; border-radius: 8px; border: 1px solid #dee2e6; display: none; z-index: 1;"></div>
             </div>
 
         </div>
@@ -125,6 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let latitude = null;
     let longitude = null;
     let address = "";
+    let watchId = null;
+    let map = null;
+    let marker = null;
+    let lastLat = null;
+    let lastLon = null;
+    let addressTimeout = null;
 
     // Disable button styling helper
     function updateButtonStates(allowed) {
@@ -161,32 +174,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
         gpsStatus.innerHTML = '<span class="text-warning"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Acquiring GPS Signal...</span>';
 
-        navigator.geolocation.getCurrentPosition(
+        watchId = navigator.geolocation.watchPosition(
             function(position) {
                 latitude = position.coords.latitude;
                 longitude = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
                 locationAlert.classList.add('d-none');
 
                 latFields.forEach(f => f.value = latitude);
                 lonFields.forEach(f => f.value = longitude);
 
-                // OSM Reverse Geocoding API (Nominatim)
-                gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Acquired (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span><br><span class="text-muted mt-1 d-block">Resolving address...</span>`;
-                
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`)
-                    .then(response => response.json())
-                    .then(data => {
-                        address = data.display_name || `Lat: ${latitude}, Lon: ${longitude}`;
-                        addrFields.forEach(f => f.value = address);
-                        gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock</span><br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
+                // Update Accuracy Badge
+                const accuracyBadge = document.getElementById('gpsAccuracyBadge');
+                if (accuracyBadge) {
+                    accuracyBadge.textContent = `Accuracy: ±${Math.round(accuracy)}m`;
+                    if (accuracy <= 15) {
+                        accuracyBadge.className = "badge bg-success small";
+                    } else if (accuracy <= 50) {
+                        accuracyBadge.className = "badge bg-warning text-dark small";
+                    } else {
+                        accuracyBadge.className = "badge bg-danger small";
+                    }
+                }
+
+                // Initialize or update Map
+                const mapDiv = document.getElementById('liveMap');
+                if (mapDiv) {
+                    mapDiv.style.display = 'block';
+                    if (!map) {
+                        map = L.map('liveMap', {
+                            zoomControl: true,
+                            attributionControl: false
+                        }).setView([latitude, longitude], 17);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                        marker = L.marker([latitude, longitude]).addTo(map);
+                    } else {
+                        map.setView([latitude, longitude]);
+                        marker.setLatLng([latitude, longitude]);
+                    }
+                    // Trigger resize to fix dynamic render issues
+                    setTimeout(() => { map.invalidateSize(); }, 200);
+                }
+
+                // If accuracy is very low (e.g. > 100 meters), show alert/status info
+                let accuracyWarning = "";
+                if (accuracy > 100) {
+                    accuracyWarning = `<span class="text-danger d-block mt-1 fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>Low GPS accuracy. Please wait for a better signal or step outside.</span>`;
+                }
+
+                // Debounced reverse geocoding
+                if (addressTimeout) clearTimeout(addressTimeout);
+                addressTimeout = setTimeout(function() {
+                    // Only request if shifted significantly
+                    if (lastLat === null || Math.abs(lastLat - latitude) > 0.0001 || Math.abs(lastLon - longitude) > 0.0001) {
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                address = data.display_name || `Lat: ${latitude}, Lon: ${longitude}`;
+                                addrFields.forEach(f => f.value = address);
+                                gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span>${accuracyWarning}<br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
+                                lastLat = latitude;
+                                lastLon = longitude;
+                                updateButtonStates(true);
+                            })
+                            .catch(err => {
+                                address = `Lat: ${latitude}, Lon: ${longitude}`;
+                                addrFields.forEach(f => f.value = address);
+                                gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span>${accuracyWarning}<br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
+                                updateButtonStates(true);
+                            });
+                    } else {
+                        gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span>${accuracyWarning}<br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
                         updateButtonStates(true);
-                    })
-                    .catch(err => {
-                        address = `Lat: ${latitude}, Lon: ${longitude}`;
-                        addrFields.forEach(f => f.value = address);
-                        gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock</span><br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
-                        updateButtonStates(true);
-                    });
+                    }
+                }, 1000);
+
             },
             function(error) {
                 let errorMsg = "Please enable location permission.";
@@ -208,13 +270,13 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             {
                 enableHighAccuracy: true,
-                timeout: 10000,
+                timeout: 15000,
                 maximumAge: 0
             }
         );
     }
 
-    // Call geolocation request on page load
+    // Call geolocation watch on page load
     requestLocation();
 
     // Event listener triggers check location before submit
