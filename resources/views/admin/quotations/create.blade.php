@@ -20,7 +20,7 @@
         <h6>Quotation Header Details</h6>
     </div>
 
-    <form action="{{ route('quotations.store') }}" method="POST" id="quotation_form">
+    <form action="{{ route('quotations.store') }}" method="POST" id="quotation_form" enctype="multipart/form-data">
         @csrf
         <div class="form-card-body">
 

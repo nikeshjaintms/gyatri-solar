@@ -38,10 +38,10 @@
         }
 
         .control-bar {
-            max-width: 820px;
+            max-width: 210mm;
             margin: 20px auto;
             background: #ffffff;
-            padding: 15px 25px;
+            padding: 12px 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             display: flex;
@@ -53,7 +53,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 9px 20px;
             border-radius: 8px;
             font-size: 0.9rem;
             font-weight: 600;
@@ -75,9 +75,10 @@
         }
 
         .btn-primary {
-            background: var(--brand-orange);
+            background: linear-gradient(135deg, #f58220, #e06d0b);
             color: #ffffff;
-            box-shadow: 0 4px 10px rgba(245, 130, 32, 0.2);
+            box-shadow: 0 4px 12px rgba(245, 130, 32, 0.3);
+            border: none;
         }
 
         .btn-primary:hover {
@@ -87,128 +88,106 @@
 
         /* Printable A4 Pages */
         .print-preview-container {
-            max-width: 820px;
-            margin: 0 auto 50px auto;
+            width: 210mm;
+            max-width: 210mm;
+            margin: 20px auto 50px auto;
         }
 
         .proposal-page {
             background: #ffffff;
-            width: 100%;
-            height: 1160px; /* A4 Ratio */
+            width: 210mm;
+            height: 297mm;
+            min-height: 297mm;
+            max-height: 297mm;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-            padding: 50px 50px 70px 50px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 30px auto;
+            padding: 14mm 18mm 12mm 18mm;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             box-sizing: border-box;
+            overflow: hidden;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            page-break-after: always;
+            break-after: page;
+        }
+
+        .proposal-page:last-child {
+            margin-bottom: 0;
+            page-break-after: avoid;
+            break-after: avoid;
         }
 
         /* Header Style */
         .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             border-bottom: 2px solid var(--brand-orange);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            padding-bottom: 8px;
+            margin-bottom: 18px;
+            min-height: 60px;
         }
 
         .header-logo-left {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            align-items: flex-end;
         }
 
-        .gyatri-logo-mark {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--brand-orange), var(--brand-yellow));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 1.8rem;
-            font-weight: 800;
-            font-family: 'Outfit', sans-serif;
-            box-shadow: 0 4px 10px rgba(245, 130, 32, 0.3);
-        }
-
-        .gyatri-logo-text h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--brand-navy);
-            line-height: 1.1;
-        }
-
-        .gyatri-logo-text span {
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: var(--brand-orange);
+        .header-logo-left img {
+            height: 56px;
+            max-width: 220px;
+            object-fit: contain;
+            display: block;
         }
 
         .header-logo-right {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
             text-align: right;
-        }
-
-        .tata-logo-text {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: #008ccf;
-            letter-spacing: 0.5px;
-        }
-
-        .tata-logo-text span.tata {
-            color: #1e3a8a;
-        }
-
-        .tata-logo-text span.power {
-            color: #0284c7;
-        }
-
-        .tata-solaroof {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--brand-orange);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: -3px;
+            height: 56px;
         }
 
         /* Footer Style */
         .page-footer {
-            border-top: 1px solid var(--border-color);
-            padding-top: 12px;
-            font-size: 0.75rem;
-            color: var(--text-dark);
+            border-top: 1.5px solid #000000;
+            padding-top: 6px;
+            margin-top: auto;
+            font-size: 0.74rem;
+            color: #111827;
             text-align: center;
             line-height: 1.4;
+            font-family: 'Outfit', 'Segoe UI', Arial, sans-serif;
         }
 
-        .page-footer-contact {
+        .page-footer-address {
+            font-size: 0.76rem;
+            color: #111827;
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .page-footer-links {
+            font-size: 0.74rem;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+
+        .page-footer-phone {
+            font-size: 0.74rem;
             font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--brand-navy);
-        }
-
-        .page-number-indicator {
-            float: right;
-            font-weight: 700;
-            color: var(--brand-orange);
+            color: #111827;
         }
 
         /* Common Typography */
         h2.section-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: var(--brand-navy);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border-left: 4px solid var(--brand-orange);
             padding-left: 12px;
             text-transform: uppercase;
@@ -218,103 +197,96 @@
         .meta-date {
             text-align: right;
             font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
+            margin-bottom: 16px;
+            font-size: 0.92rem;
         }
 
         /* Tables styling */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             font-size: 0.85rem;
         }
 
         .data-table th, .data-table td {
-            border: 1px solid #94A3B8;
-            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
             text-align: left;
         }
 
         .data-table th {
-            background-color: #E2E8F0;
-            color: var(--brand-navy);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
+            background-color: var(--brand-navy);
+            color: #ffffff;
+            font-weight: 600;
         }
 
-        .data-table tr:nth-child(even) td {
-            background-color: #F8FAFC;
+        .data-table tr:nth-child(even) {
+            background-color: var(--brand-gray);
         }
 
-        /* Custom Content Areas */
-        .welcome-block {
-            margin-bottom: 20px;
-        }
-
-        .welcome-block p {
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-            text-align: justify;
-        }
-
-        /* Diagrams Page 1 */
-        .schematics-container {
-            display: flex;
-            gap: 20px;
-            margin: 20px 0;
-            justify-content: space-between;
-        }
-
-        .schematic-box {
-            width: 48%;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            background: #F8FAFC;
-            text-align: center;
-        }
-
-        .schematic-box h4 {
-            font-size: 0.8rem;
-            color: var(--brand-navy);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        /* SVG styles */
-        .svg-dia {
+        /* Compact Features Table for Page 3 */
+        .features-table {
             width: 100%;
-            height: 120px;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            font-size: 0.72rem;
+            line-height: 1.35;
         }
 
-        /* Bullet lists */
-        .bullet-list {
-            margin-left: 20px;
+        .features-table th, .features-table td {
+            border: 1px solid var(--border-color);
+            padding: 5px 8px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .features-table th {
+            background-color: var(--brand-navy);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.74rem;
+            padding: 6px 8px;
+        }
+
+        .features-table tr:nth-child(even) {
+            background-color: var(--brand-gray);
+        }
+
+        /* Lists */
+        ul.bullet-list {
+            padding-left: 20px;
+            margin-bottom: 16px;
+            line-height: 1.6;
+            font-size: 0.88rem;
+        }
+
+        ul.bullet-list li {
+            margin-bottom: 6px;
+        }
+
+        /* Welcome text block */
+        .welcome-block {
+            font-size: 0.90rem;
+            line-height: 1.65;
             margin-bottom: 20px;
-            font-size: 0.85rem;
         }
 
-        .bullet-list li {
-            margin-bottom: 8px;
-        }
-
+        /* Highlight Boxes */
         .highlight-box {
-            background: #EFF6FF;
-            border-left: 4px solid #3B82F6;
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 20px;
+            background: #fffbeb;
+            border-left: 4px solid var(--brand-yellow);
+            padding: 12px 15px;
+            margin-bottom: 15px;
             font-size: 0.85rem;
+            line-height: 1.5;
         }
 
         /* Signatures block */
         .signatures-row {
             display: flex;
             justify-content: space-between;
-            margin-top: 40px;
+            margin-top: 25px;
         }
 
         .sig-block {
@@ -324,29 +296,56 @@
 
         .sig-line {
             border-top: 1px solid var(--text-dark);
-            margin-top: 50px;
-            padding-top: 8px;
+            margin-top: 0;
+            padding-top: 6px;
             font-weight: 700;
         }
 
+        @page {
+            size: A4 portrait;
+            margin: 10mm 15mm 10mm 15mm;
+        }
+
         @media print {
-            body {
-                background: #ffffff;
+            html, body {
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             .control-bar {
                 display: none !important;
             }
             .print-preview-container {
-                max-width: 100%;
-                margin: 0;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             .proposal-page {
-                box-shadow: none;
-                margin-bottom: 0;
-                page-break-after: always;
-                break-after: page;
-                height: 100vh;
-                padding: 40px 40px 60px 40px;
+                width: 100% !important;
+                height: 275mm !important;
+                min-height: 275mm !important;
+                max-height: 275mm !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                box-sizing: border-box !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            .proposal-page:last-child {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
             }
         }
     </style>
@@ -361,6 +360,9 @@
         if ($capacity <= 0) {
             $capacity = 60.18;
         }
+
+        $panelMakeRaw = trim($quotation->panel_make ?? 'TATA POWER');
+        $panelMakeUpper = strtoupper($panelMakeRaw);
     @endphp
 
     <!-- Control bar for screen view -->
@@ -368,8 +370,8 @@
         <a href="{{ route('quotations.show', $quotation->id) }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to Details
         </a>
-        <button onclick="window.print()" class="btn btn-primary">
-            <i class="bi bi-printer"></i> Print / Save PDF
+        <button id="downloadPdfBtn" onclick="downloadPDF()" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); border: none; font-weight: 700; font-size: 0.95rem; padding: 10px 26px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); display: inline-flex; align-items: center; gap: 8px;">
+            <i class="bi bi-download"></i> Download PDF
         </button>
     </div>
 
@@ -381,144 +383,126 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
                 <div class="meta-date">Date: {{ $quotation->quotation_date?->format('d/m/Y') ?? '12/06/2023' }}</div>
 
                 <div class="welcome-block">
                     <p>To,</p>
-                    <p style="font-weight: 700; font-size: 1rem; color: var(--brand-navy); margin-bottom: 2px;">{{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</p>
+                    <p style="font-weight: 700; font-size: 1rem; color: var(--brand-navy); margin-bottom: 3px;">{{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</p>
                     <p style="font-weight: 600; margin-bottom: 15px;">{{ $quotation->customer?->address ?? 'ANKLESHWAR GIDC' }}</p>
 
-                    <p style="font-weight: 700; text-decoration: underline; margin-bottom: 15px; color: var(--brand-navy);">
+                    <p style="font-weight: 700; text-decoration: underline; margin-bottom: 14px; color: var(--brand-navy);">
                         Subject: - Techno-commercial offer for Supply, Installation and Commissioning of Solar PV Power Plant in your Industry.
                     </p>
 
                     <p>Dear Sir,</p>
-                    <p>
+                    <p style="margin-top: 6px;">
                         This refers to the telephonic conversation with you, kindly find the techno commercial offer for Ground-Mount {{ number_format($capacity * 2.674, 2) }}kW of solar PV power plant for your Industry.
                     </p>
-                    <p style="font-weight: 700; font-size: 1.05rem; margin-top: 15px; margin-bottom: 15px;">
+                    <p style="font-weight: 700; font-size: 1.05rem; margin-top: 14px; margin-bottom: 15px;">
                         System Capacity: - <span style="color: var(--brand-orange)">{{ $quotation->system_size ?? '60.18Kwp' }}</span> Grid tied solar power plant.
                     </p>
                 </div>
 
                 <!-- Schematics Diagram -->
-                <div class="schematics-container">
-                    <div class="schematic-box">
-                        <h4>Solar Panel to Inverter</h4>
-                        <svg class="svg-dia" viewBox="0 0 200 120">
-                            <!-- Panels -->
-                            <rect x="10" y="20" width="22" height="35" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <line x1="21" y1="20" x2="21" y2="55" stroke="#ffffff" stroke-width="1"/>
-                            <line x1="10" y1="37" x2="32" y2="37" stroke="#ffffff" stroke-width="1"/>
-                            
-                            <rect x="40" y="20" width="22" height="35" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <line x1="51" y1="20" x2="51" y2="55" stroke="#ffffff" stroke-width="1"/>
-                            <line x1="40" y1="37" x2="62" y2="37" stroke="#ffffff" stroke-width="1"/>
+                <div style="display: flex; gap: 18px; margin: 15px 0 20px 0;">
+                    <div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: #f8fafc; text-align: center;">
+                        <h4 style="font-size: 0.80rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 8px; text-transform: uppercase;">Solar Panel to Inverter</h4>
+                        <svg viewBox="0 0 200 90" style="width: 100%; height: 85px; display: block;">
+                            <rect x="15" y="10" width="20" height="28" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1"/>
+                            <line x1="25" y1="10" x2="25" y2="38" stroke="#ffffff" stroke-width="0.8"/>
+                            <line x1="15" y1="24" x2="35" y2="24" stroke="#ffffff" stroke-width="0.8"/>
 
-                            <rect x="70" y="20" width="22" height="35" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <line x1="81" y1="20" x2="81" y2="55" stroke="#ffffff" stroke-width="1"/>
-                            <line x1="70" y1="37" x2="92" y2="37" stroke="#ffffff" stroke-width="1"/>
+                            <rect x="42" y="10" width="20" height="28" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1"/>
+                            <line x1="52" y1="10" x2="52" y2="38" stroke="#ffffff" stroke-width="0.8"/>
+                            <line x1="42" y1="24" x2="62" y2="24" stroke="#ffffff" stroke-width="0.8"/>
 
-                            <rect x="10" y="65" width="22" height="35" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <line x1="21" y1="65" x2="21" y2="100" stroke="#ffffff" stroke-width="1"/>
-                            <line x1="10" y1="82" x2="32" y2="82" stroke="#ffffff" stroke-width="1"/>
-                            
-                            <rect x="40" y="65" width="22" height="35" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <line x1="51" y1="65" x2="51" y2="100" stroke="#ffffff" stroke-width="1"/>
-                            <line x1="40" y1="82" x2="62" y2="82" stroke="#ffffff" stroke-width="1"/>
+                            <rect x="69" y="10" width="20" height="28" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1"/>
+                            <line x1="79" y1="10" x2="79" y2="38" stroke="#ffffff" stroke-width="0.8"/>
+                            <line x1="69" y1="24" x2="89" y2="24" stroke="#ffffff" stroke-width="0.8"/>
 
-                            <rect x="70" y="65" width="22" height="35" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <line x1="81" y1="65" x2="81" y2="100" stroke="#ffffff" stroke-width="1"/>
-                            <line x1="70" y1="82" x2="92" y2="82" stroke="#ffffff" stroke-width="1"/>
+                            <rect x="15" y="46" width="20" height="28" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1"/>
+                            <line x1="25" y1="46" x2="25" y2="74" stroke="#ffffff" stroke-width="0.8"/>
+                            <line x1="15" y1="60" x2="35" y2="60" stroke="#ffffff" stroke-width="0.8"/>
 
-                            <text x="51" y="12" font-size="8" text-anchor="middle" font-weight="700">Solar Panels</text>
+                            <rect x="42" y="46" width="20" height="28" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1"/>
+                            <line x1="52" y1="46" x2="52" y2="74" stroke="#ffffff" stroke-width="0.8"/>
+                            <line x1="42" y1="60" x2="62" y2="60" stroke="#ffffff" stroke-width="0.8"/>
 
-                            <!-- Connections -->
-                            <path d="M 95 37 L 140 37 L 140 50" fill="none" stroke="#64748b" stroke-width="1.5"/>
-                            <path d="M 95 82 L 140 82 L 140 70" fill="none" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="69" y="46" width="20" height="28" rx="2" fill="#0284c7" stroke="#1e3a8a" stroke-width="1"/>
+                            <line x1="79" y1="46" x2="79" y2="74" stroke="#ffffff" stroke-width="0.8"/>
+                            <line x1="69" y1="60" x2="89" y2="60" stroke="#ffffff" stroke-width="0.8"/>
 
-                            <!-- Inverter -->
-                            <rect x="125" y="50" width="30" height="20" rx="3" fill="#334155" stroke="#0f172a" stroke-width="1.5"/>
-                            <text x="140" y="62" fill="#ffffff" font-size="7" text-anchor="middle" font-weight="600">Inverter</text>
-                            
-                            <!-- Output -->
-                            <line x1="155" y1="60" x2="190" y2="60" stroke="#f58220" stroke-width="1.5"/>
+                            <path d="M 90 24 L 130 24 L 130 38" fill="none" stroke="#64748b" stroke-width="1.2"/>
+                            <path d="M 90 60 L 130 60 L 130 50" fill="none" stroke="#64748b" stroke-width="1.2"/>
+
+                            <rect x="120" y="36" width="28" height="18" rx="3" fill="#334155" stroke="#0f172a" stroke-width="1"/>
+                            <text x="134" y="48" fill="#ffffff" font-size="6" font-family="sans-serif" text-anchor="middle" font-weight="bold">Inverter</text>
+
+                            <line x1="148" y1="45" x2="185" y2="45" stroke="#f58220" stroke-width="1.5"/>
+                            <polygon points="185,42 192,45 185,48" fill="#f58220"/>
                         </svg>
                     </div>
 
-                    <div class="schematic-box">
-                        <h4>PV Strings to Transformer</h4>
-                        <svg class="svg-dia" viewBox="0 0 200 120">
-                            <!-- PV Strings -->
-                            <rect x="10" y="15" width="40" height="12" rx="2" fill="#0284c7"/>
-                            <text x="30" y="24" fill="#ffffff" font-size="7" text-anchor="middle">PV String</text>
-                            
-                            <rect x="10" y="40" width="40" height="12" rx="2" fill="#0284c7"/>
-                            <text x="30" y="49" fill="#ffffff" font-size="7" text-anchor="middle">PV String</text>
-                            
-                            <rect x="10" y="65" width="40" height="12" rx="2" fill="#0284c7"/>
-                            <text x="30" y="74" fill="#ffffff" font-size="7" text-anchor="middle">PV String</text>
-                            
-                            <rect x="10" y="90" width="40" height="12" rx="2" fill="#0284c7"/>
-                            <text x="30" y="99" fill="#ffffff" font-size="7" text-anchor="middle">PV String</text>
+                    <div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; background: #f8fafc; text-align: center;">
+                        <h4 style="font-size: 0.80rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 8px; text-transform: uppercase;">PV Strings to Transformer</h4>
+                        <svg viewBox="0 0 200 90" style="width: 100%; height: 85px; display: block;">
+                            <rect x="10" y="8" width="36" height="12" rx="2" fill="#0284c7"/>
+                            <text x="28" y="16.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">PV String</text>
 
-                            <!-- Inverters -->
-                            <rect x="75" y="15" width="30" height="12" rx="2" fill="#334155"/>
-                            <text x="90" y="24" fill="#ffffff" font-size="6" text-anchor="middle">Inverter</text>
-                            
-                            <rect x="75" y="40" width="30" height="12" rx="2" fill="#334155"/>
-                            <text x="90" y="49" fill="#ffffff" font-size="6" text-anchor="middle">Inverter</text>
-                            
-                            <rect x="75" y="65" width="30" height="12" rx="2" fill="#334155"/>
-                            <text x="90" y="74" fill="#ffffff" font-size="6" text-anchor="middle">Inverter</text>
-                            
-                            <rect x="75" y="90" width="30" height="12" rx="2" fill="#334155"/>
-                            <text x="90" y="99" fill="#ffffff" font-size="6" text-anchor="middle">Inverter</text>
+                            <rect x="10" y="27" width="36" height="12" rx="2" fill="#0284c7"/>
+                            <text x="28" y="35.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">PV String</text>
 
-                            <!-- HT Panel -->
-                            <rect x="130" y="15" width="20" height="87" rx="2" fill="#f58220"/>
-                            <text x="140" y="60" fill="#ffffff" font-size="7" text-anchor="middle" transform="rotate(-90 140 60)">HT Panel</text>
+                            <rect x="10" y="46" width="36" height="12" rx="2" fill="#0284c7"/>
+                            <text x="28" y="54.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">PV String</text>
 
-                            <!-- Connections -->
-                            <line x1="50" y1="21" x2="75" y2="21" stroke="#64748b" stroke-width="1"/>
-                            <line x1="50" y1="46" x2="75" y2="46" stroke="#64748b" stroke-width="1"/>
-                            <line x1="50" y1="71" x2="75" y2="71" stroke="#64748b" stroke-width="1"/>
-                            <line x1="50" y1="96" x2="75" y2="96" stroke="#64748b" stroke-width="1"/>
+                            <rect x="10" y="65" width="36" height="12" rx="2" fill="#0284c7"/>
+                            <text x="28" y="73.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">PV String</text>
 
-                            <line x1="105" y1="21" x2="130" y2="21" stroke="#64748b" stroke-width="1"/>
-                            <line x1="105" y1="46" x2="130" y2="46" stroke="#64748b" stroke-width="1"/>
-                            <line x1="105" y1="71" x2="130" y2="71" stroke="#64748b" stroke-width="1"/>
-                            <line x1="105" y1="96" x2="130" y2="96" stroke="#64748b" stroke-width="1"/>
+                            <rect x="75" y="8" width="28" height="12" rx="2" fill="#334155"/>
+                            <text x="89" y="16.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">Inverter</text>
 
-                            <!-- To Transformer -->
-                            <line x1="150" y1="58" x2="170" y2="58" stroke="#1e3a8a" stroke-width="1.5"/>
-                            <rect x="170" y="48" width="25" height="20" rx="2" fill="#1e3a8a"/>
-                            <text x="182" y="60" fill="#ffffff" font-size="5" text-anchor="middle">XFMR</text>
+                            <rect x="75" y="27" width="28" height="12" rx="2" fill="#334155"/>
+                            <text x="89" y="35.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">Inverter</text>
+
+                            <rect x="75" y="46" width="28" height="12" rx="2" fill="#334155"/>
+                            <text x="89" y="54.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">Inverter</text>
+
+                            <rect x="75" y="65" width="28" height="12" rx="2" fill="#334155"/>
+                            <text x="89" y="73.5" fill="#ffffff" font-size="5.5" font-family="sans-serif" text-anchor="middle">Inverter</text>
+
+                            <rect x="135" y="8" width="20" height="69" rx="2" fill="#f58220"/>
+                            <text x="145" y="45" fill="#ffffff" font-size="6" font-family="sans-serif" text-anchor="middle" transform="rotate(-90 145 45)" font-weight="bold">HT Panel</text>
+
+                            <line x1="46" y1="14" x2="75" y2="14" stroke="#64748b" stroke-width="1"/>
+                            <line x1="46" y1="33" x2="75" y2="33" stroke="#64748b" stroke-width="1"/>
+                            <line x1="46" y1="52" x2="75" y2="52" stroke="#64748b" stroke-width="1"/>
+                            <line x1="46" y1="71" x2="75" y2="71" stroke="#64748b" stroke-width="1"/>
+
+                            <line x1="103" y1="14" x2="135" y2="14" stroke="#64748b" stroke-width="1"/>
+                            <line x1="103" y1="33" x2="135" y2="33" stroke="#64748b" stroke-width="1"/>
+                            <line x1="103" y1="52" x2="135" y2="52" stroke="#64748b" stroke-width="1"/>
+                            <line x1="103" y1="71" x2="135" y2="71" stroke="#64748b" stroke-width="1"/>
+
+                            <line x1="155" y1="42.5" x2="190" y2="42.5" stroke="#f58220" stroke-width="1.5"/>
+                            <polygon points="187,39.5 194,42.5 187,45.5" fill="#f58220"/>
                         </svg>
                     </div>
                 </div>
 
                 <div class="welcome-block" style="margin-top: 15px;">
-                    <p style="font-weight: 700; color: var(--brand-navy);">Maintenance: -</p>
-                    <p style="font-size: 0.85rem;">
+                    <p style="font-weight: 700; color: var(--brand-navy); font-size: 0.95rem;">Maintenance: -</p>
+                    <p style="font-size: 0.88rem; margin-top: 4px;">
                         We will provide training of maintenance service free of cost. The process of maintenance contains Cleaning of solar panels and regularly check-up of voltage range.
                     </p>
                 </div>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 1</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
 
@@ -527,18 +511,15 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
                 <h2 class="section-title">Part 1: Technical Specification Solar Panel</h2>
-
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-bottom: 10px; font-weight: 700;">Solar Panel Specification*</h3>
-                <table class="data-table">
+                
+                <p style="font-weight: 700; color: var(--brand-navy); margin-bottom: 10px; font-size: 0.95rem;">Solar Panel Specification*</p>
+                <table class="data-table" style="margin-bottom: 12px;">
                     <thead>
                         <tr>
                             <th>Parameter</th>
@@ -570,19 +551,17 @@
                         <tr>
                             <td>Power</td>
                             <td>WP</td>
-                            <td>{{ $quotation->panel_watt_peak ?? '590+' }}</td>
+                            <td>{{ $quotation->panel_watt_peak ?? '590 Wp' }}</td>
                         </tr>
                     </tbody>
                 </table>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 25px; font-style: italic;">
-                    *Solar Panel Specification may vary as per the availability
-                </p>
+                <p style="font-size: 0.76rem; color: #475569; font-style: italic; margin-bottom: 20px;">*Solar Panel Specification may vary as per the availability</p>
 
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-bottom: 10px; font-weight: 700;">Inverter: -</h3>
-                <ul class="bullet-list">
+                <p style="font-weight: 700; color: var(--brand-navy); margin-bottom: 10px; font-size: 0.95rem;">Inverter: -</p>
+                <ul class="bullet-list" style="font-size: 0.86rem; line-height: 1.65;">
                     <li>Inbuilt Fuses and SPD (surge protection devices) for AC and DC.</li>
                     <li>LCD display on inverter. Protection provided:
-                        <ol style="margin-left: 20px; margin-top: 5px;">
+                        <ol style="margin-left: 24px; margin-top: 6px; margin-bottom: 6px;">
                             <li>Short circuit</li>
                             <li>Insulation resistance to ground surveillance</li>
                             <li>Residual current protection</li>
@@ -592,35 +571,9 @@
                     <li>Module to module connection <strong>4 sq mm² cable</strong> provided.</li>
                     <li>MC4 connectors IP45 provided | As Per manufacturing warranty | Easy to operate.</li>
                 </ul>
-
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-top: 25px; margin-bottom: 10px; font-weight: 700;">System Features :-</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Make</th>
-                            <th>Detail Specification</th>
-                            <th>Value</th>
-                            <th>Warranty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="font-weight: 700;">Solar Panel</td>
-                            <td>{{ $quotation->panel_make ?? 'TATA POWER' }}</td>
-                            <td>{{ $quotation->panel_type ?? 'Latest Technology Half Cut Mono Perc' }}</td>
-                            <td>{{ $quotation->panel_watt_peak ?? '590+' }} Wp</td>
-                            <td>{{ $quotation->warranty_panel ?? '12 years' }} replacement, {{ $quotation->warranty_performance ?? '30 years' }} performance</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 2</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
 
@@ -629,32 +582,37 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
-                <h2 class="section-title">System Features (Continued)</h2>
-                <table class="data-table" style="font-size: 0.78rem;">
+                <h2 class="section-title" style="margin-bottom: 14px;">System Features :-</h2>
+                
+                <table class="features-table">
                     <thead>
                         <tr>
-                            <th>Item</th>
-                            <th>Make</th>
+                            <th style="width: 17%;">Item</th>
+                            <th style="width: 19%;">Make</th>
                             <th>Detail Specification</th>
-                            <th>Value</th>
-                            <th>Warranty</th>
+                            <th style="width: 14%;">Value</th>
+                            <th style="width: 14%;">Warranty</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td style="font-weight: 700;">Solar Panel</td>
+                            <td>{{ $quotation->panel_make ?? 'TATA' }}</td>
+                            <td>{{ $quotation->panel_type ?? 'MonoBifacial' }}</td>
+                            <td>{{ $quotation->panel_watt_peak ?? '590 Wp' }}</td>
+                            <td>12 Year replacement, 30 Year performance</td>
+                        </tr>
+                        <tr>
                             <td style="font-weight: 700;">Inverter</td>
-                            <td>{{ $quotation->inverter_make ?? 'TATA Approved Make (Solis/Sofar/Goodwe)' }}</td>
+                            <td>{{ $quotation->inverter_make ?? 'TATA' }}</td>
                             <td>String Inverters with IP 67 Standards</td>
-                            <td>{{ $quotation->inverter_size ?? 'As per requirement' }}</td>
-                            <td>{{ $quotation->warranty_inverter ?? '10 Years' }}</td>
+                            <td>{{ $quotation->inverter_size ?? '1.00 kW' }}</td>
+                            <td>{{ $quotation->warranty_inverter ?? '10 Year' }}</td>
                         </tr>
                         <tr>
                             <td style="font-weight: 700;">Module Mounting Structure</td>
@@ -733,11 +691,7 @@
                 </table>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 3</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
 
@@ -746,89 +700,92 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
-                <h2 class="section-title">Performance of Plant (Approx.) &amp; Commercial Offer</h2>
+                <h2 class="section-title" style="margin-bottom: 12px; font-size: 1.25rem;">Performance of Plant (Approx.)</h2>
                 
-                <ul class="bullet-list" style="font-size: 0.9rem; line-height: 1.8;">
+                <ul class="bullet-list" style="font-size: 0.82rem; line-height: 1.55; margin-bottom: 14px;">
                     <li>Electricity generation/kW/Day = <strong>4.5 kWh</strong> (Pv-syst P90 report attached)</li>
                     <li>Electricity generation for {{ $capacity }} kW/Day = <strong>{{ number_format($capacity * 4.5, 2) }} kWh</strong></li>
                     <li>Electricity generation/kW/year = <strong>1642.5 kWh</strong></li>
                     <li>Total Generation in one year = <strong>{{ $quotation->savings_yearly_generation ?? number_format($capacity * 4.5 * 365, 1) . ' kWh' }}</strong></li>
-                    <li>Cost of Electricity per kWh = <strong>{{ $quotation->per_kw_rate ? '6.5 Rs/kWh' : '6.5 Rs/kWh' }}</strong></li>
+                    <li>Cost of Electricity per kWh = <strong>6.5 Rs/kWh</strong></li>
                     <li>Total Saving per Year = <strong>{{ $quotation->savings_annual_savings ?? 'Rs. ' . number_format($capacity * 4.5 * 365 * 6.5, 2) }}</strong></li>
                     <li>Return On Investment = Project Cost / Yearly Savings = <strong>{{ $quotation->savings_payback ?? number_format((($capacity * 28700 * 1.05) + ($capacity * 12300 * 1.18)) / ($capacity * 4.5 * 365 * 6.5), 1) . ' Years' }}</strong></li>
                 </ul>
 
-                <h2 class="section-title" style="margin-top: 30px;">Part 2: Commercial Offer</h2>
-                <table class="data-table">
+                <h2 class="section-title" style="margin-top: 14px; margin-bottom: 12px; font-size: 1.25rem;">Part 2: Commercial Offer</h2>
+                <table class="data-table" style="font-size: 0.78rem; margin-bottom: 10px;">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Specification</th>
-                            <th>Price INR/kW</th>
-                            <th>GST</th>
-                            <th>Estimated Amount in INR</th>
+                            <th style="padding: 6px 8px; width: 5%;">No</th>
+                            <th style="padding: 6px 8px;">Specification</th>
+                            <th style="padding: 6px 8px; width: 18%;">Price INR/kW</th>
+                            <th style="padding: 6px 8px; width: 10%;">GST</th>
+                            <th style="padding: 6px 8px; width: 25%;">Estimated Amount in INR</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="font-weight: 700; text-align: center;">A</td>
-                            <td>
+                            <td style="font-weight: 700; text-align: center; padding: 5px 7px;">A</td>
+                            <td style="padding: 5px 7px;">
                                 <strong>Supply of solar power generating kit from Tata Power</strong>
-                                <ul style="margin-left: 20px; font-size: 0.75rem; margin-top: 5px;">
-                                    <li>Modules &amp; Structure</li>
-                                    <li>Inverters &amp; ACDB</li>
-                                    <li>Monitoring setup, DC Cables, I&amp;C Kit</li>
-                                </ul>
+                                <div style="font-size: 0.72rem; color: #334155; margin-top: 2px;">• Modules &amp; Structure &nbsp;|&nbsp; • Inverters &amp; ACDB &nbsp;|&nbsp; • Monitoring, DC Cables, I&amp;C Kit</div>
                             </td>
-                            <td>28,700/-</td>
-                            <td>5%</td>
-                            <td style="font-weight: 700; text-align: right;">{{ number_format($capacity * 28700 * 1.05, 2) }}/-</td>
+                            <td style="padding: 5px 7px;">28,700/-</td>
+                            <td style="padding: 5px 7px;">5%</td>
+                            <td style="font-weight: 700; text-align: right; padding: 5px 7px;">{{ number_format($capacity * 28700 * 1.05, 2) }}/-</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 700; text-align: center;">B</td>
-                            <td>
+                            <td style="font-weight: 700; text-align: center; padding: 5px 7px;">B</td>
+                            <td style="padding: 5px 7px;">
                                 <strong>Installation and commissioning of solar plant By Gayatri Solar Energy</strong>
-                                <ul style="margin-left: 20px; font-size: 0.75rem; margin-top: 5px;">
-                                    <li>GEDA liasoning Work, Earthing kit &amp; lightning arrestor</li>
-                                    <li>Lugs, Cable Tray/ Cable Tie, Inverter Stand</li>
-                                    <li>Structure mounting with solar PV installation with Grouting</li>
-                                </ul>
+                                <div style="font-size: 0.72rem; color: #334155; margin-top: 2px;">• GEDA liasoning, Earthing kit, LA &nbsp;|&nbsp; • Lugs, Cable Tray, Inverter Stand, Grouting</div>
                             </td>
-                            <td>12,300/-</td>
-                            <td>18%</td>
-                            <td style="font-weight: 700; text-align: right;">{{ number_format($capacity * 12300 * 1.18, 2) }}/-</td>
+                            <td style="padding: 5px 7px;">12,300/-</td>
+                            <td style="padding: 5px 7px;">18%</td>
+                            <td style="font-weight: 700; text-align: right; padding: 5px 7px;">{{ number_format($capacity * 12300 * 1.18, 2) }}/-</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 700; text-align: center;">C</td>
-                            <td>
+                            <td style="font-weight: 700; text-align: center; padding: 5px 7px;">C</td>
+                            <td style="padding: 5px 7px;">
                                 <strong>Scope of:- {{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</strong>
-                                <ul style="margin-left: 20px; font-size: 0.75rem; margin-top: 5px;">
-                                    <li>GEDA Fee &amp; Meter Charge</li>
-                                    <li>Liasoning Work (CAG approval, lab test of meter)</li>
-                                    <li>AC cables from ACDB to LT panel</li>
-                                </ul>
+                                <div style="font-size: 0.72rem; color: #334155; margin-top: 2px;">• GEDA Fee &amp; Meter Charge &nbsp;|&nbsp; • Liasoning Work (CAG approval) &nbsp;|&nbsp; • AC cables to LT panel</div>
                             </td>
-                            <td>NA</td>
-                            <td>NA</td>
-                            <td style="font-weight: 700; text-align: center;">NA</td>
+                            <td style="padding: 5px 7px;">NA</td>
+                            <td style="padding: 5px 7px;">NA</td>
+                            <td style="font-weight: 700; text-align: center; padding: 5px 7px;">NA</td>
+                        </tr>
+                        @php
+                            $subtotalA = $capacity * 28700 * 1.05;
+                            $subtotalB = $capacity * 12300 * 1.18;
+                            $grandTotal = $subtotalA + $subtotalB;
+                            $weightedGst = (($grandTotal - ($capacity * 41000)) / ($capacity * 41000)) * 100;
+                        @endphp
+                        <tr style="background-color: #FEF3C7; font-weight: 800;">
+                            <td style="text-align: center; padding: 5px 7px;">D</td>
+                            <td style="padding: 5px 7px;">Total (A+B)</td>
+                            <td style="padding: 5px 7px;">41,000/-</td>
+                            <td style="padding: 5px 7px;">{{ number_format($weightedGst, 1) }}%</td>
+                            <td style="text-align: right; padding: 5px 7px;">{{ $quotation->savings_project_cost ?? number_format($grandTotal, 2) }}/-</td>
                         </tr>
                     </tbody>
                 </table>
+
+                <div style="margin-top: 10px; margin-bottom: 0;">
+                    <p style="font-weight: 700; text-decoration: underline; margin-bottom: 4px; font-size: 0.90rem; color: #000000;">NOTE:</p>
+                    <ul style="margin-left: 20px; font-size: 0.80rem; line-height: 1.45; color: #DC2626; font-weight: 700;">
+                        <li>• GEDA Registration fees would be extra at actual 15340/-</li>
+                        <li>• Mgvcl Net Meter &amp; Testing charge would be extra at actual 1,40,000/- approx.</li>
+                        <li>• All invoices will be generated in the name of client and directly paid by client</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 4</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
 
@@ -837,80 +794,39 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Specification</th>
-                            <th>Price INR/kW</th>
-                            <th>GST</th>
-                            <th>Estimated Amount in INR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $subtotalA = $capacity * 28700 * 1.05;
-                            $subtotalB = $capacity * 12300 * 1.18;
-                            $grandTotal = $subtotalA + $subtotalB;
-                            $weightedGst = (($grandTotal - ($capacity * 41000)) / ($capacity * 41000)) * 100;
-                        @endphp
-                        <tr style="background-color: #FEF3C7; font-weight: 800;">
-                            <td style="text-align: center;">D</td>
-                            <td>Total (A+B)</td>
-                            <td>41,000/-</td>
-                            <td>{{ number_format($weightedGst, 1) }}%</td>
-                            <td style="text-align: right;">{{ $quotation->savings_project_cost ?? number_format($grandTotal, 2) }}/-</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2 class="section-title">Terms &amp; Conditions</h2>
 
-                <div class="highlight-box" style="background: #FFFBEB; border-left-color: #F59E0B; margin-top: 15px;">
-                    <strong style="color: #B45309;">NOTE:</strong>
-                    <ul style="margin-left: 15px; margin-top: 5px; font-size: 0.8rem;">
-                        <li>GEDA Registration fees would be extra at actual 15340</li>
-                        <li>Dgvcl Net Meter &amp; Testing charge would be extra at actual 75,000/- approx.</li>
-                        <li>All invoices will be generated in the name of client and directly paid by client</li>
-                    </ul>
-                </div>
-
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-top: 20px; margin-bottom: 10px; font-weight: 700;">General Terms and Conditions :-</h3>
-                <ol style="margin-left: 20px; font-size: 0.8rem; line-height: 1.6;">
-                    <li>GST is Inclusive in above quoted price <strong>(On supply part 5% and on service part 18%)</strong></li>
-                    <li>Bi Directional METER &amp; Testing charges are <strong>Excluding</strong> in above quoted price.</li>
-                    <li>Price mentioned above <strong>includes</strong> compliances for Electrical Distribution Authority, State Nodal Agencies (GEDA) and Electrical Inspector.</li>
-                    <li>Impact of any duty, taxes, basic custom duty as imposed by government shall be in <strong>client’s scope</strong>.</li>
-                    <li>We are not liable for delay in work due to delay in any Govt. procedures.</li>
-                    <li>Client need to take care of any local issues if arise. Any obstacle/damage caused by local body/authority which resulting in delay of work, we will be granted extra time accordingly and not held responsible for damage.</li>
-                    <li>Land levelling and tree cutting will be in client scope.</li>
+                <p style="font-weight: 700; text-decoration: underline; margin-top: 15px; margin-bottom: 12px; font-size: 1.02rem; color: #000000;">General Terms and Conditions :-</p>
+                <ol style="margin-left: 22px; font-size: 0.86rem; line-height: 1.75;">
+                    <li style="color: #DC2626; font-weight: 700; margin-bottom: 8px;">GST is Inclusive in above quoted price (On supply part 5% and on service part 18%)</li>
+                    <li style="margin-bottom: 8px;">Bi Directional METER &amp; Testing charges are <strong>Excluding</strong> in above quoted price.</li>
+                    <li style="margin-bottom: 8px;">Price mentioned above <strong>includes</strong> compliances for Electrical Distribution Authority, State Nodal Agencies (GEDA) and Electrical Inspector.</li>
+                    <li style="margin-bottom: 8px;">Impact of any duty, taxes, basic custom duty as imposed by government shall be in <strong>client’s scope</strong>.</li>
+                    <li style="margin-bottom: 8px;">We are not liable for delay in work due to delay in any Govt. procedures.</li>
+                    <li style="margin-bottom: 8px;">Client need to take care of any local issues if arise. Any obstacle/damage caused by local body/authority which resulting in delay of work, we will be granted extra time accordingly and not held responsible for damage.</li>
+                    <li style="margin-bottom: 8px;">Land levelling and tree cutting will be in client scope.</li>
                 </ol>
 
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-top: 20px; margin-bottom: 10px; font-weight: 700;">Warranty: -</h3>
-                <ol style="margin-left: 20px; font-size: 0.8rem; line-height: 1.6;">
-                    <li><strong>{{ $quotation->warranty_system ?? '5 Years' }}</strong> warranty on whole system.</li>
-                    <li><strong>Performance Warranty</strong> on Solar Panels is as below:
-                        <ul style="margin-left: 20px;">
+                <h3 style="font-size: 1.02rem; color: var(--brand-navy); margin-top: 25px; margin-bottom: 12px; font-weight: 700;">Warranty: -</h3>
+                <ol style="margin-left: 22px; font-size: 0.86rem; line-height: 1.75;">
+                    <li style="margin-bottom: 8px;"><strong>{{ $quotation->warranty_system ?? '5 Years' }}</strong> warranty on whole system.</li>
+                    <li style="margin-bottom: 8px;"><strong>Performance Warranty</strong> on Solar Panels is as below:
+                        <ul style="margin-left: 20px; margin-top: 4px; margin-bottom: 4px;">
                             <li>Up to <strong>90% output</strong> for first 10 years.</li>
                             <li>Up to <strong>80% output</strong> for rest 15 years.</li>
                         </ul>
                     </li>
-                    <li><strong>{{ $quotation->warranty_inverter ?? '10 Years' }}</strong> Replacement warranty on Inverter.</li>
-                    <li><strong>{{ $quotation->warranty_panel ?? '12 Years' }}</strong> Replacement warranty on Solar Panels in manufacturing &amp; Technical Defects.</li>
+                    <li style="margin-bottom: 8px;"><strong>{{ $quotation->warranty_inverter ?? '10 Years' }}</strong> Replacement warranty on Inverter.</li>
+                    <li style="margin-bottom: 8px;"><strong>{{ $quotation->warranty_panel ?? '12 Years' }}</strong> Replacement warranty on Solar Panels in manufacturing &amp; Technical Defects.</li>
                 </ol>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 5</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
 
@@ -919,49 +835,31 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-bottom: 10px; font-weight: 700;">Project completion timeline :-</h3>
-                <p style="font-size: 0.85rem; margin-bottom: 15px; text-align: justify;">
-                    Considering all necessary approvals from concerned state agencies at various stages, procurement of project materials, Installation work and process of Net Meter agreement, the total project completion time will take around 3-4 months approx.
-                </p>
-                <div class="highlight-box" style="background: #FEF2F2; border-left-color: #EF4444; font-size: 0.8rem; margin-bottom: 25px;">
-                    <strong>Note:</strong> We will not be liable for any further delay in getting approvals from Govt. Authorities and will be granted relaxation in project completion timeline.
-                </div>
-
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-bottom: 10px; font-weight: 700;">Validity :-</h3>
-                <p style="font-size: 0.85rem; margin-bottom: 15px;">
-                    1) Total cost is subjected to change as per system design &amp; time duration.
-                </p>
-                <p style="font-size: 0.85rem; color: #EF4444; font-weight: 600; margin-bottom: 25px;">
-                    (As per current Global market scenario, High price escalation in raw material &amp; Material shortage we are bound to give you above quotation validity for 7 Days).
-                </p>
-
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-bottom: 10px; font-weight: 700;">Payment Terms &amp; Condition :</h3>
-                <ul class="bullet-list" style="font-size: 0.85rem; line-height: 1.6;">
-                    <li><strong>A) For the Material Supply Part from TATA</strong> - 85% on first dispatch of material Against material readiness mail from TATA to {{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</li>
-                    <li><strong>B) For installation and commissioning from channel Partner (Gayatri Solar)</strong> - 10% on installation time and 5% after commissioning done by Gayatri Solar.</li>
+                <h3 style="font-size: 1.05rem; color: var(--brand-navy); margin-top: 15px; margin-bottom: 12px; font-weight: 700;">Project Execution Timeline :</h3>
+                <ul class="bullet-list" style="font-size: 0.86rem; line-height: 1.75; margin-bottom: 25px;">
+                    <li style="margin-bottom: 8px;"><strong>Material Delivery:</strong> 3 to 4 Weeks from the date of Advance received and site clearance.</li>
+                    <li style="margin-bottom: 8px;"><strong>Installation &amp; Commissioning:</strong> 2 to 3 Weeks after complete material delivery at site.</li>
+                    <li style="margin-bottom: 8px;"><strong>Net Metering &amp; Grid Synchronization:</strong> Subject to DISCOM / CEI approval process.</li>
                 </ul>
 
-                <h3 style="font-size: 1rem; color: var(--brand-navy); margin-top: 30px; margin-bottom: 10px; font-weight: 700;">Warranty – Exclusion and Limitation :-</h3>
-                <ul class="bullet-list" style="font-size: 0.8rem; line-height: 1.5; color: var(--text-muted);">
-                    <li>Warranty should be claimed within the applicable warranty period of the concerned part claimed by the manufacturer and it should be claimed by or claim on behalf of original buyer of solar power plant.</li>
-                    <li>Limited product warranty does not cover damages done by any natural calamities, fire, war, epidemic, riot, insurrection. It covers only normal use. Damage caused during transportation or alteration done after commissioning of plant without consent of GAYATRI SOLAR ENERGY (TATA POWER SOLAR) are not covered in this warranty.</li>
-                    <li>All the queries or breakdown will be resolved earliest by GAYATRI SOLAR ENERGY (TATA POWER SOLAR) and their associates, there could be delays due to factors beyond the control of GAYATRI SOLAR ENERGY (TATA POWER SOLAR) and should not be held responsible for the delay caused by original manufacturer/third party vendor or customer representative.</li>
+                <h3 style="font-size: 1.05rem; color: var(--brand-navy); margin-top: 25px; margin-bottom: 12px; font-weight: 700;">Validity of Quotation :</h3>
+                <p style="font-size: 0.86rem; margin-bottom: 25px; line-height: 1.75;">
+                    This offer is valid up to <strong>{{ $quotation->valid_until?->format('d/m/Y') ?? '30 Days' }}</strong> from the date of issue. Prices are subject to revision thereafter.
+                </p>
+
+                <h3 style="font-size: 1.05rem; color: var(--brand-navy); margin-top: 25px; margin-bottom: 12px; font-weight: 700;">Payment Terms &amp; Condition :</h3>
+                <ul class="bullet-list" style="font-size: 0.86rem; line-height: 1.75;">
+                    <li style="margin-bottom: 8px;"><strong>A) For the Material Supply Part from TATA</strong> - 85% on first dispatch of material Against material readiness mail from TATA to {{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</li>
+                    <li style="margin-bottom: 8px;"><strong>B) For installation and commissioning from channel Partner (Gayatri Solar)</strong> - 10% on installation time and 5% after commissioning done by Gayatri Solar.</li>
                 </ul>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 6</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
 
@@ -970,27 +868,28 @@
             <div>
                 <div class="page-header">
                     <div class="header-logo-left">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 52px; object-fit: contain; margin-bottom: 2px;">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Gyatri Solar Energy" style="height: 56px; max-width: 220px; object-fit: contain;">
                     </div>
-                    <div class="header-logo-right">
-                        <div class="tata-logo-text"><span class="tata">TATA</span> <span class="power">POWER</span></div>
-                        <div class="tata-solaroof">SOLAROOF</div>
-                    </div>
+                    @include('admin.quotations._right_logo')
                 </div>
 
-                <ul class="bullet-list" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 30px;">
-                    <li>Service or repair after the standard warranty period is subject to GAYATRI SOLAR ENERGY (TATA POWER SOLAR) or Original part manufacturer price and terms, repaired/replaced part is warranted for the residual warranty time remains in the original warranty.</li>
-                    <li>GAYATRI SOLAR ENERGY (TATA POWER SOLAR) should not be held responsible for the down time due to equipment error or inappropriate handling of the power plant.</li>
+                <p style="font-weight: 700; text-decoration: underline; margin-bottom: 10px; font-size: 0.95rem; color: var(--brand-navy);">Warranty – Exclusion and Limitation :-</p>
+                <ul class="bullet-list" style="font-size: 0.78rem; line-height: 1.45; color: var(--text-dark); margin-bottom: 15px;">
+                    <li style="margin-bottom: 6px;">Warranty should be claimed within the applicable warranty period of the concerned part claimed by the manufacturer and it should be claimed by or claim on behalf of original buyer of solar power plant.</li>
+                    <li style="margin-bottom: 6px;">Limited product warranty does not cover damages done by any natural calamities, fire, war, epidemic, riot, insurrection. It covers only normal use. Damage caused during transportation or alteration done after commissioning of plant without consent of GAYATRI SOLAR ENERGY (TATA POWER SOLAR) are not covered in this warranty.</li>
+                    <li style="margin-bottom: 6px;">All the queries or breakdown will be resolved earliest by GAYATRI SOLAR ENERGY (TATA POWER SOLAR) and their associates, there could be delays due to factors beyond the control of GAYATRI SOLAR ENERGY (TATA POWER SOLAR) and should not be held responsible for the delay caused by original manufacturer/third party vendor or customer representative.</li>
+                    <li style="margin-bottom: 6px;">Service or repair after the standard warranty period is subject to GAYATRI SOLAR ENERGY (TATA POWER SOLAR) or Original part manufacturer price and terms, repaired/replaced part is warranted for the residual warranty time remains in the original warranty.</li>
+                    <li style="margin-bottom: 6px;">GAYATRI SOLAR ENERGY (TATA POWER SOLAR) should not be held responsible for the down time due to equipment error or inappropriate handling of the power plant.</li>
                 </ul>
 
-                <p style="font-style: italic; font-weight: 600; font-size: 1rem; text-align: center; color: var(--brand-navy); margin: 50px 0;">
+                <p style="font-style: italic; font-weight: 600; font-size: 0.90rem; text-align: center; color: var(--brand-navy); margin: 16px 0;">
                     “We hope our techno-commercial offer fulfils your requirements in all aspects. We request you to kindly give us an opportunity to serve your esteemed organization.”
                 </p>
 
-                <div style="margin-top: 40px; font-size: 0.9rem; line-height: 1.6;">
+                <div style="margin-top: 14px; font-size: 0.85rem; line-height: 1.45;">
                     <p>Thanking You,</p>
-                    <p style="font-weight: 700; margin-top: 15px;">Yours Faithfully,</p>
-                    <p style="font-weight: 800; font-size: 1rem; color: var(--brand-navy); margin-top: 5px;">{{ $quotation->created_by_name ?? 'VIBHU H. PATEL' }}</p>
+                    <p style="font-weight: 700; margin-top: 6px;">Yours Faithfully,</p>
+                    <p style="font-weight: 800; font-size: 0.92rem; color: var(--brand-navy); margin-top: 2px;">{{ $quotation->created_by_name ?? 'VIBHU H. PATEL' }}</p>
                     <p>M : +91 {{ $quotation->created_by_phone ?? '88667 78940' }}</p>
                     <strong style="color: var(--brand-orange)">GAYATRI SOLAR ENERGY</strong><br>
                     <span>AUTHORIZED CHANNEL PARTNER</span><br>
@@ -998,34 +897,75 @@
                     <span>GSTIN : {{ $quotation->bank_gst_no ?? '24CTRPP6745D1ZA' }}</span>
                 </div>
 
-                <div class="signatures-row" style="margin-top: 60px;">
+                <div class="signatures-row" style="margin-top: 12px;">
                     <div class="sig-block">
-                        <div class="sig-line">Authorized Signatory</div>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">Gyatri Solar Energy</span>
+                        <div style="height: 65px; display: flex; align-items: flex-end; justify-content: flex-start; padding-bottom: 2px;">
+                            @if(!empty($quotation->signature_image))
+                                <img src="{{ asset('storage/' . $quotation->signature_image) }}" alt="Authorized Signature" style="max-height: 65px; max-width: 220px; height: 58px; width: auto; object-fit: contain; display: block;">
+                            @endif
+                        </div>
+                        <div class="sig-line" style="margin-top: 0;">Authorized Signatory</div>
+                        <span style="font-size: 0.75rem; color: var(--text-dark);">Gyatri Solar Energy</span>
                     </div>
                     <div class="sig-block">
-                        <div class="sig-line">Customer Signatory</div>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">{{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</span>
+                        <div style="height: 65px;"></div>
+                        <div class="sig-line" style="margin-top: 0;">Customer Signatory</div>
+                        <span style="font-size: 0.75rem; color: var(--text-dark);">{{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</span>
                     </div>
                 </div>
             </div>
 
-            <div class="page-footer">
-                <div class="page-footer-contact">REGD. OFFICE: Plot No. 162, Phase-2 Beside New Safari, Nr. Mipko Chokdi, Narmadanagar, Bharuch, Gujarat 392015</div>
-                Email: Info@gayatrisolarenergy.com | Website: WWW.Gayatrisolarenergy.com | Mo: 8866778940 / 6357293251
-                <span class="page-number-indicator">Page 7</span>
-            </div>
+            @include('admin.quotations._footer')
         </div>
 
     </div>
 
-    <!-- Automatically open print dialog -->
+    <!-- CDN scripts for Direct 1-Click Page-by-Page PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                window.print();
-            }, 1000);
-        });
+        async function downloadPDF() {
+            const btn = document.getElementById('downloadPdfBtn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Downloading PDF...';
+            btn.disabled = true;
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
+
+                const pages = document.querySelectorAll('.proposal-page');
+
+                for (let i = 0; i < pages.length; i++) {
+                    const page = pages[i];
+                    const canvas = await html2canvas(page, {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 0.96);
+                    if (i > 0) {
+                        pdf.addPage('a4', 'p');
+                    }
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+                }
+
+                pdf.save('Quotation_{{ str_replace(['/', '\\'], '-', $quotation->quotation_number) }}.pdf');
+            } catch (err) {
+                console.error('PDF Generation Error:', err);
+                alert('An error occurred while generating PDF. Please try again.');
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>

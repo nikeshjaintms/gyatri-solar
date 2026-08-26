@@ -10,6 +10,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class QuotationController extends Controller
 {
@@ -123,6 +124,8 @@ class QuotationController extends Controller
             'bos_protection_system' => ['nullable', 'string', 'max:1000'],
             'bos_lt_ht_panels' => ['nullable', 'string', 'max:1000'],
             'bos_metering' => ['nullable', 'string', 'max:1000'],
+            'partner_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:5120'],
+            'signature_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:5120'],
         ];
 
         $validated = $request->validate(array_merge([
@@ -214,6 +217,14 @@ class QuotationController extends Controller
                 }
             }
 
+            if ($request->hasFile('partner_logo')) {
+                $quotationData['partner_logo'] = $request->file('partner_logo')->store('quotations/logos', 'public');
+            }
+
+            if ($request->hasFile('signature_image')) {
+                $quotationData['signature_image'] = $request->file('signature_image')->store('quotations/signatures', 'public');
+            }
+
             $quotation = Quotation::create($quotationData);
 
             foreach ($itemsData as $itemData) {
@@ -296,6 +307,15 @@ class QuotationController extends Controller
             'savings_project_cost' => ['nullable', 'string', 'max:255'],
             'savings_trees_saved' => ['nullable', 'string', 'max:255'],
             'savings_co2_reduction' => ['nullable', 'string', 'max:255'],
+            'panel_open_circuit_voltage' => ['nullable', 'string', 'max:255'],
+            'panel_max_voltage' => ['nullable', 'string', 'max:255'],
+            'panel_short_circuit_current' => ['nullable', 'string', 'max:255'],
+            'panel_max_current' => ['nullable', 'string', 'max:255'],
+            'bos_protection_system' => ['nullable', 'string', 'max:1000'],
+            'bos_lt_ht_panels' => ['nullable', 'string', 'max:1000'],
+            'bos_metering' => ['nullable', 'string', 'max:1000'],
+            'partner_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:5120'],
+            'signature_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:5120'],
         ];
 
         $validated = $request->validate(array_merge([
@@ -388,6 +408,30 @@ class QuotationController extends Controller
                 if ($request->has($field)) {
                     $updateData[$field] = $request->input($field);
                 }
+            }
+
+            if ($request->hasFile('partner_logo')) {
+                if ($quotation->partner_logo && Storage::disk('public')->exists($quotation->partner_logo)) {
+                    Storage::disk('public')->delete($quotation->partner_logo);
+                }
+                $updateData['partner_logo'] = $request->file('partner_logo')->store('quotations/logos', 'public');
+            } elseif ($request->boolean('remove_partner_logo')) {
+                if ($quotation->partner_logo && Storage::disk('public')->exists($quotation->partner_logo)) {
+                    Storage::disk('public')->delete($quotation->partner_logo);
+                }
+                $updateData['partner_logo'] = null;
+            }
+
+            if ($request->hasFile('signature_image')) {
+                if ($quotation->signature_image && Storage::disk('public')->exists($quotation->signature_image)) {
+                    Storage::disk('public')->delete($quotation->signature_image);
+                }
+                $updateData['signature_image'] = $request->file('signature_image')->store('quotations/signatures', 'public');
+            } elseif ($request->boolean('remove_signature_image')) {
+                if ($quotation->signature_image && Storage::disk('public')->exists($quotation->signature_image)) {
+                    Storage::disk('public')->delete($quotation->signature_image);
+                }
+                $updateData['signature_image'] = null;
             }
 
             $quotation->update($updateData);

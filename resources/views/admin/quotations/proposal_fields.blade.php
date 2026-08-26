@@ -45,6 +45,60 @@
                         <label class="field-label">Prepared By Phone</label>
                         <input type="text" name="created_by_phone" class="form-field" value="{{ old('created_by_phone', $quotation->created_by_phone ?? '8238340836') }}">
                     </div>
+
+                    <div class="col-12 mt-3">
+                        <hr>
+                        <h6 class="mb-2"><i class="bi bi-image me-1"></i> Proposal Right Header Logo (PDF)</h6>
+                        <p class="text-muted small mb-3">Upload custom logo image (PNG, JPG, SVG, WebP) to show on top-right header of every page in proposal PDF.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="field-label">Upload Right Header Logo</label>
+                        <input type="file" name="partner_logo" class="form-control" accept="image/*" id="partner_logo_input">
+                        <div class="form-text">Recommended: Transparent PNG or SVG (Max 5MB).</div>
+                    </div>
+
+                    @if(!empty($quotation->partner_logo))
+                        <div class="col-12 col-md-6">
+                            <label class="field-label d-block">Current Logo Preview</label>
+                            <div class="p-2 border rounded bg-light d-inline-flex align-items-center gap-3">
+                                <img src="{{ asset('storage/' . $quotation->partner_logo) }}" alt="Logo" style="height: 45px; max-width: 160px; object-fit: contain;">
+                                <div class="form-check mb-0">
+                                    <input class="form-check-input" type="checkbox" name="remove_partner_logo" value="1" id="remove_partner_logo">
+                                    <label class="form-check-label text-danger small fw-semibold" for="remove_partner_logo">
+                                        <i class="bi bi-trash"></i> Remove Logo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="col-12 mt-3">
+                        <hr>
+                        <h6 class="mb-2"><i class="bi bi-pen me-1"></i> Authorized Signature (PDF Page 7)</h6>
+                        <p class="text-muted small mb-3">Upload signature image (PNG, JPG, SVG, WebP) to display directly above Authorized Signatory line on the proposal PDF.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="field-label">Upload Signature Image</label>
+                        <input type="file" name="signature_image" class="form-control" accept="image/*" id="signature_image_input">
+                        <div class="form-text">Recommended: Transparent PNG (Max 5MB).</div>
+                    </div>
+
+                    @if(!empty($quotation->signature_image))
+                        <div class="col-12 col-md-6">
+                            <label class="field-label d-block">Current Signature Preview</label>
+                            <div class="p-2 border rounded bg-light d-inline-flex align-items-center gap-3">
+                                <img src="{{ asset('storage/' . $quotation->signature_image) }}" alt="Signature" style="height: 45px; max-width: 160px; object-fit: contain;">
+                                <div class="form-check mb-0">
+                                    <input class="form-check-input" type="checkbox" name="remove_signature_image" value="1" id="remove_signature_image">
+                                    <label class="form-check-label text-danger small fw-semibold" for="remove_signature_image">
+                                        <i class="bi bi-trash"></i> Remove Signature
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 

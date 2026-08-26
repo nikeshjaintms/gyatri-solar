@@ -23,6 +23,8 @@ class Quotation extends Model
         'notes',
         'status',
         'system_size',
+        'partner_logo',
+        'signature_image',
         'created_by_name',
         'created_by_phone',
         'per_kw_rate',
