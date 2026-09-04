@@ -353,16 +353,42 @@
 <body>
 
     @php
-        // Dynamically compute system size capacity value (e.g. 60.18)
-        $capacityStr = $quotation->system_size ?? '60.18';
+        // Dynamically compute system size capacity value (e.g. 1.77, 3.5, 60.18)
+        $capacityStr = $quotation->system_size ?? '1.77';
         preg_match('/[0-9.]+(?:\.[0-9]+)?/', $capacityStr, $matches);
-        $capacity = isset($matches[0]) ? (float)$matches[0] : 60.18;
+        $capacity = isset($matches[0]) ? (float)$matches[0] : 1.77;
         if ($capacity <= 0) {
-            $capacity = 60.18;
+            $capacity = 1.77;
         }
 
         $panelMakeRaw = trim($quotation->panel_make ?? 'TATA POWER');
         $panelMakeUpper = strtoupper($panelMakeRaw);
+
+        // Dynamic Per kW rate from proposal/quotation (default: 41,000)
+        $rawPerKw = str_replace([',', ' '], '', $quotation->per_kw_rate ?? '41000');
+        $perKwRate = is_numeric($rawPerKw) && (float)$rawPerKw > 0 ? (float)$rawPerKw : 41000;
+
+        // Commercial Total: Exact match with quotation items grand total
+        $commercialTotal = (float)($quotation->grand_total > 0 ? $quotation->grand_total : ($capacity * $perKwRate));
+
+        // Commercial Breakdown (70% Supply, 30% Installation):
+        $supplyAmount = round($commercialTotal * 0.70, 2);
+        $installAmount = round($commercialTotal - $supplyAmount, 2); // Guarantees exact sum matching $commercialTotal
+        
+        // Price INR/kW rates:
+        $supplyRate = $capacity > 0 ? round($supplyAmount / $capacity) : round($perKwRate * 0.70);
+        $installRate = $capacity > 0 ? round($installAmount / $capacity) : round($perKwRate * 0.30);
+        $displayPerKw = $capacity > 0 ? round($commercialTotal / $capacity) : $perKwRate;
+
+        // Effective GST %
+        if ($quotation->tax_percentage > 0) {
+            $weightedGst = (float)$quotation->tax_percentage;
+        } elseif (($quotation->subtotal - $quotation->discount) > 0) {
+            $taxable = (float)($quotation->subtotal - $quotation->discount);
+            $weightedGst = (($commercialTotal - $taxable) / max(1, $taxable)) * 100;
+        } else {
+            $weightedGst = 8.9;
+        }
     @endphp
 
     <!-- Control bar for screen view -->
@@ -388,12 +414,12 @@
                     @include('admin.quotations._right_logo')
                 </div>
 
-                <div class="meta-date">Date: {{ $quotation->quotation_date?->format('d/m/Y') ?? '12/06/2023' }}</div>
+                <div class="meta-date">Date: {{ $quotation->quotation_date?->format('d/m/Y') ?? date('d/m/Y') }}</div>
 
                 <div class="welcome-block">
                     <p>To,</p>
-                    <p style="font-weight: 700; font-size: 1rem; color: var(--brand-navy); margin-bottom: 3px;">{{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</p>
-                    <p style="font-weight: 600; margin-bottom: 15px;">{{ $quotation->customer?->address ?? 'ANKLESHWAR GIDC' }}</p>
+                    <p style="font-weight: 700; font-size: 1rem; color: var(--brand-navy); margin-bottom: 3px;">{{ $quotation->customer?->name ?? 'Client' }}</p>
+                    <p style="font-weight: 600; margin-bottom: 15px;">{{ $quotation->customer?->address ?? '' }}</p>
 
                     <p style="font-weight: 700; text-decoration: underline; margin-bottom: 14px; color: var(--brand-navy);">
                         Subject: - Techno-commercial offer for Supply, Installation and Commissioning of Solar PV Power Plant in your Industry.
@@ -401,10 +427,10 @@
 
                     <p>Dear Sir,</p>
                     <p style="margin-top: 6px;">
-                        This refers to the telephonic conversation with you, kindly find the techno commercial offer for Ground-Mount {{ number_format($capacity * 2.674, 2) }}kW of solar PV power plant for your Industry.
+                        This refers to the telephonic conversation with you, kindly find the techno commercial offer for Ground-Mount {{ $quotation->system_size ?? ($capacity . ' kW') }} of solar PV power plant for your Industry.
                     </p>
                     <p style="font-weight: 700; font-size: 1.05rem; margin-top: 14px; margin-bottom: 15px;">
-                        System Capacity: - <span style="color: var(--brand-orange)">{{ $quotation->system_size ?? '60.18Kwp' }}</span> Grid tied solar power plant.
+                        System Capacity: - <span style="color: var(--brand-orange)">{{ $quotation->system_size ?? ($capacity . ' kW') }}</span> Grid tied solar power plant.
                     </p>
                 </div>
 
@@ -711,10 +737,10 @@
                     <li>Electricity generation/kW/Day = <strong>4.5 kWh</strong> (Pv-syst P90 report attached)</li>
                     <li>Electricity generation for {{ $capacity }} kW/Day = <strong>{{ number_format($capacity * 4.5, 2) }} kWh</strong></li>
                     <li>Electricity generation/kW/year = <strong>1642.5 kWh</strong></li>
-                    <li>Total Generation in one year = <strong>{{ $quotation->savings_yearly_generation ?? number_format($capacity * 4.5 * 365, 1) . ' kWh' }}</strong></li>
+                    <li>Total Generation in one year = <strong>{{ $quotation->savings_yearly_generation ?? (number_format($capacity * 4.5 * 365, 1) . ' kWh') }}</strong></li>
                     <li>Cost of Electricity per kWh = <strong>6.5 Rs/kWh</strong></li>
-                    <li>Total Saving per Year = <strong>{{ $quotation->savings_annual_savings ?? 'Rs. ' . number_format($capacity * 4.5 * 365 * 6.5, 2) }}</strong></li>
-                    <li>Return On Investment = Project Cost / Yearly Savings = <strong>{{ $quotation->savings_payback ?? number_format((($capacity * 28700 * 1.05) + ($capacity * 12300 * 1.18)) / ($capacity * 4.5 * 365 * 6.5), 1) . ' Years' }}</strong></li>
+                    <li>Total Saving per Year = <strong>{{ $quotation->savings_annual_savings ?? ('Rs. ' . number_format($capacity * 4.5 * 365 * 6.5, 2)) }}</strong></li>
+                    <li>Return On Investment = Project Cost / Yearly Savings = <strong>{{ $quotation->savings_payback ?? (number_format($commercialTotal / max(1, ($capacity * 4.5 * 365 * 6.5)), 1) . ' Years') }}</strong></li>
                 </ul>
 
                 <h2 class="section-title" style="margin-top: 14px; margin-bottom: 12px; font-size: 1.25rem;">Part 2: Commercial Offer</h2>
@@ -732,12 +758,12 @@
                         <tr>
                             <td style="font-weight: 700; text-align: center; padding: 5px 7px;">A</td>
                             <td style="padding: 5px 7px;">
-                                <strong>Supply of solar power generating kit from Tata Power</strong>
+                                <strong>Supply of solar power generating kit from {{ $panelMakeRaw }}</strong>
                                 <div style="font-size: 0.72rem; color: #334155; margin-top: 2px;">• Modules &amp; Structure &nbsp;|&nbsp; • Inverters &amp; ACDB &nbsp;|&nbsp; • Monitoring, DC Cables, I&amp;C Kit</div>
                             </td>
-                            <td style="padding: 5px 7px;">28,700/-</td>
+                            <td style="padding: 5px 7px;">{{ number_format($supplyRate) }}/-</td>
                             <td style="padding: 5px 7px;">5%</td>
-                            <td style="font-weight: 700; text-align: right; padding: 5px 7px;">{{ number_format($capacity * 28700 * 1.05, 2) }}/-</td>
+                            <td style="font-weight: 700; text-align: right; padding: 5px 7px;">{{ number_format($supplyAmount, 2) }}/-</td>
                         </tr>
                         <tr>
                             <td style="font-weight: 700; text-align: center; padding: 5px 7px;">B</td>
@@ -745,32 +771,26 @@
                                 <strong>Installation and commissioning of solar plant By Gayatri Solar Energy</strong>
                                 <div style="font-size: 0.72rem; color: #334155; margin-top: 2px;">• GEDA liasoning, Earthing kit, LA &nbsp;|&nbsp; • Lugs, Cable Tray, Inverter Stand, Grouting</div>
                             </td>
-                            <td style="padding: 5px 7px;">12,300/-</td>
+                            <td style="padding: 5px 7px;">{{ number_format($installRate) }}/-</td>
                             <td style="padding: 5px 7px;">18%</td>
-                            <td style="font-weight: 700; text-align: right; padding: 5px 7px;">{{ number_format($capacity * 12300 * 1.18, 2) }}/-</td>
+                            <td style="font-weight: 700; text-align: right; padding: 5px 7px;">{{ number_format($installAmount, 2) }}/-</td>
                         </tr>
                         <tr>
                             <td style="font-weight: 700; text-align: center; padding: 5px 7px;">C</td>
                             <td style="padding: 5px 7px;">
-                                <strong>Scope of:- {{ $quotation->customer?->name ?? 'ASIAN MARKETING' }}</strong>
+                                <strong>Scope of:- {{ $quotation->customer?->name ?? 'Client' }}</strong>
                                 <div style="font-size: 0.72rem; color: #334155; margin-top: 2px;">• GEDA Fee &amp; Meter Charge &nbsp;|&nbsp; • Liasoning Work (CAG approval) &nbsp;|&nbsp; • AC cables to LT panel</div>
                             </td>
                             <td style="padding: 5px 7px;">NA</td>
                             <td style="padding: 5px 7px;">NA</td>
                             <td style="font-weight: 700; text-align: center; padding: 5px 7px;">NA</td>
                         </tr>
-                        @php
-                            $subtotalA = $capacity * 28700 * 1.05;
-                            $subtotalB = $capacity * 12300 * 1.18;
-                            $grandTotal = $subtotalA + $subtotalB;
-                            $weightedGst = (($grandTotal - ($capacity * 41000)) / ($capacity * 41000)) * 100;
-                        @endphp
                         <tr style="background-color: #FEF3C7; font-weight: 800;">
                             <td style="text-align: center; padding: 5px 7px;">D</td>
                             <td style="padding: 5px 7px;">Total (A+B)</td>
-                            <td style="padding: 5px 7px;">41,000/-</td>
+                            <td style="padding: 5px 7px;">{{ number_format($supplyRate + $installRate) }}/-</td>
                             <td style="padding: 5px 7px;">{{ number_format($weightedGst, 1) }}%</td>
-                            <td style="text-align: right; padding: 5px 7px;">{{ $quotation->savings_project_cost ?? number_format($grandTotal, 2) }}/-</td>
+                            <td style="text-align: right; padding: 5px 7px;">{{ number_format($commercialTotal, 2) }}/-</td>
                         </tr>
                     </tbody>
                 </table>

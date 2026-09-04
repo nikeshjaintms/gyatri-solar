@@ -111,19 +111,19 @@
 
             <p class="section-label mt-3">Quotation Items</p>
             <div class="table-responsive mb-3">
-                <table class="table table-bordered bg-white align-middle" id="items_table" style="min-width: 1000px;">
+                <table class="table table-bordered bg-white align-middle quotation-items-table" id="items_table" style="min-width: 1050px;">
                     <thead class="table-light">
                         <tr>
-                            <th style="min-width: 250px;">Product <span class="req">*</span></th>
-                            <th>Description</th>
-                            <th style="width: 90px;">Qty <span class="req">*</span></th>
-                            <th style="width: 90px;">Unit</th>
-                            <th style="width: 120px;">Rate <span class="req">*</span></th>
-                            <th style="width: 100px;">Discount %</th>
-                            <th style="width: 90px;">GST %</th>
-                            <th style="width: 100px;">GST Amt</th>
-                            <th style="width: 130px;">Line Total</th>
-                            <th style="width: 60px;" class="text-center">Action</th>
+                            <th style="min-width: 240px;">Product <span class="req">*</span></th>
+                            <th style="min-width: 160px;">Description</th>
+                            <th style="width: 85px; min-width: 85px;">Qty <span class="req">*</span></th>
+                            <th style="width: 95px; min-width: 95px;">Unit</th>
+                            <th style="width: 120px; min-width: 120px;">Rate <span class="req">*</span></th>
+                            <th style="width: 105px; min-width: 105px;">Discount %</th>
+                            <th style="width: 100px; min-width: 100px;">GST %</th>
+                            <th style="width: 115px; min-width: 115px;">GST Amt</th>
+                            <th style="width: 130px; min-width: 130px;">Line Total</th>
+                            <th style="width: 55px;" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="items_container">
@@ -155,16 +155,16 @@
                                 <input type="number" name="items[{{ $idx }}][quantity]" class="form-control item-qty text-end" min="1" value="{{ $item->quantity }}" required>
                             </td>
                             <td>
-                                <input type="text" class="form-control item-unit text-center" readonly style="background-color: #F9FAFB;" value="{{ $item->unit }}">
+                                <input type="text" name="items[{{ $idx }}][unit]" class="form-control item-unit text-center" placeholder="Unit" value="{{ $item->unit }}">
                             </td>
                             <td>
                                 <input type="number" name="items[{{ $idx }}][unit_price]" class="form-control item-price text-end" min="0" step="0.01" value="{{ $item->unit_price }}" required>
                             </td>
                             <td>
-                                <input type="number" name="items[{{ $idx }}][discount_percentage]" class="form-control item-discount text-end" min="0" max="100" step="0.01" value="{{ $item->discount_percentage }}">
+                                <input type="number" name="items[{{ $idx }}][discount_percentage]" class="form-control item-discount text-end" min="0" max="100" step="0.01" value="{{ $item->discount_percentage ?? '0.00' }}">
                             </td>
                             <td>
-                                <input type="number" name="items[{{ $idx }}][tax_percentage]" class="form-control item-tax-percent text-end" readonly style="background-color: #F9FAFB;" value="{{ $item->tax_percentage }}">
+                                <input type="number" name="items[{{ $idx }}][tax_percentage]" class="form-control item-tax-percent text-end" min="0" max="100" step="0.01" value="{{ $item->tax_percentage ?? '0.00' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control item-tax-amount text-end" readonly style="background-color: #F9FAFB;" value="{{ number_format($item->tax_amount, 2) }}">
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <input type="number" name="items[${rowIdx}][quantity]" class="form-control item-qty text-end" min="1" value="1" required>
             </td>
             <td>
-                <input type="text" class="form-control item-unit text-center" readonly style="background-color: #F9FAFB;">
+                <input type="text" name="items[${rowIdx}][unit]" class="form-control item-unit text-center" placeholder="Unit">
             </td>
             <td>
                 <input type="number" name="items[${rowIdx}][unit_price]" class="form-control item-price text-end" min="0" step="0.01" required>
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <input type="number" name="items[${rowIdx}][discount_percentage]" class="form-control item-discount text-end" min="0" max="100" step="0.01" value="0.00">
             </td>
             <td>
-                <input type="number" name="items[${rowIdx}][tax_percentage]" class="form-control item-tax-percent text-end" readonly style="background-color: #F9FAFB;">
+                <input type="number" name="items[${rowIdx}][tax_percentage]" class="form-control item-tax-percent text-end" min="0" max="100" step="0.01" value="0.00">
             </td>
             <td>
                 <input type="text" class="form-control item-tax-amount text-end" readonly style="background-color: #F9FAFB;" value="0.00">
@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const qtyInput = row.querySelector('.item-qty');
         const priceInput = row.querySelector('.item-price');
         const discountInput = row.querySelector('.item-discount');
+        const taxInput = row.querySelector('.item-tax-percent');
         const removeBtn = row.querySelector('.remove-item-btn');
 
         productSelect.addEventListener('change', function() {
@@ -344,12 +345,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 priceInput.value = price.toFixed(2);
                 row.querySelector('.item-unit').value = unit;
-                row.querySelector('.item-tax-percent').value = gst.toFixed(2);
+                taxInput.value = gst.toFixed(2);
                 row.querySelector('.item-desc').value = desc;
             } else {
                 priceInput.value = '';
                 row.querySelector('.item-unit').value = '';
-                row.querySelector('.item-tax-percent').value = '';
+                taxInput.value = '0.00';
                 row.querySelector('.item-desc').value = '';
             }
             calculateRowTotal();
@@ -358,6 +359,9 @@ document.addEventListener('DOMContentLoaded', function() {
         qtyInput.addEventListener('input', calculateRowTotal);
         priceInput.addEventListener('input', calculateRowTotal);
         discountInput.addEventListener('input', calculateRowTotal);
+        if (taxInput) {
+            taxInput.addEventListener('input', calculateRowTotal);
+        }
         
         removeBtn.addEventListener('click', function() {
             row.remove();

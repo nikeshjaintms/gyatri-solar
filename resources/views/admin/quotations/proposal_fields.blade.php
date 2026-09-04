@@ -54,8 +54,8 @@
 
                     <div class="col-12 col-md-6">
                         <label class="field-label">Upload Right Header Logo</label>
-                        <input type="file" name="partner_logo" class="form-control" accept="image/*" id="partner_logo_input">
-                        <div class="form-text">Recommended: Transparent PNG or SVG (Max 5MB).</div>
+                        <input type="file" name="partner_logo" class="form-control optional" accept="image/*" id="partner_logo_input" data-optional="true">
+                        <div class="form-text">Recommended: Transparent PNG or SVG (Max 5MB). Leave blank to keep existing logo.</div>
                     </div>
 
                     @if(!empty($quotation->partner_logo))
@@ -64,7 +64,7 @@
                             <div class="p-2 border rounded bg-light d-inline-flex align-items-center gap-3">
                                 <img src="{{ asset('storage/' . $quotation->partner_logo) }}" alt="Logo" style="height: 45px; max-width: 160px; object-fit: contain;">
                                 <div class="form-check mb-0">
-                                    <input class="form-check-input" type="checkbox" name="remove_partner_logo" value="1" id="remove_partner_logo">
+                                    <input class="form-check-input optional" type="checkbox" name="remove_partner_logo" value="1" id="remove_partner_logo" data-optional="true">
                                     <label class="form-check-label text-danger small fw-semibold" for="remove_partner_logo">
                                         <i class="bi bi-trash"></i> Remove Logo
                                     </label>
@@ -81,8 +81,8 @@
 
                     <div class="col-12 col-md-6">
                         <label class="field-label">Upload Signature Image</label>
-                        <input type="file" name="signature_image" class="form-control" accept="image/*" id="signature_image_input">
-                        <div class="form-text">Recommended: Transparent PNG (Max 5MB).</div>
+                        <input type="file" name="signature_image" class="form-control optional" accept="image/*" id="signature_image_input" data-optional="true">
+                        <div class="form-text">Recommended: Transparent PNG (Max 5MB). Leave blank to keep existing signature.</div>
                     </div>
 
                     @if(!empty($quotation->signature_image))
@@ -91,7 +91,7 @@
                             <div class="p-2 border rounded bg-light d-inline-flex align-items-center gap-3">
                                 <img src="{{ asset('storage/' . $quotation->signature_image) }}" alt="Signature" style="height: 45px; max-width: 160px; object-fit: contain;">
                                 <div class="form-check mb-0">
-                                    <input class="form-check-input" type="checkbox" name="remove_signature_image" value="1" id="remove_signature_image">
+                                    <input class="form-check-input optional" type="checkbox" name="remove_signature_image" value="1" id="remove_signature_image" data-optional="true">
                                     <label class="form-check-label text-danger small fw-semibold" for="remove_signature_image">
                                         <i class="bi bi-trash"></i> Remove Signature
                                     </label>

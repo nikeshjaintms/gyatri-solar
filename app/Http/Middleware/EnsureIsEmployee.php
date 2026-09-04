@@ -15,12 +15,9 @@ class EnsureIsEmployee
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            if (in_array($user->role, ['Super Admin', 'Admin', 'Manager'])) {
-                return redirect()->route('dashboard')->with('error', 'Admins are redirected to the admin dashboard.');
-            }
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect()->route('login');
     }
 }

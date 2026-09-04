@@ -16,8 +16,9 @@ class EnsureIsAdmin
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if (in_array($user->role, ['Employee', 'Technician'])) {
-                return redirect()->route('employee.attendance')->with('error', 'Unauthorized access to Admin section.');
+            // Technicians only access the technician attendance portal
+            if ($user->role === 'Technician') {
+                return redirect()->route('employee.attendance')->with('error', 'Unauthorized access.');
             }
         }
 

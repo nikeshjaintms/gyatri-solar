@@ -103,9 +103,29 @@
 
     <!-- Top Navbar -->
     <header class="navbar-employee">
-        <div class="d-flex align-items-center gap-3">
-            <img src="{{ asset('assets/images/logo.jpg') }}" class="brand-logo-img" alt="GSE Logo">
-            <span class="fw-bold tracking-wide" style="font-size: 1.1rem; letter-spacing: 0.5px;">GAYATRI <span style="color: var(--brand-orange);">SOLAR</span></span>
+        <div class="d-flex align-items-center gap-4">
+            <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+                <img src="{{ asset('assets/images/logo.jpg') }}" class="brand-logo-img" alt="GSE Logo">
+                <span class="fw-bold tracking-wide text-white" style="font-size: 1.1rem; letter-spacing: 0.5px;">GAYATRI <span style="color: var(--brand-orange);">SOLAR</span></span>
+            </a>
+
+            <nav class="d-none d-md-flex align-items-center gap-2 ms-3">
+                <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-light border-0 {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                </a>
+                <a href="{{ route('quotations.index') }}" class="btn btn-sm btn-outline-light border-0 {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-ruled me-1"></i> Quotations
+                </a>
+                <a href="{{ route('enquiries.index') }}" class="btn btn-sm btn-outline-light border-0 {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
+                    <i class="bi bi-chat-left-quote me-1"></i> Enquiries
+                </a>
+                <a href="{{ route('customers.index') }}" class="btn btn-sm btn-outline-light border-0 {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                    <i class="bi bi-people me-1"></i> Customers
+                </a>
+                <a href="{{ route('employee.attendance') }}" class="btn btn-sm btn-outline-light border-0 {{ request()->routeIs('employee.attendance') ? 'active' : '' }}" style="color: var(--brand-orange) !important;">
+                    <i class="bi bi-fingerprint me-1"></i> Punch Attendance
+                </a>
+            </nav>
         </div>
 
         <div class="d-flex align-items-center gap-3">
@@ -301,17 +321,41 @@
                     }
                 });
 
-                // Find all inputs/selects/textareas and enforce required validation
-                form.find('input:not([type="hidden"]), select, textarea').each(function() {
+                // Find all inputs/selects/textareas and enforce required validation where appropriate
+                form.find('input, select, textarea').each(function() {
                     const input = $(this);
                     const name = input.attr('name');
+                    const type = (input.attr('type') || '').toLowerCase();
                     if (!name) return;
+
+                    // Skip hidden, checkbox, radio, button, submit, reset
+                    if (type === 'hidden' || type === 'checkbox' || type === 'radio' || type === 'button' || type === 'submit' || type === 'reset') {
+                        return;
+                    }
+
+                    // File inputs should never be auto-required unless explicitly required via attribute
+                    if (type === 'file') {
+                        if (input.prop('required') || input.attr('required')) {
+                            input.rules('add', { required: true });
+                        }
+                        return;
+                    }
 
                     // Skip search/filter forms
                     if (form.attr('method') && form.attr('method').toUpperCase() === 'GET') {
                         return;
                     }
-                    if (name.indexOf('search') !== -1 || name.indexOf('filter') !== -1) {
+                    if (name.indexOf('search') !== -1 || name.indexOf('filter') !== -1 || name.indexOf('remove_') === 0) {
+                        return;
+                    }
+
+                    // Skip inputs marked optional
+                    if (input.hasClass('optional') || input.data('optional') === true || input.attr('data-optional') === 'true') {
+                        return;
+                    }
+
+                    // Skip proposal tab fields or optional text areas if not marked required
+                    if (input.closest('.tab-pane').length && !input.prop('required') && !input.attr('required')) {
                         return;
                     }
 

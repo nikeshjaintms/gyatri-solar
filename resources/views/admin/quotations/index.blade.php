@@ -132,7 +132,7 @@
                             <span class="fw-medium text-dark">{{ $quotation->valid_until?->format('d M Y') ?? '—' }}</span>
                         </td>
                         <td>
-                            <span class="price-cell">${{ number_format($quotation->grand_total, 2) }}</span>
+                            <span class="price-cell">₹{{ number_format($quotation->grand_total, 2) }}</span>
                         </td>
                         <td><span class="{{ $badge }}">{{ $quotation->status }}</span></td>
                         <td>

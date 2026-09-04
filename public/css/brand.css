@@ -1108,4 +1108,65 @@ html, body {
     }
 }
 
+/* ══════════════════════════════════════════════════════════
+   QUOTATION & INVOICE ITEMS TABLE STYLES
+══════════════════════════════════════════════════════════ */
+#items_table,
+.quotation-items-table {
+    min-width: 1050px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+#items_table th,
+.quotation-items-table th {
+    background-color: #F8FAFC !important;
+    color: #374151 !important;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 10px 8px !important;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+#items_table td,
+.quotation-items-table td {
+    padding: 6px 5px !important;
+    vertical-align: middle;
+}
+#items_table .form-control,
+#items_table .form-select,
+.quotation-items-table .form-control,
+.quotation-items-table .form-select {
+    padding: 6px 8px !important;
+    font-size: 0.88rem !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    line-height: 1.4 !important;
+    border: 1.5px solid #D1D5DB !important;
+    border-radius: 6px !important;
+    box-sizing: border-box !important;
+}
+#items_table .form-control:focus,
+#items_table .form-select:focus,
+.quotation-items-table .form-control:focus,
+.quotation-items-table .form-select:focus {
+    border-color: #F58220 !important;
+    box-shadow: 0 0 0 2px rgba(245, 130, 32, 0.2) !important;
+    outline: none !important;
+}
+/* Hide default spin buttons on number inputs so the numbers are fully displayed without getting clipped */
+#items_table input[type="number"]::-webkit-outer-spin-button,
+#items_table input[type="number"]::-webkit-inner-spin-button,
+.quotation-items-table input[type="number"]::-webkit-outer-spin-button,
+.quotation-items-table input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+#items_table input[type="number"],
+.quotation-items-table input[type="number"] {
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+}
+
 

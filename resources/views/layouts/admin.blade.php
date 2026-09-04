@@ -553,40 +553,67 @@
 
              <!-- Navigation Menu -->
              <ul class="sidebar-menu">
-                 @if(in_array(Auth::user()->role ?? '', ['Super Admin', 'Admin', 'Manager']))
-                     <div class="menu-header">CORE</div>
-                     <li class="menu-item">
-                         <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                             <i class="bi bi-speedometer2 menu-icon"></i>
-                             <span class="menu-text">Dashboard</span>
-                         </a>
-                     </li>
- 
-                     <div class="menu-header">MANAGEMENT</div>
-                     <li class="menu-item">
-                         <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
-                             <i class="bi bi-people menu-icon"></i>
-                             <span class="menu-text">Customers</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('enquiries.index') }}" class="menu-link {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
-                             <i class="bi bi-chat-left-quote menu-icon"></i>
-                             <span class="menu-text">Enquiries</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('site-surveys.index') }}" class="menu-link {{ request()->routeIs('site-surveys.*') ? 'active' : '' }}">
-                             <i class="bi bi-map menu-icon"></i>
-                             <span class="menu-text">Site Surveys</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('quotations.index') }}" class="menu-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
-                             <i class="bi bi-file-earmark-ruled menu-icon"></i>
-                             <span class="menu-text">Quotations</span>
-                         </a>
-                     </li>
+                 @php
+                     $userRole = Auth::user()->role ?? 'Employee';
+                     $isAdmin = in_array($userRole, ['Super Admin', 'Admin', 'Manager']);
+                 @endphp
+
+                 <div class="menu-header">CORE</div>
+                 <li class="menu-item">
+                     <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                         <i class="bi bi-speedometer2 menu-icon"></i>
+                         <span class="menu-text">Dashboard</span>
+                     </a>
+                 </li>
+
+                 <div class="menu-header">SALES &amp; CRM</div>
+                 <li class="menu-item">
+                     <a href="{{ route('quotations.index') }}" class="menu-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
+                         <i class="bi bi-file-earmark-ruled menu-icon"></i>
+                         <span class="menu-text">Quotations</span>
+                     </a>
+                 </li>
+                 <li class="menu-item">
+                     <a href="{{ route('enquiries.index') }}" class="menu-link {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
+                         <i class="bi bi-chat-left-quote menu-icon"></i>
+                         <span class="menu-text">Enquiries</span>
+                     </a>
+                 </li>
+                 <li class="menu-item">
+                     <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                         <i class="bi bi-people menu-icon"></i>
+                         <span class="menu-text">Customers</span>
+                     </a>
+                 </li>
+                 <li class="menu-item">
+                     <a href="{{ route('site-surveys.index') }}" class="menu-link {{ request()->routeIs('site-surveys.*') ? 'active' : '' }}">
+                         <i class="bi bi-map menu-icon"></i>
+                         <span class="menu-text">Site Surveys</span>
+                     </a>
+                 </li>
+                 <li class="menu-item">
+                     <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
+                         <i class="bi bi-box-seam menu-icon"></i>
+                         <span class="menu-text">Product Master</span>
+                     </a>
+                 </li>
+
+                 <div class="menu-header">ATTENDANCE</div>
+                 <li class="menu-item">
+                     <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
+                         <i class="bi bi-fingerprint menu-icon"></i>
+                         <span class="menu-text">Punch Attendance</span>
+                     </a>
+                 </li>
+                 <li class="menu-item">
+                     <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
+                         <i class="bi bi-calendar-check menu-icon"></i>
+                         <span class="menu-text">Attendance Log</span>
+                     </a>
+                 </li>
+
+                 @if($isAdmin)
+                     <div class="menu-header">OPERATIONS</div>
                      <li class="menu-item">
                          <a href="{{ route('service-requests.index') }}" class="menu-link {{ request()->routeIs('service-requests.*') ? 'active' : '' }}">
                              <i class="bi bi-clipboard2-check menu-icon"></i>
@@ -617,16 +644,12 @@
                              <span class="menu-text">Services</span>
                          </a>
                      </li>
+
+                     <div class="menu-header">STAFF &amp; ACCESS</div>
                      <li class="menu-item">
                          <a href="{{ route('employees.index') }}" class="menu-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
                              <i class="bi bi-person-workspace menu-icon"></i>
                              <span class="menu-text">Employees</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
-                             <i class="bi bi-calendar-check menu-icon"></i>
-                             <span class="menu-text">Employee Attendance</span>
                          </a>
                      </li>
                      <li class="menu-item">
@@ -635,15 +658,7 @@
                              <span class="menu-text">Users</span>
                          </a>
                      </li>
- 
-                     <div class="menu-header">MASTERS</div>
-                     <li class="menu-item">
-                         <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
-                             <i class="bi bi-box-seam menu-icon"></i>
-                             <span class="menu-text">Product Master</span>
-                         </a>
-                     </li>
- 
+
                      <div class="menu-header">BILLING</div>
                      <li class="menu-item">
                          <a href="{{ route('invoices.index') }}" class="menu-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
@@ -651,7 +666,7 @@
                              <span class="menu-text">Invoices / Payments</span>
                          </a>
                      </li>
- 
+
                      <div class="menu-header">ANALYTICS</div>
                      <li class="menu-item">
                          <a href="{{ route('reports.index') }}"
@@ -694,14 +709,6 @@
                          </a>
                      </li>
                      @endif
-                 @else
-                     <div class="menu-header">EMPLOYEE PANEL</div>
-                     <li class="menu-item">
-                         <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
-                             <i class="bi bi-calendar-check menu-icon"></i>
-                             <span class="menu-text">Attendance</span>
-                         </a>
-                     </li>
                  @endif
              </ul>
  
@@ -1287,17 +1294,41 @@
                     }
                 });
 
-                // Find all inputs/selects/textareas and enforce required validation
-                form.find('input:not([type="hidden"]), select, textarea').each(function() {
+                // Find all inputs/selects/textareas and enforce required validation where appropriate
+                form.find('input, select, textarea').each(function() {
                     const input = $(this);
                     const name = input.attr('name');
+                    const type = (input.attr('type') || '').toLowerCase();
                     if (!name) return;
+
+                    // Skip hidden, checkbox, radio, button, submit, reset
+                    if (type === 'hidden' || type === 'checkbox' || type === 'radio' || type === 'button' || type === 'submit' || type === 'reset') {
+                        return;
+                    }
+
+                    // File inputs should never be auto-required unless explicitly required via attribute
+                    if (type === 'file') {
+                        if (input.prop('required') || input.attr('required')) {
+                            input.rules('add', { required: true });
+                        }
+                        return;
+                    }
 
                     // Skip search/filter forms
                     if (form.attr('method') && form.attr('method').toUpperCase() === 'GET') {
                         return;
                     }
-                    if (name.indexOf('search') !== -1 || name.indexOf('filter') !== -1) {
+                    if (name.indexOf('search') !== -1 || name.indexOf('filter') !== -1 || name.indexOf('remove_') === 0) {
+                        return;
+                    }
+
+                    // Skip inputs marked optional
+                    if (input.hasClass('optional') || input.data('optional') === true || input.attr('data-optional') === 'true') {
+                        return;
+                    }
+
+                    // Skip proposal tab fields or optional text areas if not marked required
+                    if (input.closest('.tab-pane').length && !input.prop('required') && !input.attr('required')) {
                         return;
                     }
 

@@ -140,9 +140,10 @@ class QuotationController extends Controller
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.unit' => ['nullable', 'string', 'max:50'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
-            'items.*.discount_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
-            'items.*.tax_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
+            'items.*.discount_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'items.*.tax_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'items.*.description' => ['nullable', 'string', 'max:1000'],
         ], $proposalRules));
 
@@ -154,10 +155,16 @@ class QuotationController extends Controller
 
             foreach ($request->items as $item) {
                 $prod = \App\Models\Product::find($item['product_id']);
-                $amount = $item['quantity'] * $item['unit_price'];
-                $discountAmount = $amount * ($item['discount_percentage'] / 100);
+                $qty = floatval($item['quantity'] ?? 1);
+                $unitPrice = floatval($item['unit_price'] ?? 0);
+                $discountPct = isset($item['discount_percentage']) && $item['discount_percentage'] !== '' ? floatval($item['discount_percentage']) : 0;
+                $taxPct = isset($item['tax_percentage']) && $item['tax_percentage'] !== '' ? floatval($item['tax_percentage']) : ($prod ? floatval($prod->gst) : 0);
+                $unit = !empty($item['unit']) ? trim(strip_tags($item['unit'])) : ($prod ? $prod->unit : null);
+
+                $amount = $qty * $unitPrice;
+                $discountAmount = $amount * ($discountPct / 100);
                 $taxable = max(0, $amount - $discountAmount);
-                $taxAmount = $taxable * ($item['tax_percentage'] / 100);
+                $taxAmount = $taxable * ($taxPct / 100);
                 $lineTotal = $taxable + $taxAmount;
 
                 $subtotal += $amount;
@@ -166,13 +173,13 @@ class QuotationController extends Controller
 
                 $itemsData[] = [
                     'product_id' => $item['product_id'],
-                    'product_service' => $prod->name,
+                    'product_service' => $prod ? $prod->name : 'Product',
                     'description' => isset($item['description']) ? trim(strip_tags($item['description'])) : null,
-                    'quantity' => $item['quantity'],
-                    'unit' => $prod->unit,
-                    'unit_price' => $item['unit_price'],
-                    'discount_percentage' => $item['discount_percentage'],
-                    'tax_percentage' => $item['tax_percentage'],
+                    'quantity' => $qty,
+                    'unit' => $unit,
+                    'unit_price' => $unitPrice,
+                    'discount_percentage' => $discountPct,
+                    'tax_percentage' => $taxPct,
                     'tax_amount' => $taxAmount,
                     'subtotal' => $lineTotal,
                 ];
@@ -195,6 +202,7 @@ class QuotationController extends Controller
                 'bos_protection_system', 'bos_lt_ht_panels', 'bos_metering'
             ];
 
+            $taxableSubtotal = max(0, $subtotal - $totalDiscount);
             $quotationData = [
                 'quotation_number' => trim(strip_tags($request->quotation_number)),
                 'enquiry_id' => $request->enquiry_id,
@@ -202,7 +210,7 @@ class QuotationController extends Controller
                 'quotation_date' => $request->quotation_date,
                 'valid_until' => $request->valid_until,
                 'subtotal' => $subtotal,
-                'tax_percentage' => $subtotal > 0 ? (($totalTax / ($subtotal - $totalDiscount)) * 100) : 0,
+                'tax_percentage' => $taxableSubtotal > 0 ? (($totalTax / $taxableSubtotal) * 100) : 0,
                 'tax_amount' => $totalTax,
                 'discount' => $totalDiscount,
                 'grand_total' => $grandTotal,
@@ -330,9 +338,10 @@ class QuotationController extends Controller
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.unit' => ['nullable', 'string', 'max:50'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
-            'items.*.discount_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
-            'items.*.tax_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
+            'items.*.discount_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'items.*.tax_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'items.*.description' => ['nullable', 'string', 'max:1000'],
         ], $proposalRules));
 
@@ -347,10 +356,16 @@ class QuotationController extends Controller
 
             foreach ($request->items as $item) {
                 $prod = \App\Models\Product::find($item['product_id']);
-                $amount = $item['quantity'] * $item['unit_price'];
-                $discountAmount = $amount * ($item['discount_percentage'] / 100);
+                $qty = floatval($item['quantity'] ?? 1);
+                $unitPrice = floatval($item['unit_price'] ?? 0);
+                $discountPct = isset($item['discount_percentage']) && $item['discount_percentage'] !== '' ? floatval($item['discount_percentage']) : 0;
+                $taxPct = isset($item['tax_percentage']) && $item['tax_percentage'] !== '' ? floatval($item['tax_percentage']) : ($prod ? floatval($prod->gst) : 0);
+                $unit = !empty($item['unit']) ? trim(strip_tags($item['unit'])) : ($prod ? $prod->unit : null);
+
+                $amount = $qty * $unitPrice;
+                $discountAmount = $amount * ($discountPct / 100);
                 $taxable = max(0, $amount - $discountAmount);
-                $taxAmount = $taxable * ($item['tax_percentage'] / 100);
+                $taxAmount = $taxable * ($taxPct / 100);
                 $lineTotal = $taxable + $taxAmount;
 
                 $subtotal += $amount;
@@ -359,13 +374,13 @@ class QuotationController extends Controller
 
                 $itemsData[] = [
                     'product_id' => $item['product_id'],
-                    'product_service' => $prod->name,
+                    'product_service' => $prod ? $prod->name : 'Product',
                     'description' => isset($item['description']) ? trim(strip_tags($item['description'])) : null,
-                    'quantity' => $item['quantity'],
-                    'unit' => $prod->unit,
-                    'unit_price' => $item['unit_price'],
-                    'discount_percentage' => $item['discount_percentage'],
-                    'tax_percentage' => $item['tax_percentage'],
+                    'quantity' => $qty,
+                    'unit' => $unit,
+                    'unit_price' => $unitPrice,
+                    'discount_percentage' => $discountPct,
+                    'tax_percentage' => $taxPct,
                     'tax_amount' => $taxAmount,
                     'subtotal' => $lineTotal,
                 ];
@@ -388,6 +403,7 @@ class QuotationController extends Controller
                 'bos_protection_system', 'bos_lt_ht_panels', 'bos_metering'
             ];
 
+            $taxableSubtotal = max(0, $subtotal - $totalDiscount);
             $updateData = [
                 'quotation_number' => trim(strip_tags($request->quotation_number)),
                 'enquiry_id' => $request->enquiry_id,
@@ -395,7 +411,7 @@ class QuotationController extends Controller
                 'quotation_date' => $request->quotation_date,
                 'valid_until' => $request->valid_until,
                 'subtotal' => $subtotal,
-                'tax_percentage' => $subtotal > 0 ? (($totalTax / ($subtotal - $totalDiscount)) * 100) : 0,
+                'tax_percentage' => $taxableSubtotal > 0 ? (($totalTax / $taxableSubtotal) * 100) : 0,
                 'tax_amount' => $totalTax,
                 'discount' => $totalDiscount,
                 'grand_total' => $grandTotal,
