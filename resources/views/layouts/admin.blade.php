@@ -558,61 +558,55 @@
                      $isAdmin = in_array($userRole, ['Super Admin', 'Admin', 'Manager']);
                  @endphp
 
-                 <div class="menu-header">CORE</div>
-                 <li class="menu-item">
-                     <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                         <i class="bi bi-speedometer2 menu-icon"></i>
-                         <span class="menu-text">Dashboard</span>
-                     </a>
-                 </li>
-
-                 <div class="menu-header">SALES &amp; CRM</div>
-                 <li class="menu-item">
-                     <a href="{{ route('quotations.index') }}" class="menu-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
-                         <i class="bi bi-file-earmark-ruled menu-icon"></i>
-                         <span class="menu-text">Quotations</span>
-                     </a>
-                 </li>
-                 <li class="menu-item">
-                     <a href="{{ route('enquiries.index') }}" class="menu-link {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
-                         <i class="bi bi-chat-left-quote menu-icon"></i>
-                         <span class="menu-text">Enquiries</span>
-                     </a>
-                 </li>
-                 <li class="menu-item">
-                     <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
-                         <i class="bi bi-people menu-icon"></i>
-                         <span class="menu-text">Customers</span>
-                     </a>
-                 </li>
-                 <li class="menu-item">
-                     <a href="{{ route('site-surveys.index') }}" class="menu-link {{ request()->routeIs('site-surveys.*') ? 'active' : '' }}">
-                         <i class="bi bi-map menu-icon"></i>
-                         <span class="menu-text">Site Surveys</span>
-                     </a>
-                 </li>
-                 <li class="menu-item">
-                     <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
-                         <i class="bi bi-box-seam menu-icon"></i>
-                         <span class="menu-text">Product Master</span>
-                     </a>
-                 </li>
-
-                 <div class="menu-header">ATTENDANCE</div>
-                 <li class="menu-item">
-                     <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
-                         <i class="bi bi-fingerprint menu-icon"></i>
-                         <span class="menu-text">Punch Attendance</span>
-                     </a>
-                 </li>
-                 <li class="menu-item">
-                     <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
-                         <i class="bi bi-calendar-check menu-icon"></i>
-                         <span class="menu-text">Attendance Log</span>
-                     </a>
-                 </li>
-
                  @if($isAdmin)
+                     <div class="menu-header">CORE</div>
+                     <li class="menu-item">
+                         <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                             <i class="bi bi-speedometer2 menu-icon"></i>
+                             <span class="menu-text">Dashboard</span>
+                         </a>
+                     </li>
+
+                     <div class="menu-header">MASTERS</div>
+                     <li class="menu-item">
+                         <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
+                             <i class="bi bi-box-seam menu-icon"></i>
+                             <span class="menu-text">Product Master</span>
+                         </a>
+                     </li>
+                     <li class="menu-item">
+                         <a href="{{ route('services.index') }}" class="menu-link {{ request()->routeIs('services.*') ? 'active' : '' }}">
+                             <i class="bi bi-wrench-adjustable menu-icon"></i>
+                             <span class="menu-text">Services Master</span>
+                         </a>
+                     </li>
+
+                     <div class="menu-header">SALES &amp; CRM</div>
+                     <li class="menu-item">
+                         <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                             <i class="bi bi-people menu-icon"></i>
+                             <span class="menu-text">Customers</span>
+                         </a>
+                     </li>
+                     <li class="menu-item">
+                         <a href="{{ route('site-surveys.index') }}" class="menu-link {{ request()->routeIs('site-surveys.*') ? 'active' : '' }}">
+                             <i class="bi bi-map menu-icon"></i>
+                             <span class="menu-text">Site Surveys</span>
+                         </a>
+                     </li>
+                     <li class="menu-item">
+                         <a href="{{ route('quotations.index') }}" class="menu-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
+                             <i class="bi bi-file-earmark-ruled menu-icon"></i>
+                             <span class="menu-text">Quotations</span>
+                         </a>
+                     </li>
+                     <li class="menu-item">
+                         <a href="{{ route('enquiries.index') }}" class="menu-link {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
+                             <i class="bi bi-chat-left-quote menu-icon"></i>
+                             <span class="menu-text">Enquiries</span>
+                         </a>
+                     </li>
+
                      <div class="menu-header">OPERATIONS</div>
                      <li class="menu-item">
                          <a href="{{ route('service-requests.index') }}" class="menu-link {{ request()->routeIs('service-requests.*') ? 'active' : '' }}">
@@ -638,10 +632,12 @@
                              <span class="menu-text">Technicians</span>
                          </a>
                      </li>
+
+                     <div class="menu-header">BILLING</div>
                      <li class="menu-item">
-                         <a href="{{ route('services.index') }}" class="menu-link {{ request()->routeIs('services.*') ? 'active' : '' }}">
-                             <i class="bi bi-wrench-adjustable menu-icon"></i>
-                             <span class="menu-text">Services</span>
+                         <a href="{{ route('invoices.index') }}" class="menu-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
+                             <i class="bi bi-receipt menu-icon"></i>
+                             <span class="menu-text">Invoices / Payments</span>
                          </a>
                      </li>
 
@@ -653,17 +649,15 @@
                          </a>
                      </li>
                      <li class="menu-item">
+                         <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
+                             <i class="bi bi-calendar-check menu-icon"></i>
+                             <span class="menu-text">Employee Attendance</span>
+                         </a>
+                     </li>
+                     <li class="menu-item">
                          <a href="{{ route('users.index') }}" class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                              <i class="bi bi-person-gear menu-icon"></i>
                              <span class="menu-text">Users</span>
-                         </a>
-                     </li>
-
-                     <div class="menu-header">BILLING</div>
-                     <li class="menu-item">
-                         <a href="{{ route('invoices.index') }}" class="menu-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
-                             <i class="bi bi-receipt menu-icon"></i>
-                             <span class="menu-text">Invoices / Payments</span>
                          </a>
                      </li>
 
@@ -675,40 +669,14 @@
                              <span class="menu-text">Reports</span>
                          </a>
                      </li>
-                     @if(request()->routeIs('reports.*'))
-                     <li class="menu-item ms-3">
-                         <a href="{{ route('reports.service-requests') }}"
-                            class="menu-link {{ request()->routeIs('reports.service-requests') ? 'active' : '' }}"
-                            style="font-size:.82rem; padding:8px 14px;">
-                             <i class="bi bi-clipboard2-pulse menu-icon" style="font-size:.95rem;"></i>
-                             <span class="menu-text">Service Requests</span>
+                 @else
+                     <div class="menu-header">EMPLOYEE PANEL</div>
+                     <li class="menu-item">
+                         <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
+                             <i class="bi bi-calendar-check menu-icon"></i>
+                             <span class="menu-text">Attendance</span>
                          </a>
                      </li>
-                     <li class="menu-item ms-3">
-                         <a href="{{ route('reports.job-assignments') }}"
-                            class="menu-link {{ request()->routeIs('reports.job-assignments') ? 'active' : '' }}"
-                            style="font-size:.82rem; padding:8px 14px;">
-                             <i class="bi bi-person-gear menu-icon" style="font-size:.95rem;"></i>
-                             <span class="menu-text">Job Assignments</span>
-                         </a>
-                     </li>
-                     <li class="menu-item ms-3">
-                         <a href="{{ route('reports.invoices') }}"
-                            class="menu-link {{ request()->routeIs('reports.invoices') ? 'active' : '' }}"
-                            style="font-size:.82rem; padding:8px 14px;">
-                             <i class="bi bi-file-earmark-text menu-icon" style="font-size:.95rem;"></i>
-                             <span class="menu-text">Invoice Report</span>
-                         </a>
-                     </li>
-                     <li class="menu-item ms-3">
-                         <a href="{{ route('reports.payments') }}"
-                            class="menu-link {{ request()->routeIs('reports.payments') ? 'active' : '' }}"
-                            style="font-size:.82rem; padding:8px 14px;">
-                             <i class="bi bi-wallet2 menu-icon" style="font-size:.95rem;"></i>
-                             <span class="menu-text">Payment Report</span>
-                         </a>
-                     </li>
-                     @endif
                  @endif
              </ul>
  

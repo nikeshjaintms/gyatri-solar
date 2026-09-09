@@ -8,9 +8,15 @@
         <span class="title-icon"><i class="bi bi-clipboard2-plus"></i></span>
         New Service Request
     </h1>
-    <a href="{{ route('service-requests.index') }}" class="btn-back">
-        <i class="bi bi-arrow-left"></i> Back to List
-    </a>
+    @if(request('customer_id'))
+        <a href="{{ route('customers.show', request('customer_id')) }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Customer Details
+        </a>
+    @else
+        <a href="{{ route('service-requests.index') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    @endif
 </div>
 
 
@@ -78,7 +84,7 @@
                         <option value="">— Select Customer —</option>
                         @foreach($customers as $customer)
                             <option value="{{ $customer->id }}"
-                                {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                                {{ old('customer_id', request('customer_id')) == $customer->id ? 'selected' : '' }}>
                                 {{ $customer->name }}
                             </option>
                         @endforeach

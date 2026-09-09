@@ -51,13 +51,23 @@ class CustomerController extends Controller
             return is_string($value) ? trim(strip_tags($value)) : $value;
         }, $data);
 
-        Customer::create($data);
+        $customer = Customer::create($data);
 
-        return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
+        return redirect()->route('customers.show', $customer->id)->with('success', 'Customer added successfully. You can now manage Site Surveys, Quotations, and Job Assignments below.');
     }
 
     public function show(Customer $customer)
     {
+        $customer->load([
+            'siteSurveys.surveyor',
+            'quotations.items',
+            'serviceRequests.service',
+            'serviceRequests.technician',
+            'serviceRequests.jobAssignments.technician',
+            'serviceRequests.jobAssignments.jobStatusTrackings',
+            'invoices'
+        ]);
+
         return view('admin.customers.show', compact('customer'));
     }
 

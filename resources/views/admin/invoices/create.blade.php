@@ -8,9 +8,15 @@
         <span class="title-icon"><i class="bi bi-receipt"></i></span>
         New Invoice
     </h1>
-    <a href="{{ route('invoices.index') }}" class="btn-back">
-        <i class="bi bi-arrow-left"></i> Back to List
-    </a>
+    @if(request('customer_id'))
+        <a href="{{ route('customers.show', request('customer_id')) }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Customer Details
+        </a>
+    @else
+        <a href="{{ route('invoices.index') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    @endif
 </div>
 
 
@@ -88,7 +94,7 @@
                                 class="form-field form-field-select @error('customer_id') is-invalid @enderror">
                             <option value="">— Select Customer —</option>
                             @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                                <option value="{{ $customer->id }}" {{ old('customer_id', request('customer_id')) == $customer->id ? 'selected' : '' }}>
                                     {{ $customer->name }}
                                 </option>
                             @endforeach

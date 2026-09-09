@@ -120,6 +120,12 @@ class JobAssignmentController extends Controller
         $job = JobAssignment::create($data);
         $this->syncServiceRequestStatus($job);
 
+        $customerId = $job->serviceRequest?->customer_id;
+        if ($customerId) {
+            return redirect()->route('customers.show', $customerId)
+                             ->with('success', 'Job assignment created successfully.');
+        }
+
         return redirect()->route('job-assignments.index')
                          ->with('success', 'Job assignment created successfully.');
     }

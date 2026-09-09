@@ -8,9 +8,15 @@
         <span class="title-icon"><i class="bi bi-plus-circle"></i></span>
         Create New Quotation
     </h1>
-    <a href="{{ route('quotations.index') }}" class="btn-back">
-        <i class="bi bi-arrow-left"></i> Back to List
-    </a>
+    @if(request('customer_id'))
+        <a href="{{ route('customers.show', request('customer_id')) }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Customer Details
+        </a>
+    @else
+        <a href="{{ route('quotations.index') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    @endif
 </div>
 
 {{-- ── Form Card ── --}}
@@ -61,7 +67,7 @@
                         <select name="customer_id" id="customer_select" class="form-field form-field-select" required>
                             <option value="">-- Select Customer --</option>
                             @foreach($customers as $cust)
-                                <option value="{{ $cust->id }}" {{ old('customer_id') == $cust->id ? 'selected' : '' }}>
+                                <option value="{{ $cust->id }}" {{ old('customer_id', request('customer_id')) == $cust->id ? 'selected' : '' }}>
                                     {{ $cust->name }}
                                 </option>
                             @endforeach

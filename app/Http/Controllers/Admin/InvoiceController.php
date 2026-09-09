@@ -112,9 +112,14 @@ class InvoiceController extends Controller
         }
         $computed = $this->computeAmounts($data);
 
-        Invoice::create(array_merge($data, $computed, [
+        $invoice = Invoice::create(array_merge($data, $computed, [
             'invoice_no' => Invoice::generateInvoiceNo(),
         ]));
+
+        if ($invoice->customer_id) {
+            return redirect()->route('customers.show', $invoice->customer_id)
+                             ->with('success', 'Invoice created successfully for this customer.');
+        }
 
         return redirect()->route('invoices.index')
                          ->with('success', 'Invoice created successfully.');

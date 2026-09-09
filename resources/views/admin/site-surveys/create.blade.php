@@ -7,9 +7,15 @@
         <span class="title-icon"><i class="bi bi-plus-circle"></i></span>
         Add Site Survey
     </h1>
-    <a href="{{ route('site-surveys.index') }}" class="btn-back">
-        <i class="bi bi-arrow-left"></i> Back to List
-    </a>
+    @if(request('customer_id'))
+        <a href="{{ route('customers.show', request('customer_id')) }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Customer Details
+        </a>
+    @else
+        <a href="{{ route('site-surveys.index') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    @endif
 </div>
 
 
@@ -60,7 +66,7 @@
                         <select name="customer_id" id="customer_select" class="form-field form-field-select" required>
                             <option value="">-- Select Customer --</option>
                             @foreach($customers as $cust)
-                                <option value="{{ $cust->id }}" {{ old('customer_id') == $cust->id ? 'selected' : '' }}>
+                                <option value="{{ $cust->id }}" {{ old('customer_id', request('customer_id')) == $cust->id ? 'selected' : '' }}>
                                     {{ $cust->name }}
                                 </option>
                             @endforeach
@@ -116,7 +122,7 @@
                         <i class="bi bi-geo-alt field-icon field-icon-textarea"></i>
                         <textarea name="site_address" id="site_address" rows="2" 
                                   class="form-field form-field-textarea @error('site_address') is-invalid @enderror" 
-                                  placeholder="Enter complete address of the installation site..." required>{{ old('site_address') }}</textarea>
+                                  placeholder="Enter complete address of the installation site..." required>{{ old('site_address', request('site_address')) }}</textarea>
                     </div>
                     @error('site_address')<div class="field-error">{{ $message }}</div>@enderror
                 </div>

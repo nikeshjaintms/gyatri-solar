@@ -36,7 +36,7 @@
                         <option value="">— Select Service Request —</option>
                         @foreach($serviceRequests as $sr)
                             <option value="{{ $sr->id }}"
-                                {{ old('service_request_id') == $sr->id ? 'selected' : '' }}>
+                                {{ old('service_request_id', request('service_request_id')) == $sr->id ? 'selected' : '' }}>
                                 {{ $sr->customer?->name ?? 'N/A' }}
                                 — {{ $sr->service?->service_name ?? 'N/A' }}
                                 — {{ $sr->request_date?->format('d M Y') ?? '' }}

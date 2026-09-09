@@ -125,9 +125,11 @@ class SiteSurveyController extends Controller
             }
         }
 
-        $data['site_photos'] = $photos;
+        $survey = SiteSurvey::create($data);
 
-        SiteSurvey::create($data);
+        if ($survey->customer_id) {
+            return redirect()->route('customers.show', $survey->customer_id)->with('success', 'Site Survey recorded successfully for this customer.');
+        }
 
         return redirect()->route('site-surveys.index')->with('success', 'Site Survey recorded successfully.');
     }

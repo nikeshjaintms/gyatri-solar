@@ -45,4 +45,9 @@ class ServiceRequest extends Model
     {
         return $this->hasOne(JobAssignment::class);
     }
+
+    public function jobAssignments()
+    {
+        return $this->hasMany(JobAssignment::class);
+    }
 }
