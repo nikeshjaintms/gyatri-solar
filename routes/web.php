@@ -30,41 +30,50 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/employee/attendance/punch-out/{id}', [EmployeeAttendanceController::class, 'update'])->name('employee.attendance.punch-out');
     });
 
-    // Admin-only Routes
+    // Admin-only & Authorized Employee Routes
     Route::middleware(['admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('customers', CustomerController::class);
+        Route::resource('customers', CustomerController::class)->middleware('module.permission:customers');
 
         Route::prefix('admin')->group(function () {
-            Route::resource('employees', EmployeeController::class);
-            Route::post('employees/{employee}/toggle-status', [EmployeeController::class, 'toggleStatus'])->name('employees.toggle-status');
+            Route::resource('employees', EmployeeController::class)->middleware('module.permission:employees');
+            Route::post('employees/{employee}/toggle-status', [EmployeeController::class, 'toggleStatus'])
+                ->name('employees.toggle-status')
+                ->middleware('module.permission:employees');
 
-            Route::resource('technicians', TechnicianController::class);
-            Route::resource('services', ServiceController::class);
-            Route::resource('service-requests', ServiceRequestController::class);
-            Route::resource('job-assignments', JobAssignmentController::class);
-            Route::resource('job-status-tracking', JobStatusTrackingController::class);
-            Route::resource('invoices', InvoiceController::class);
-            Route::resource('employee-attendances', EmployeeAttendanceController::class);
+            Route::resource('technicians', TechnicianController::class)->middleware('module.permission:technicians');
+            Route::resource('services', ServiceController::class)->middleware('module.permission:services');
+            Route::resource('service-requests', ServiceRequestController::class)->middleware('module.permission:service_requests');
+            Route::resource('job-assignments', JobAssignmentController::class)->middleware('module.permission:job_assignments');
+            Route::resource('job-status-tracking', JobStatusTrackingController::class)->middleware('module.permission:job_status_tracking');
+            Route::resource('invoices', InvoiceController::class)->middleware('module.permission:invoices');
+            Route::resource('employee-attendances', EmployeeAttendanceController::class)->middleware('module.permission:employee_attendances');
 
             // Enquiry Details AJAX Endpoint
-            Route::get('enquiries/{id}/details', [EnquiryController::class, 'getDetails'])->name('enquiries.details');
-            // Quotation Print Page
-            Route::get('quotations/{id}/print', [QuotationController::class, 'print'])->name('quotations.print');
+            Route::get('enquiries/{id}/details', [EnquiryController::class, 'getDetails'])
+                ->name('enquiries.details')
+                ->middleware('module.permission:enquiries');
 
-            Route::resource('enquiries', EnquiryController::class);
-            Route::resource('quotations', QuotationController::class);
-            Route::resource('site-surveys', SiteSurveyController::class);
-            Route::resource('users', UserController::class);
-            Route::resource('products', ProductController::class);
+            // Quotation Print Page
+            Route::get('quotations/{id}/print', [QuotationController::class, 'print'])
+                ->name('quotations.print')
+                ->middleware('module.permission:quotations');
+
+            Route::resource('enquiries', EnquiryController::class)->middleware('module.permission:enquiries');
+            Route::resource('quotations', QuotationController::class)->middleware('module.permission:quotations');
+            Route::resource('site-surveys', SiteSurveyController::class)->middleware('module.permission:site_surveys');
+            Route::resource('users', UserController::class)->middleware('module.permission:users');
+            Route::resource('products', ProductController::class)->middleware('module.permission:products');
 
             // Reports
-            Route::get('reports',                  [ReportController::class, 'index'])->name('reports.index');
-            Route::get('reports/service-requests', [ReportController::class, 'serviceRequests'])->name('reports.service-requests');
-            Route::get('reports/job-assignments',  [ReportController::class, 'jobAssignments'])->name('reports.job-assignments');
-            Route::get('reports/invoices',         [ReportController::class, 'invoices'])->name('reports.invoices');
-            Route::get('reports/payments',         [ReportController::class, 'payments'])->name('reports.payments');
+            Route::prefix('reports')->middleware('module.permission:reports')->group(function () {
+                Route::get('/',                  [ReportController::class, 'index'])->name('reports.index');
+                Route::get('/service-requests', [ReportController::class, 'serviceRequests'])->name('reports.service-requests');
+                Route::get('/job-assignments',  [ReportController::class, 'jobAssignments'])->name('reports.job-assignments');
+                Route::get('/invoices',         [ReportController::class, 'invoices'])->name('reports.invoices');
+                Route::get('/payments',         [ReportController::class, 'payments'])->name('reports.payments');
+            });
         });
     });
 });

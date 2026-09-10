@@ -20,21 +20,21 @@ class PermissionSeeder extends Seeder
 
         $modules = [
             'Dashboard',
-            'Customers',
-            'Technicians',
+            'Products',
             'Services',
+            'Customers',
+            'Site Surveys',
+            'Quotations',
+            'Enquiries',
             'Service Requests',
             'Job Assignments',
             'Job Status Tracking',
-            'Attendance',
-            'Quotations',
+            'Technicians',
             'Invoices',
-            'Payments',
-            'Reports',
-            'Settings',
+            'Employees',
+            'Employee Attendances',
             'Users',
-            'Roles',
-            'Permissions',
+            'Reports',
         ];
 
         $actions = ['view', 'create', 'update', 'delete'];
@@ -54,6 +54,9 @@ class PermissionSeeder extends Seeder
             }
         }
 
+        // Special actions
+        $permissions[] = 'print_quotations';
+
         // Seed permissions
         foreach ($permissions as $permissionName) {
             \Spatie\Permission\Models\Permission::firstOrCreate([
@@ -62,13 +65,18 @@ class PermissionSeeder extends Seeder
             ]);
         }
 
-        // Assign all permissions to Super Admin role
+        // Assign all permissions to Super Admin & Admin roles
         $superAdminRole = \Spatie\Permission\Models\Role::where('name', 'Super Admin')->first();
         if ($superAdminRole) {
             $superAdminRole->syncPermissions($permissions);
             $this->command->info('All permissions created and assigned to Super Admin role successfully.');
         } else {
             $this->command->error('Super Admin role not found. Permissions could not be assigned.');
+        }
+
+        $adminRole = \Spatie\Permission\Models\Role::where('name', 'Admin')->first();
+        if ($adminRole) {
+            $adminRole->syncPermissions($permissions);
         }
     }
 }

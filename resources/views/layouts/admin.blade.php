@@ -551,134 +551,206 @@
                 </button>
             </div>
 
-             <!-- Navigation Menu -->
-             <ul class="sidebar-menu">
-                 @php
-                     $userRole = Auth::user()->role ?? 'Employee';
-                     $isAdmin = in_array($userRole, ['Super Admin', 'Admin', 'Manager']);
-                 @endphp
+            <!-- Navigation Menu -->
+            <ul class="sidebar-menu">
+                @php
+                    $currentUser = Auth::user();
+                    $userRole = $currentUser->role ?? 'Employee';
+                    $isSuperAdmin = $currentUser && ($userRole === 'Super Admin' || (method_exists($currentUser, 'hasRole') && $currentUser->hasRole('Super Admin')));
+                    $isAdmin = $currentUser && ($isSuperAdmin || $userRole === 'Admin' || (method_exists($currentUser, 'hasRole') && $currentUser->hasRole('Admin')));
 
-                 @if($isAdmin)
-                     <div class="menu-header">CORE</div>
-                     <li class="menu-item">
-                         <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                             <i class="bi bi-speedometer2 menu-icon"></i>
-                             <span class="menu-text">Dashboard</span>
-                         </a>
-                     </li>
+                    $can = function ($permission) use ($currentUser, $isAdmin) {
+                        if (!$currentUser) return false;
+                        if ($isAdmin) return true;
+                        return $currentUser->can($permission);
+                    };
 
-                     <div class="menu-header">MASTERS</div>
-                     <li class="menu-item">
-                         <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
-                             <i class="bi bi-box-seam menu-icon"></i>
-                             <span class="menu-text">Product Master</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('services.index') }}" class="menu-link {{ request()->routeIs('services.*') ? 'active' : '' }}">
-                             <i class="bi bi-wrench-adjustable menu-icon"></i>
-                             <span class="menu-text">Services Master</span>
-                         </a>
-                     </li>
+                    $canAny = function (array $permissions) use ($currentUser, $isAdmin) {
+                        if (!$currentUser) return false;
+                        if ($isAdmin) return true;
+                        foreach ($permissions as $p) {
+                            if ($currentUser->can($p)) return true;
+                        }
+                        return false;
+                    };
 
-                     <div class="menu-header">SALES &amp; CRM</div>
-                     <li class="menu-item">
-                         <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
-                             <i class="bi bi-people menu-icon"></i>
-                             <span class="menu-text">Customers</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('site-surveys.index') }}" class="menu-link {{ request()->routeIs('site-surveys.*') ? 'active' : '' }}">
-                             <i class="bi bi-map menu-icon"></i>
-                             <span class="menu-text">Site Surveys</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('quotations.index') }}" class="menu-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
-                             <i class="bi bi-file-earmark-ruled menu-icon"></i>
-                             <span class="menu-text">Quotations</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('enquiries.index') }}" class="menu-link {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
-                             <i class="bi bi-chat-left-quote menu-icon"></i>
-                             <span class="menu-text">Enquiries</span>
-                         </a>
-                     </li>
+                    $canSales = $canAny(['view_customers', 'create_customers', 'update_customers', 'view_site_surveys', 'create_site_surveys', 'view_quotations', 'create_quotations', 'view_enquiries', 'create_enquiries']);
+                    $canOperations = $canAny(['view_service_requests', 'view_job_assignments', 'view_job_status_tracking', 'view_technicians']);
+                    $canMasters = $canAny(['view_products', 'view_services']);
+                    $canStaff = $canAny(['view_employees', 'view_employee_attendances', 'view_users']);
+                    $canBilling = $canAny(['view_invoices', 'create_invoices']);
+                    $canAnalytics = $can('view_reports');
+                    $canDashboard = $isAdmin || $can('view_dashboard') || $canSales || $canOperations;
+                @endphp
 
-                     <div class="menu-header">OPERATIONS</div>
-                     <li class="menu-item">
-                         <a href="{{ route('service-requests.index') }}" class="menu-link {{ request()->routeIs('service-requests.*') ? 'active' : '' }}">
-                             <i class="bi bi-clipboard2-check menu-icon"></i>
-                             <span class="menu-text">Service Requests</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('job-assignments.index') }}" class="menu-link {{ request()->routeIs('job-assignments.*') ? 'active' : '' }}">
-                             <i class="bi bi-tools menu-icon"></i>
-                             <span class="menu-text">Job Assignments</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('job-status-tracking.index') }}" class="menu-link {{ request()->routeIs('job-status-tracking.*') ? 'active' : '' }}">
-                             <i class="bi bi-geo-alt menu-icon"></i>
-                             <span class="menu-text">Job Status Tracking</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('technicians.index') }}" class="menu-link {{ request()->routeIs('technicians.*') ? 'active' : '' }}">
-                             <i class="bi bi-person-badge menu-icon"></i>
-                             <span class="menu-text">Technicians</span>
-                         </a>
-                     </li>
+                @if($canDashboard)
+                    <div class="menu-header">CORE</div>
+                    <li class="menu-item">
+                        <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                            <i class="bi bi-speedometer2 menu-icon"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                @endif
 
-                     <div class="menu-header">BILLING</div>
-                     <li class="menu-item">
-                         <a href="{{ route('invoices.index') }}" class="menu-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
-                             <i class="bi bi-receipt menu-icon"></i>
-                             <span class="menu-text">Invoices / Payments</span>
-                         </a>
-                     </li>
+                {{-- MASTERS --}}
+                @if($canMasters)
+                    <div class="menu-header">MASTERS</div>
+                    @if($can('view_products'))
+                        <li class="menu-item">
+                            <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
+                                <i class="bi bi-box-seam menu-icon"></i>
+                                <span class="menu-text">Product Master</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_services'))
+                        <li class="menu-item">
+                            <a href="{{ route('services.index') }}" class="menu-link {{ request()->routeIs('services.*') ? 'active' : '' }}">
+                                <i class="bi bi-wrench-adjustable menu-icon"></i>
+                                <span class="menu-text">Services Master</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
 
-                     <div class="menu-header">STAFF &amp; ACCESS</div>
-                     <li class="menu-item">
-                         <a href="{{ route('employees.index') }}" class="menu-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
-                             <i class="bi bi-person-workspace menu-icon"></i>
-                             <span class="menu-text">Employees</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
-                             <i class="bi bi-calendar-check menu-icon"></i>
-                             <span class="menu-text">Employee Attendance</span>
-                         </a>
-                     </li>
-                     <li class="menu-item">
-                         <a href="{{ route('users.index') }}" class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                             <i class="bi bi-person-gear menu-icon"></i>
-                             <span class="menu-text">Users</span>
-                         </a>
-                     </li>
+                {{-- SALES & CRM --}}
+                @if($canSales)
+                    <div class="menu-header">SALES &amp; CRM</div>
+                    @if($can('view_customers') || $can('create_customers'))
+                        <li class="menu-item">
+                            <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                                <i class="bi bi-people menu-icon"></i>
+                                <span class="menu-text">Customers</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_site_surveys') || $can('create_site_surveys'))
+                        <li class="menu-item">
+                            <a href="{{ route('site-surveys.index') }}" class="menu-link {{ request()->routeIs('site-surveys.*') ? 'active' : '' }}">
+                                <i class="bi bi-map menu-icon"></i>
+                                <span class="menu-text">Site Surveys</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_quotations') || $can('create_quotations'))
+                        <li class="menu-item">
+                            <a href="{{ route('quotations.index') }}" class="menu-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
+                                <i class="bi bi-file-earmark-ruled menu-icon"></i>
+                                <span class="menu-text">Quotations</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_enquiries') || $can('create_enquiries'))
+                        <li class="menu-item">
+                            <a href="{{ route('enquiries.index') }}" class="menu-link {{ request()->routeIs('enquiries.*') ? 'active' : '' }}">
+                                <i class="bi bi-chat-left-quote menu-icon"></i>
+                                <span class="menu-text">Enquiries</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
 
-                     <div class="menu-header">ANALYTICS</div>
-                     <li class="menu-item">
-                         <a href="{{ route('reports.index') }}"
-                            class="menu-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                             <i class="bi bi-bar-chart-line menu-icon"></i>
-                             <span class="menu-text">Reports</span>
-                         </a>
-                     </li>
-                 @else
-                     <div class="menu-header">EMPLOYEE PANEL</div>
-                     <li class="menu-item">
-                         <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
-                             <i class="bi bi-calendar-check menu-icon"></i>
-                             <span class="menu-text">Attendance</span>
-                         </a>
-                     </li>
-                 @endif
-             </ul>
+                {{-- OPERATIONS --}}
+                @if($canOperations)
+                    <div class="menu-header">OPERATIONS</div>
+                    @if($can('view_service_requests') || $can('create_service_requests'))
+                        <li class="menu-item">
+                            <a href="{{ route('service-requests.index') }}" class="menu-link {{ request()->routeIs('service-requests.*') ? 'active' : '' }}">
+                                <i class="bi bi-clipboard2-check menu-icon"></i>
+                                <span class="menu-text">Service Requests</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_job_assignments') || $can('create_job_assignments'))
+                        <li class="menu-item">
+                            <a href="{{ route('job-assignments.index') }}" class="menu-link {{ request()->routeIs('job-assignments.*') ? 'active' : '' }}">
+                                <i class="bi bi-tools menu-icon"></i>
+                                <span class="menu-text">Job Assignments</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_job_status_tracking'))
+                        <li class="menu-item">
+                            <a href="{{ route('job-status-tracking.index') }}" class="menu-link {{ request()->routeIs('job-status-tracking.*') ? 'active' : '' }}">
+                                <i class="bi bi-geo-alt menu-icon"></i>
+                                <span class="menu-text">Job Status Tracking</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_technicians'))
+                        <li class="menu-item">
+                            <a href="{{ route('technicians.index') }}" class="menu-link {{ request()->routeIs('technicians.*') ? 'active' : '' }}">
+                                <i class="bi bi-person-badge menu-icon"></i>
+                                <span class="menu-text">Technicians</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                {{-- BILLING --}}
+                @if($canBilling)
+                    <div class="menu-header">BILLING</div>
+                    <li class="menu-item">
+                        <a href="{{ route('invoices.index') }}" class="menu-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
+                            <i class="bi bi-receipt menu-icon"></i>
+                            <span class="menu-text">Invoices / Payments</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- STAFF & ACCESS --}}
+                @if($canStaff)
+                    <div class="menu-header">STAFF &amp; ACCESS</div>
+                    @if($can('view_employees'))
+                        <li class="menu-item">
+                            <a href="{{ route('employees.index') }}" class="menu-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
+                                <i class="bi bi-person-workspace menu-icon"></i>
+                                <span class="menu-text">Employees</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_employee_attendances'))
+                        <li class="menu-item">
+                            <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
+                                <i class="bi bi-calendar-check menu-icon"></i>
+                                <span class="menu-text">Employee Attendance</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_users'))
+                        <li class="menu-item">
+                            <a href="{{ route('users.index') }}" class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                <i class="bi bi-person-gear menu-icon"></i>
+                                <span class="menu-text">Users</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                {{-- ANALYTICS --}}
+                @if($canAnalytics)
+                    <div class="menu-header">ANALYTICS</div>
+                    <li class="menu-item">
+                        <a href="{{ route('reports.index') }}"
+                           class="menu-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                            <i class="bi bi-bar-chart-line menu-icon"></i>
+                            <span class="menu-text">Reports</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- SELF SERVICE --}}
+                @if(!$isAdmin)
+                    <div class="menu-header">SELF SERVICE</div>
+                    <li class="menu-item">
+                        <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
+                            <i class="bi bi-clock-history menu-icon"></i>
+                            <span class="menu-text">Punch Attendance</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
  
              <!-- Sidebar Footer -->
              <div class="sidebar-footer">

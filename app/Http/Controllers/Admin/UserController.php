@@ -67,7 +67,7 @@ class UserController extends Controller
             'address' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $data = $request->except(['password', 'profile_photo']);
+        $data = $request->except(['password', 'profile_photo', 'permissions']);
         $data['name'] = trim(strip_tags($request->name));
         $data['email'] = trim(strip_tags($request->email));
         if ($request->filled('mobile_number')) {
@@ -83,7 +83,15 @@ class UserController extends Controller
             $data['profile_photo'] = $path;
         }
 
-        User::create($data);
+        $user = User::create($data);
+
+        // Assign Spatie Role and Direct Permissions
+        $user->syncRoles([$request->role]);
+        if ($request->has('permissions') && is_array($request->permissions)) {
+            $user->syncPermissions($request->permissions);
+        } else {
+            $user->syncPermissions([]);
+        }
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -93,7 +101,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('permissions', 'roles')->findOrFail($id);
         return view('admin.users.show', compact('user'));
     }
 
@@ -102,7 +110,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('permissions', 'roles')->findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
@@ -124,7 +132,7 @@ class UserController extends Controller
             'address' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $data = $request->except(['password', 'profile_photo']);
+        $data = $request->except(['password', 'profile_photo', 'permissions']);
         $data['name'] = trim(strip_tags($request->name));
         $data['email'] = trim(strip_tags($request->email));
         if ($request->filled('mobile_number')) {
@@ -152,6 +160,14 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        // Sync Role & Permissions
+        $user->syncRoles([$request->role]);
+        if ($request->has('permissions') && is_array($request->permissions)) {
+            $user->syncPermissions($request->permissions);
+        } else {
+            $user->syncPermissions([]);
+        }
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }

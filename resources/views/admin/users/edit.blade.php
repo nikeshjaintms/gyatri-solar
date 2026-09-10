@@ -149,6 +149,8 @@
                 </div>
             </div>
 
+            @include('admin.common.permission-matrix', ['user' => $user])
+
         </div>
 
         <div class="form-footer">

@@ -221,6 +221,9 @@
                 </div>
 
             </div>
+
+            @include('admin.common.permission-matrix')
+
         </div>
 
         {{-- Footer --}}

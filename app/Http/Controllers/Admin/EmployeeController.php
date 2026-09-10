@@ -93,6 +93,12 @@ class EmployeeController extends Controller
                     'address' => trim(strip_tags($request->address)),
                 ]);
 
+                // Assign role and permissions
+                $user->syncRoles(['Employee']);
+                if ($request->has('permissions') && is_array($request->permissions)) {
+                    $user->syncPermissions($request->permissions);
+                }
+
                 Employee::create([
                     'user_id' => $user->id,
                     'employee_id' => $this->generateEmployeeId(),
@@ -113,11 +119,13 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
+        $employee->load('user.permissions', 'user.roles');
         return view('admin.employees.show', compact('employee'));
     }
 
     public function edit(Employee $employee)
     {
+        $employee->load('user.permissions', 'user.roles');
         return view('admin.employees.edit', compact('employee'));
     }
 
@@ -175,6 +183,14 @@ class EmployeeController extends Controller
                 }
 
                 $user->update($userUpdateData);
+
+                // Sync permissions
+                $user->syncRoles(['Employee']);
+                if ($request->has('permissions') && is_array($request->permissions)) {
+                    $user->syncPermissions($request->permissions);
+                } else {
+                    $user->syncPermissions([]);
+                }
 
                 $employee->update([
                     'aadhaar_number' => trim(strip_tags($request->aadhaar_number)),

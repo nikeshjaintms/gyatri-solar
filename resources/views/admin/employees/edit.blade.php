@@ -229,6 +229,9 @@
                 </div>
 
             </div>
+
+            @include('admin.common.permission-matrix', ['user' => $employee->user])
+
         </div>
 
         {{-- Footer --}}
