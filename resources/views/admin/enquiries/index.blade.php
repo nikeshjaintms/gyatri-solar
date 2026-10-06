@@ -54,6 +54,19 @@
                 </div>
             </div>
 
+            <!-- Category -->
+            <div class="col-12 col-md-2">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach(\App\Models\Customer::TYPES as $cat)
+                            <option value="{{ $cat }}" {{ request('category') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
             <!-- Assigned Employee -->
             <div class="col-12 col-md-2">
                 <div class="input-group">
@@ -78,7 +91,7 @@
             </div>
 
             <!-- To Date -->
-            <div class="col-12 col-md-2">
+            <div class="col-12 col-md-1">
                 <div class="input-group">
                     <span class="input-group-text">To</span>
                     <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
@@ -101,19 +114,20 @@
 {{-- ── Table Card ── --}}
 <div class="table-card">
     <div class="table-responsive">
-        <table class="table" style="min-width: 1100px;">
+        <table class="table" style="min-width: 1150px;">
             <thead>
                 <tr>
-                    <th style="width: 60px;">#</th>
+                    <th style="width: 56px;">#</th>
                     <th>Enquiry Number</th>
                     <th>Customer Name</th>
+                    <th>Category</th>
                     <th>Mobile Number</th>
                     <th>Service / Product</th>
                     <th>Source</th>
                     <th>Assigned To</th>
                     <th>Status</th>
                     <th>Follow-up Date</th>
-                    <th class="text-end" style="width: 240px;">Actions</th>
+                    <th class="text-end" style="width: 180px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -141,6 +155,15 @@
                             @if($enquiry->customer_id)
                                 <i class="bi bi-patch-check-fill text-primary ms-1" title="Registered Customer"></i>
                             @endif
+                        </td>
+                        <td class="text-nowrap">
+                            <span class="badge rounded-pill fw-medium px-2.5 py-1 text-xs" style="
+                                @if(($enquiry->category ?? 'Residential') === 'Residential') background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+                                @elseif(($enquiry->category ?? '') === 'Commercial') background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;
+                                @else background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; @endif
+                            ">
+                                <i class="bi bi-tag-fill me-1"></i>{{ $enquiry->category ?? $enquiry->customer?->customer_type ?? 'Residential' }}
+                            </span>
                         </td>
                         <td>{{ $enquiry->mobile_number }}</td>
                         <td>{{ $enquiry->service_product }}</td>

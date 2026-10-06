@@ -53,11 +53,14 @@
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label class="field-label">Category</label>
+                    <label class="field-label">Category <span class="req">*</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-tag field-icon"></i>
-                        <input type="text" name="category" class="form-field @error('category') is-invalid @enderror"
-                               value="{{ old('category', $service->category) }}" placeholder="e.g. Installation, Maintenance, Repair">
+                        <select name="category" class="form-field form-field-select @error('category') is-invalid @enderror" required>
+                            @foreach(\App\Models\Service::CATEGORIES as $cat)
+                                <option value="{{ $cat }}" {{ old('category', $service->category ?? 'Residential') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     @error('category')<div class="field-error">{{ $message }}</div>@enderror
                 </div>

@@ -63,8 +63,11 @@
                         <select name="customer_id" id="customer_select" class="form-field form-field-select" required>
                             <option value="">-- Select Customer --</option>
                             @foreach($customers as $cust)
-                                <option value="{{ $cust->id }}" {{ old('customer_id', $quotation->customer_id) == $cust->id ? 'selected' : '' }}>
-                                    {{ $cust->name }}
+                                <option value="{{ $cust->id }}" 
+                                        data-type="{{ $cust->customer_type }}"
+                                        data-address="{{ $cust->address }}"
+                                        {{ old('customer_id', $quotation->customer_id) == $cust->id ? 'selected' : '' }}>
+                                    {{ $cust->name }} ({{ $cust->customer_type }})
                                 </option>
                             @endforeach
                         </select>
@@ -76,11 +79,13 @@
                     <label class="field-label">Project <span class="text-muted">(optional)</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-sun field-icon"></i>
-                        <select name="project_id" class="form-field form-field-select @error('project_id') is-invalid @enderror">
+                        <select name="project_id" id="project_select" class="form-field form-field-select @error('project_id') is-invalid @enderror">
                             <option value="">-- No Project --</option>
                             @foreach($projects as $project)
-                                <option value="{{ $project->id }}" @selected((string) old('project_id', $quotation->project_id) === (string) $project->id)>
-                                    {{ $project->project_name }} - {{ $project->customer->name }}
+                                <option value="{{ $project->id }}" 
+                                        data-customer-id="{{ $project->customer_id }}"
+                                        @selected((string) old('project_id', $quotation->project_id) === (string) $project->id)>
+                                    {{ $project->project_name }} ({{ $project->solar_capacity }} kW - {{ $project->customer_type }})
                                 </option>
                             @endforeach
                         </select>
@@ -272,19 +277,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let rowIdx = {{ count($quotation->items) }};
 
-    // AJAX Fetch Customer on Selecting Enquiry
-    enquirySelect.addEventListener('change', function() {
-        if (!enquirySelect.value) return;
+    const projectSelect = document.getElementById('project_select');
 
-        fetch(`/admin/enquiries/${enquirySelect.value}/details`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.customer_id) {
-                    customerSelect.value = data.customer_id;
-                }
-            })
-            .catch(err => console.error('Error fetching details:', err));
-    });
+    function filterProjects() {
+        if (!projectSelect) return;
+        const custId = customerSelect.value;
+        Array.from(projectSelect.options).forEach((opt, idx) => {
+            if (idx === 0) return;
+            const projectCustId = opt.getAttribute('data-customer-id');
+            if (!custId || projectCustId === custId) {
+                opt.style.display = '';
+            } else {
+                opt.style.display = 'none';
+                if (opt.selected) projectSelect.value = '';
+            }
+        });
+    }
+
+    if (customerSelect) {
+        customerSelect.addEventListener('change', filterProjects);
+        if (customerSelect.value) filterProjects();
+    }
+
+    // AJAX Fetch Customer on Selecting Enquiry
+    if (enquirySelect) {
+        enquirySelect.addEventListener('change', function() {
+            if (!enquirySelect.value) return;
+
+            fetch(`/admin/enquiries/${enquirySelect.value}/details`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.customer_id && customerSelect) {
+                        customerSelect.value = data.customer_id;
+                        filterProjects();
+                    }
+                })
+                .catch(err => console.error('Error fetching details:', err));
+        });
+    }
 
     // Add Item Line
     addItemBtn.addEventListener('click', function() {

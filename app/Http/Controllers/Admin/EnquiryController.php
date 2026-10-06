@@ -33,6 +33,11 @@ class EnquiryController extends Controller
             $query->where('status', $request->status);
         }
 
+        // Category filter
+        if ($request->filled('category') && in_array($request->category, Enquiry::CATEGORIES)) {
+            $query->where('category', $request->category);
+        }
+
         // Assigned employee filter
         if ($request->filled('assigned_employee_id')) {
             $query->where('assigned_employee_id', $request->assigned_employee_id);
@@ -82,6 +87,7 @@ class EnquiryController extends Controller
             'enquiry_number' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:enquiries,enquiry_number'],
             'customer_id' => ['nullable', 'exists:customers,id'],
             'customer_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
+            'category' => ['required', 'in:' . implode(',', Enquiry::CATEGORIES)],
             'mobile_number' => ['required', 'string', 'regex:/^[0-9]{10}$/'],
             'email' => ['nullable', 'email', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
@@ -135,6 +141,7 @@ class EnquiryController extends Controller
             'enquiry_number' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-\_]+$/', Rule::unique('enquiries', 'enquiry_number')->ignore($enquiry->id)],
             'customer_id' => ['nullable', 'exists:customers,id'],
             'customer_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
+            'category' => ['required', 'in:' . implode(',', Enquiry::CATEGORIES)],
             'mobile_number' => ['required', 'string', 'regex:/^[0-9]{10}$/'],
             'email' => ['nullable', 'email', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
@@ -179,13 +186,16 @@ class EnquiryController extends Controller
     public function getDetails(string $id)
     {
         $enquiry = Enquiry::with('customer')->findOrFail($id);
+        $category = $enquiry->category ?? $enquiry->customer?->customer_type ?? 'Residential';
         return response()->json([
             'customer_id' => $enquiry->customer_id,
             'customer_name' => $enquiry->customer_name,
             'mobile_number' => $enquiry->mobile_number,
             'email' => $enquiry->email,
             'address' => $enquiry->address,
+            'category' => $category,
             'service_product' => $enquiry->service_product,
+            'customer_type' => $category,
         ]);
     }
 }

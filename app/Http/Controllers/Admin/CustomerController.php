@@ -23,7 +23,7 @@ class CustomerController extends Controller
             });
         }
 
-        if ($request->filled('customer_type') && in_array($request->customer_type, ['Residential', 'Commercial', 'Other'])) {
+        if ($request->filled('customer_type') && in_array($request->customer_type, Customer::TYPES)) {
             $query->where('customer_type', $request->customer_type);
         }
 
@@ -47,7 +47,7 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:customers,email'],
             'phone' => ['required', 'regex:/^[6-9][0-9]{9}$/', 'unique:customers,phone'],
-            'customer_type' => ['required', 'in:Residential,Commercial,Other'],
+            'customer_type' => ['required', 'in:' . implode(',', Customer::TYPES)],
             'address' => ['nullable', 'string', 'max:1000'],
             'city' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'state' => ['nullable', 'string', 'max:100'],
@@ -93,7 +93,7 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:customers,email,' . $customer->id],
             'phone' => ['required', 'regex:/^[6-9][0-9]{9}$/', 'unique:customers,phone,' . $customer->id],
-            'customer_type' => ['required', 'in:Residential,Commercial,Other'],
+            'customer_type' => ['required', 'in:' . implode(',', Customer::TYPES)],
             'address' => ['nullable', 'string', 'max:1000'],
             'city' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'state' => ['nullable', 'string', 'max:100'],
@@ -123,5 +123,31 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('customers.index')->with('error', 'Delete failed. Please try again.');
         }
+    }
+
+    /**
+     * Get details of a customer for AJAX auto-populating in forms.
+     */
+    public function getDetails(string $id)
+    {
+        $customer = Customer::with('projects')->findOrFail($id);
+        return response()->json([
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'email' => $customer->email,
+            'customer_type' => $customer->customer_type,
+            'address' => $customer->address,
+            'city' => $customer->city,
+            'state' => $customer->state,
+            'pincode' => $customer->pincode,
+            'projects' => $customer->projects->map(fn($p) => [
+                'id' => $p->id,
+                'project_name' => $p->project_name,
+                'solar_capacity' => $p->solar_capacity,
+                'customer_type' => $p->customer_type,
+                'installation_address' => $p->installation_address,
+            ]),
+        ]);
     }
 }

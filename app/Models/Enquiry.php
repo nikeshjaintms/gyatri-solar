@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Enquiry extends Model
 {
+    public const CATEGORIES = [
+        'Residential',
+        'Commercial',
+        'Other',
+    ];
+
     protected $fillable = [
         'enquiry_number',
         'customer_id',
@@ -16,6 +22,7 @@ class Enquiry extends Model
         'mobile_number',
         'email',
         'address',
+        'category',
         'enquiry_date',
         'service_product',
         'enquiry_source',

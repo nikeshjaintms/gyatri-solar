@@ -125,4 +125,32 @@ class SolarProjectFlowTest extends TestCase
         ]);
         $this->assertSame('Ahmedabad, Gujarat', CompanySetting::firstOrFail()->address);
     }
+
+    public function test_all_customer_types_supported_and_details_api_works(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'Admin']));
+
+        foreach (Customer::TYPES as $type) {
+            $response = $this->post(route('customers.store'), [
+                'name' => "Customer {$type}",
+                'phone' => '9' . str_pad((string) rand(100000000, 999999999), 9, '0', STR_PAD_LEFT),
+                'customer_type' => $type,
+                'status' => 'Active',
+                'city' => 'Surat',
+                'address' => "Address of {$type}",
+            ]);
+            $response->assertSessionHasNoErrors();
+        }
+
+        $commercialCust = Customer::where('customer_type', 'Commercial')->firstOrFail();
+        $this->assertSame('Commercial', $commercialCust->customer_type);
+
+        $detailsResponse = $this->getJson("/admin/customers/{$commercialCust->id}/details");
+        $detailsResponse->assertOk()
+            ->assertJson([
+                'id' => $commercialCust->id,
+                'name' => $commercialCust->name,
+                'customer_type' => 'Commercial',
+            ]);
+    }
 }

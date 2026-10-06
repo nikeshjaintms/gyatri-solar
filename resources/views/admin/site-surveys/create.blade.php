@@ -66,8 +66,11 @@
                         <select name="customer_id" id="customer_select" class="form-field form-field-select" required>
                             <option value="">-- Select Customer --</option>
                             @foreach($customers as $cust)
-                                <option value="{{ $cust->id }}" {{ old('customer_id', request('customer_id')) == $cust->id ? 'selected' : '' }}>
-                                    {{ $cust->name }}
+                                <option value="{{ $cust->id }}" 
+                                        data-address="{{ $cust->address ? ($cust->address . ($cust->city ? ', ' . $cust->city : '')) : '' }}"
+                                        data-type="{{ $cust->customer_type }}"
+                                        {{ old('customer_id', request('customer_id')) == $cust->id ? 'selected' : '' }}>
+                                    {{ $cust->name }} ({{ $cust->customer_type }})
                                 </option>
                             @endforeach
                         </select>
@@ -134,14 +137,13 @@
 
                 <!-- Property Type -->
                 <div class="col-12 col-md-3">
-                    <label class="field-label">Property Type</label>
+                    <label class="field-label">Property Type / Category</label>
                     <div class="field-input-wrap">
                         <i class="bi bi-building field-icon"></i>
-                        <select name="property_type" class="form-field form-field-select">
-                            <option value="Residential" {{ old('property_type') == 'Residential' ? 'selected' : '' }}>Residential</option>
-                            <option value="Commercial" {{ old('property_type') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
-                            <option value="Industrial" {{ old('property_type') == 'Industrial' ? 'selected' : '' }}>Industrial</option>
-                            <option value="Agricultural" {{ old('property_type') == 'Agricultural' ? 'selected' : '' }}>Agricultural</option>
+                        <select name="property_type" id="property_type" class="form-field form-field-select">
+                            @foreach(\App\Models\Customer::TYPES as $type)
+                                <option value="{{ $type }}" {{ old('property_type', 'Residential') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -171,7 +173,7 @@
                     <label class="field-label">Required Capacity</label>
                     <div class="field-input-wrap">
                         <i class="bi bi-lightning-charge field-icon"></i>
-                        <input type="text" name="required_solar_capacity" class="form-field" 
+                        <input type="text" name="required_solar_capacity" id="required_solar_capacity" class="form-field" 
                                value="{{ old('required_solar_capacity') }}" placeholder="e.g. 8 kW">
                     </div>
                 </div>
@@ -277,22 +279,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const enquirySelect = document.getElementById('enquiry_select');
     const customerSelect = document.getElementById('customer_select');
     const siteAddressInput = document.getElementById('site_address');
+    const propertyTypeSelect = document.getElementById('property_type');
+    const requiredCapInput = document.getElementById('required_solar_capacity');
 
-    enquirySelect.addEventListener('change', function() {
-        if (!enquirySelect.value) return;
-
-        fetch(`/admin/enquiries/${enquirySelect.value}/details`)
+    function fetchAndPopulateCustomer(customerId) {
+        if (!customerId) return;
+        fetch(`/admin/customers/${customerId}/details`)
             .then(res => res.json())
             .then(data => {
-                if (data.customer_id) {
-                    customerSelect.value = data.customer_id;
+                if (data.full_address || data.address) {
+                    siteAddressInput.value = data.full_address || data.address;
                 }
-                if (data.address) {
-                    siteAddressInput.value = data.address;
+                if (data.customer_type && propertyTypeSelect) {
+                    propertyTypeSelect.value = data.customer_type;
+                }
+                if (data.projects && data.projects.length > 0 && requiredCapInput && (!requiredCapInput.value || requiredCapInput.value.trim() === '')) {
+                    const latestProj = data.projects[0];
+                    if (latestProj.solar_capacity) {
+                        requiredCapInput.value = `${latestProj.solar_capacity} kW`;
+                    }
                 }
             })
-            .catch(err => console.error('Error fetching details:', err));
-    });
+            .catch(err => console.error('Error fetching customer details:', err));
+    }
+
+    if (customerSelect) {
+        customerSelect.addEventListener('change', function() {
+            if (customerSelect.value) {
+                const opt = customerSelect.options[customerSelect.selectedIndex];
+                const address = opt ? opt.getAttribute('data-address') : null;
+                const custType = opt ? opt.getAttribute('data-type') : null;
+                if (address) siteAddressInput.value = address;
+                if (custType && propertyTypeSelect) propertyTypeSelect.value = custType;
+                fetchAndPopulateCustomer(customerSelect.value);
+            }
+        });
+        if (customerSelect.value && (!siteAddressInput.value || siteAddressInput.value.trim() === '')) {
+            fetchAndPopulateCustomer(customerSelect.value);
+        }
+    }
+
+    if (enquirySelect) {
+        enquirySelect.addEventListener('change', function() {
+            if (!enquirySelect.value) return;
+
+            fetch(`/admin/enquiries/${enquirySelect.value}/details`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.customer_id && customerSelect) {
+                        customerSelect.value = data.customer_id;
+                    }
+                    if (data.address) {
+                        siteAddressInput.value = data.address;
+                    }
+                    if (data.customer_type && propertyTypeSelect) {
+                        propertyTypeSelect.value = data.customer_type;
+                    }
+                    if (data.service_product && requiredCapInput && (!requiredCapInput.value || requiredCapInput.value.trim() === '')) {
+                        requiredCapInput.value = data.service_product;
+                    }
+                })
+                .catch(err => console.error('Error fetching details:', err));
+        });
+    }
 });
 </script>
 

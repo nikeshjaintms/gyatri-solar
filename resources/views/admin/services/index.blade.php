@@ -20,7 +20,7 @@
 <div class="filter-card">
     <form method="GET" action="{{ route('services.index') }}">
         <div class="row g-2 align-items-center">
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-4">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control"
@@ -29,6 +29,17 @@
                 </div>
             </div>
             <div class="col-12 col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach(\App\Models\Service::CATEGORIES as $cat)
+                            <option value="{{ $cat }}" {{ request('category') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-funnel"></i></span>
                     <select name="status" class="form-select">
@@ -88,7 +99,19 @@
                                 <span style="color:#9CA3AF;">—</span>
                             @endif
                         </td>
-                        <td style="color:#6B7280;">{{ $service->category ?? '—' }}</td>
+                        <td>
+                            @if($service->category)
+                                <span class="badge rounded-pill fw-medium px-2.5 py-1 text-xs" style="
+                                    @if($service->category === 'Residential') background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+                                    @elseif($service->category === 'Commercial') background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;
+                                    @else background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; @endif
+                                ">
+                                    <i class="bi bi-tag-fill me-1"></i>{{ $service->category }}
+                                </span>
+                            @else
+                                <span style="color:#9CA3AF;">—</span>
+                            @endif
+                        </td>
                         <td>
                             @if($service->price !== null)
                                 <span class="price-cell">${{ number_format($service->price, 2) }}</span>

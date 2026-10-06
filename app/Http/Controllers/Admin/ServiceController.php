@@ -30,6 +30,11 @@ class ServiceController extends Controller
             $query->where('status', $request->status);
         }
 
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
         $services = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.services.index', compact('services'));
@@ -51,7 +56,7 @@ class ServiceController extends Controller
         $data = $request->validate([
             'service_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
             'service_code' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:services,service_code'],
-            'category'     => ['nullable', 'string', 'max:255'],
+            'category'     => ['required', 'in:' . implode(',', Service::CATEGORIES)],
             'price'        => ['required', 'numeric', 'min:0'],
             'duration'     => ['nullable', 'string', 'max:100'],
             'description'  => ['nullable', 'string', 'max:5000'],
@@ -91,7 +96,7 @@ class ServiceController extends Controller
         $data = $request->validate([
             'service_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
             'service_code' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:services,service_code,' . $service->id],
-            'category'     => ['nullable', 'string', 'max:255'],
+            'category'     => ['required', 'in:' . implode(',', Service::CATEGORIES)],
             'price'        => ['required', 'numeric', 'min:0'],
             'duration'     => ['nullable', 'string', 'max:100'],
             'description'  => ['nullable', 'string', 'max:5000'],

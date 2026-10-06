@@ -72,7 +72,7 @@
                     <div class="field-input-wrap">
                         <i class="bi bi-people field-icon"></i>
                         <select name="customer_type" class="form-field form-field-select @error('customer_type') is-invalid @enderror" required>
-                            @foreach(['Residential', 'Commercial', 'Other'] as $type)
+                            @foreach(\App\Models\Customer::TYPES as $type)
                                 <option value="{{ $type }}" {{ old('customer_type', 'Residential') === $type ? 'selected' : '' }}>{{ $type }}</option>
                             @endforeach
                         </select>

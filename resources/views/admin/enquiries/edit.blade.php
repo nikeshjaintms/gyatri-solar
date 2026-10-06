@@ -51,8 +51,9 @@
                                         data-phone="{{ $customer->phone }}"
                                         data-email="{{ $customer->email }}"
                                         data-address="{{ $customer->address }}"
+                                        data-type="{{ $customer->customer_type }}"
                                         {{ old('customer_id', $enquiry->customer_id) == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->name }} ({{ $customer->phone }})
+                                    {{ $customer->name }} ({{ $customer->phone }} - {{ $customer->customer_type }})
                                 </option>
                             @endforeach
                         </select>
@@ -65,7 +66,7 @@
             <div class="row g-4 mb-2">
 
                 <!-- Customer Name -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <label class="field-label">Customer Name <span class="req">*</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-person field-icon"></i>
@@ -76,8 +77,22 @@
                     @error('customer_name')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
 
+                <!-- Category / Customer Type -->
+                <div class="col-12 col-md-3">
+                    <label class="field-label">Category / Type <span class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-tag field-icon"></i>
+                        <select name="category" id="category_select" class="form-field form-field-select @error('category') is-invalid @enderror" required>
+                            @foreach(\App\Models\Customer::TYPES as $type)
+                                <option value="{{ $type }}" {{ old('category', $enquiry->category ?? 'Residential') === $type ? 'selected' : '' }}>{{ $type }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('category')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
                 <!-- Mobile Number -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <label class="field-label">Mobile Number <span class="req">*</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-telephone field-icon"></i>
@@ -89,7 +104,7 @@
                 </div>
 
                 <!-- Email -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <label class="field-label">Email Address</label>
                     <div class="field-input-wrap">
                         <i class="bi bi-envelope field-icon"></i>
@@ -228,6 +243,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const customerSelect = document.getElementById('customer_select');
     const customerNameInput = document.getElementById('customer_name');
+    const categorySelect = document.getElementById('category_select');
     const mobileNumberInput = document.getElementById('mobile_number');
     const emailInput = document.getElementById('email');
     const addressInput = document.getElementById('address');
@@ -239,6 +255,10 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileNumberInput.value = selectedOption.getAttribute('data-phone') || '';
             emailInput.value = selectedOption.getAttribute('data-email') || '';
             addressInput.value = selectedOption.getAttribute('data-address') || '';
+            const custType = selectedOption.getAttribute('data-type');
+            if (custType && categorySelect) {
+                categorySelect.value = custType;
+            }
         }
     });
 });

@@ -233,7 +233,13 @@
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <h2 class="text-white mb-0 fw-bold fs-4">{{ $customer->name }}</h2>
-                    <span class="badge bg-warning text-dark">{{ $customer->customer_type ?? 'Residential' }}</span>
+                    <span class="badge rounded-pill fw-semibold px-2.5 py-1 text-xs" style="
+                        @if(($customer->customer_type ?? 'Residential') === 'Residential') background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;
+                        @elseif(($customer->customer_type ?? '') === 'Commercial') background: #EDE9FE; color: #5B21B6; border: 1px solid #C4B5FD;
+                        @else background: #F3F4F6; color: #374151; border: 1px solid #D1D5DB; @endif
+                    ">
+                        <i class="bi bi-tag-fill me-1"></i>{{ $customer->customer_type ?? 'Residential' }}
+                    </span>
                     @if($customer->status == 'Active')
                         <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2.5 py-1 rounded-pill small">
                             <i class="bi bi-circle-fill me-1" style="font-size: 0.45rem;"></i> Active Customer

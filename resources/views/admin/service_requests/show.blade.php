@@ -121,6 +121,15 @@
         <div>
             <div class="detail-label">Customer</div>
             <div class="detail-value">{{ $serviceRequest->customer->name ?? '—' }}</div>
+            @if($serviceRequest->customer?->customer_type)
+                <div class="mt-1">
+                    <span class="badge rounded-pill fw-medium text-xs px-2 py-0.5" style="
+                        @if($serviceRequest->customer->customer_type === 'Residential') background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+                        @elseif($serviceRequest->customer->customer_type === 'Commercial') background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;
+                        @else background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; @endif
+                    ">{{ $serviceRequest->customer->customer_type }}</span>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -129,6 +138,9 @@
         <div>
             <div class="detail-label">Project</div>
             <div class="detail-value">{{ $serviceRequest->project->project_name ?? '—' }}</div>
+            @if($serviceRequest->project)
+                <div style="font-size:0.78rem;color:#9CA3AF;margin-top:2px;">{{ $serviceRequest->project->solar_capacity }} kW ({{ $serviceRequest->project->customer_type }})</div>
+            @endif
         </div>
     </div>
 
@@ -138,7 +150,11 @@
             <div class="detail-label">Service</div>
             <div class="detail-value">{{ $serviceRequest->service->service_name ?? '—' }}</div>
             @if($serviceRequest->service?->category)
-                <div style="font-size:0.78rem;color:#9CA3AF;margin-top:2px;">{{ $serviceRequest->service->category }}</div>
+                <div class="mt-1">
+                    <span class="badge rounded-pill fw-normal text-xs px-2 py-0.5" style="background:#F0FDF4; color:#15803D; border:1px solid #BBF7D0;">
+                        <i class="bi bi-tag-fill me-1"></i>{{ $serviceRequest->service->category }}
+                    </span>
+                </div>
             @endif
         </div>
     </div>

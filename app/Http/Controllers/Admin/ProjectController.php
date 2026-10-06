@@ -25,7 +25,7 @@ class ProjectController extends Controller
             $query->where('status', $request->status);
         }
 
-        if ($request->filled('customer_type') && in_array($request->customer_type, ['Residential', 'Commercial', 'Other'])) {
+        if ($request->filled('customer_type') && in_array($request->customer_type, Customer::TYPES)) {
             $query->where('customer_type', $request->customer_type);
         }
 

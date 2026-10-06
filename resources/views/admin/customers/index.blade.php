@@ -33,7 +33,7 @@
                     <span class="input-group-text"><i class="bi bi-people"></i></span>
                     <select name="customer_type" class="form-select">
                         <option value="">All Types</option>
-                        @foreach(['Residential', 'Commercial', 'Other'] as $type)
+                        @foreach(\App\Models\Customer::TYPES as $type)
                             <option value="{{ $type }}" {{ request('customer_type') === $type ? 'selected' : '' }}>{{ $type }}</option>
                         @endforeach
                     </select>
@@ -94,7 +94,15 @@
                         </td>
                         <td style="color:#6B7280;">{{ $customer->email ?? '—' }}</td>
                         <td style="color:#6B7280;">{{ $customer->phone ?? '—' }}</td>
-                        <td>{{ $customer->customer_type }}</td>
+                        <td>
+                            <span class="badge rounded-pill fw-medium px-2.5 py-1 text-xs" style="
+                                @if($customer->customer_type === 'Residential') background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+                                @elseif($customer->customer_type === 'Commercial') background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;
+                                @else background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; @endif
+                            ">
+                                {{ $customer->customer_type ?? 'Residential' }}
+                            </span>
+                        </td>
                         <td style="color:#6B7280;">{{ $customer->city ?? '—' }}</td>
                         <td>
                             @if($customer->status == 'Active')

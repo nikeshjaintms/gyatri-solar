@@ -60,6 +60,20 @@
             </div>
         </div>
 
+        <!-- Category / Customer Type -->
+        <div class="detail-row row align-items-center">
+            <div class="col-12 col-md-3 detail-label">Category / Customer Type</div>
+            <div class="col-12 col-md-9 detail-value">
+                <span class="badge rounded-pill fw-medium px-2.5 py-1 text-xs" style="
+                    @if(($enquiry->category ?? 'Residential') === 'Residential') background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+                    @elseif(($enquiry->category ?? '') === 'Commercial') background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;
+                    @else background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; @endif
+                ">
+                    <i class="bi bi-tag-fill me-1"></i>{{ $enquiry->category ?? $enquiry->customer?->customer_type ?? 'Residential' }}
+                </span>
+            </div>
+        </div>
+
         <!-- Contact Numbers -->
         <div class="detail-row row align-items-center">
             <div class="col-12 col-md-3 detail-label">Contact / Phone</div>

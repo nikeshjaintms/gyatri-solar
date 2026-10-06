@@ -53,6 +53,11 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('invoices', InvoiceController::class)->middleware('module.permission:invoices');
             Route::resource('employee-attendances', EmployeeAttendanceController::class)->middleware('module.permission:employee_attendances');
 
+            // Customer Details AJAX Endpoint
+            Route::get('customers/{id}/details', [CustomerController::class, 'getDetails'])
+                ->name('customers.details')
+                ->middleware('module.permission:customers');
+
             // Enquiry Details AJAX Endpoint
             Route::get('enquiries/{id}/details', [EnquiryController::class, 'getDetails'])
                 ->name('enquiries.details')

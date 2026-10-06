@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
+    public const CATEGORIES = [
+        'Residential',
+        'Commercial',
+        'Other',
+    ];
+
     protected $fillable = [
         'service_name',
         'service_code',

@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
+    public const TYPES = [
+        'Residential',
+        'Commercial',
+        'Other',
+    ];
+
     protected $fillable = [
         'name',
         'email',

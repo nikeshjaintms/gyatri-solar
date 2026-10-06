@@ -101,7 +101,7 @@
             </div>
         </div>
     </form>
-</div>
+</div>  
 
 {{-- ── Table Card ── --}}
 <div class="table-card">
@@ -141,12 +141,27 @@
                         <td>
                             <div class="rel-cell">
                                 <span class="rel-primary">{{ $sr->customer->name ?? '—' }}</span>
+                                @if($sr->customer?->customer_type)
+                                    <div>
+                                        <span class="badge rounded-pill fw-medium text-xs px-2 py-0.5" style="
+                                            @if($sr->customer->customer_type === 'Residential') background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+                                            @elseif($sr->customer->customer_type === 'Commercial') background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;
+                                            @else background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; @endif
+                                        ">{{ $sr->customer->customer_type }}</span>
+                                    </div>
+                                @endif
                             </div>
                         </td>
                         <td>
                             <div class="rel-cell">
                                 <span class="rel-primary">{{ $sr->service->service_name ?? '—' }}</span>
-                                @if($sr->service && $sr->service->service_code)
+                                @if($sr->service && $sr->service->category)
+                                    <div>
+                                        <span class="badge rounded-pill fw-normal text-xs px-2 py-0.5" style="background:#F0FDF4; color:#15803D; border:1px solid #BBF7D0;">
+                                            <i class="bi bi-tag-fill me-1"></i>{{ $sr->service->category }}
+                                        </span>
+                                    </div>
+                                @elseif($sr->service && $sr->service->service_code)
                                     <span class="rel-sub">{{ $sr->service->service_code }}</span>
                                 @endif
                             </div>

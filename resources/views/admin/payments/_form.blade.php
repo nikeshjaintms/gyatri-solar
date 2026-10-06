@@ -1,10 +1,63 @@
 <div class="row g-3">
     <div class="col-12 col-md-6"><label class="form-label">Payment number</label><input class="form-control" value="{{ $paymentNumber }}" readonly></div>
-    <div class="col-12 col-md-6"><label class="form-label">Customer <span class="text-danger">*</span></label><select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror" required><option value="">Select customer</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" @selected((string) old('customer_id', $payment->customer_id ?? request('customer_id')) === (string) $customer->id)>{{ $customer->name }}</option>@endforeach</select>@error('customer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-    <div class="col-12 col-md-6"><label class="form-label">Project</label><select name="project_id" class="form-select @error('project_id') is-invalid @enderror"><option value="">No project</option>@foreach($projects as $project)<option value="{{ $project->id }}" @selected((string) old('project_id', $payment->project_id) === (string) $project->id)>{{ $project->project_name }} - {{ $project->customer->name }}</option>@endforeach</select>@error('project_id')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">Customer <span class="text-danger">*</span></label>
+        <select name="customer_id" id="payment_customer_select" class="form-select @error('customer_id') is-invalid @enderror" required>
+            <option value="">Select customer</option>
+            @foreach($customers as $customer)
+                <option value="{{ $customer->id }}" 
+                        data-type="{{ $customer->customer_type }}"
+                        @selected((string) old('customer_id', $payment->customer_id ?? request('customer_id')) === (string) $customer->id)>
+                    {{ $customer->name }} ({{ $customer->customer_type }})
+                </option>
+            @endforeach
+        </select>
+        @error('customer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">Project</label>
+        <select name="project_id" id="payment_project_select" class="form-select @error('project_id') is-invalid @enderror">
+            <option value="">No project</option>
+            @foreach($projects as $project)
+                <option value="{{ $project->id }}" 
+                        data-customer-id="{{ $project->customer_id }}"
+                        @selected((string) old('project_id', $payment->project_id) === (string) $project->id)>
+                    {{ $project->project_name }} ({{ $project->solar_capacity }} kW - {{ $project->customer_type }})
+                </option>
+            @endforeach
+        </select>
+        @error('project_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
     <div class="col-12 col-md-6"><label class="form-label">Payment date <span class="text-danger">*</span></label><input type="date" name="payment_date" value="{{ old('payment_date', $payment->payment_date?->format('Y-m-d') ?? now()->format('Y-m-d')) }}" class="form-control @error('payment_date') is-invalid @enderror" required>@error('payment_date')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
     <div class="col-12 col-md-4"><label class="form-label">Amount (₹) <span class="text-danger">*</span></label><input type="number" name="amount" min="0.01" step="0.01" value="{{ old('amount', $payment->amount) }}" class="form-control @error('amount') is-invalid @enderror" required>@error('amount')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
     <div class="col-12 col-md-4"><label class="form-label">Payment mode <span class="text-danger">*</span></label><select name="payment_mode" class="form-select @error('payment_mode') is-invalid @enderror" required><option value="">Select mode</option>@foreach(['Cash', 'Mobile Banking', 'RTGS', 'NEFT', 'Other'] as $mode)<option value="{{ $mode }}" @selected(old('payment_mode', $payment->payment_mode) === $mode)>{{ $mode }}</option>@endforeach</select>@error('payment_mode')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
     <div class="col-12 col-md-4"><label class="form-label">Reference number</label><input name="reference_number" value="{{ old('reference_number', $payment->reference_number) }}" class="form-control @error('reference_number') is-invalid @enderror">@error('reference_number')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
     <div class="col-12"><label class="form-label">Notes</label><textarea name="notes" rows="3" class="form-control @error('notes') is-invalid @enderror">{{ old('notes', $payment->notes) }}</textarea>@error('notes')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const custSelect = document.getElementById('payment_customer_select');
+    const projSelect = document.getElementById('payment_project_select');
+
+    function filterProjects() {
+        if (!custSelect || !projSelect) return;
+        const custId = custSelect.value;
+        Array.from(projSelect.options).forEach((opt, idx) => {
+            if (idx === 0) return;
+            const pCustId = opt.getAttribute('data-customer-id');
+            if (!custId || pCustId === custId) {
+                opt.style.display = '';
+            } else {
+                opt.style.display = 'none';
+                if (opt.selected) projSelect.value = '';
+            }
+        });
+    }
+
+    if (custSelect) {
+        custSelect.addEventListener('change', filterProjects);
+        if (custSelect.value) filterProjects();
+    }
+});
+</script>

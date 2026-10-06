@@ -92,13 +92,14 @@
                     <label class="field-label">Customer <span class="req">*</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-person field-icon"></i>
-                        <select name="customer_id"
+                        <select name="customer_id" id="inv_customer_select"
                                 class="form-field form-field-select @error('customer_id') is-invalid @enderror">
                             <option value="">— Select Customer —</option>
                             @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}"
-                                    {{ old('customer_id', $invoice->customer_id) == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->name }}
+                                <option value="{{ $customer->id }}" 
+                                        data-type="{{ $customer->customer_type }}"
+                                        {{ old('customer_id', $invoice->customer_id) == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->name }} ({{ $customer->customer_type }})
                                 </option>
                             @endforeach
                         </select>
@@ -111,10 +112,14 @@
                         <label class="field-label">Project <span style="color:#9CA3AF;">(optional)</span></label>
                         <div class="field-input-wrap">
                             <i class="bi bi-sun field-icon"></i>
-                            <select name="project_id" class="form-field form-field-select @error('project_id') is-invalid @enderror">
+                            <select name="project_id" id="inv_project_select" class="form-field form-field-select @error('project_id') is-invalid @enderror">
                                 <option value="">— Select Project —</option>
                                 @foreach($projects as $project)
-                                    <option value="{{ $project->id }}" @selected((string) old('project_id', $invoice->project_id) === (string) $project->id)>{{ $project->project_name }} — {{ $project->customer->name }}</option>
+                                    <option value="{{ $project->id }}" 
+                                            data-customer-id="{{ $project->customer_id }}"
+                                            @selected((string) old('project_id', $invoice->project_id) === (string) $project->id)>
+                                        {{ $project->project_name }} ({{ $project->solar_capacity }} kW - {{ $project->customer_type }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -126,12 +131,13 @@
                     <label class="field-label">Service Request <span style="color:#9CA3AF;">(optional)</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-clipboard2-check field-icon"></i>
-                        <select name="service_request_id"
+                        <select name="service_request_id" id="inv_sr_select"
                                 class="form-field form-field-select @error('service_request_id') is-invalid @enderror">
                             <option value="">— Select Service Request —</option>
                             @foreach($serviceRequests as $sr)
-                                <option value="{{ $sr->id }}"
-                                    {{ old('service_request_id', $invoice->service_request_id) == $sr->id ? 'selected' : '' }}>
+                                <option value="{{ $sr->id }}" 
+                                        data-customer-id="{{ $sr->customer_id }}"
+                                        {{ old('service_request_id', $invoice->service_request_id) == $sr->id ? 'selected' : '' }}>
                                     #{{ $sr->id }} — {{ $sr->customer->name ?? '' }} | {{ $sr->service->service_name ?? '' }}
                                 </option>
                             @endforeach
@@ -338,7 +344,48 @@ function recalculate() {
     document.getElementById('totalDisplay').value   = '₹ ' + total.toFixed(2);
     document.getElementById('balanceDisplay').value = '₹ ' + balance.toFixed(2);
 }
-document.addEventListener('DOMContentLoaded', recalculate);
+// Init on load
+document.addEventListener('DOMContentLoaded', function() {
+    recalculate();
+
+    const custSelect = document.getElementById('inv_customer_select');
+    const projSelect = document.getElementById('inv_project_select');
+    const srSelect = document.getElementById('inv_sr_select');
+
+    function handleCustomerChange() {
+        if (!custSelect) return;
+        const custId = custSelect.value;
+        if (projSelect) {
+            Array.from(projSelect.options).forEach((opt, idx) => {
+                if (idx === 0) return;
+                const pCustId = opt.getAttribute('data-customer-id');
+                if (!custId || pCustId === custId) {
+                    opt.style.display = '';
+                } else {
+                    opt.style.display = 'none';
+                    if (opt.selected) projSelect.value = '';
+                }
+            });
+        }
+        if (srSelect) {
+            Array.from(srSelect.options).forEach((opt, idx) => {
+                if (idx === 0) return;
+                const srCustId = opt.getAttribute('data-customer-id');
+                if (!custId || srCustId === custId) {
+                    opt.style.display = '';
+                } else {
+                    opt.style.display = 'none';
+                    if (opt.selected) srSelect.value = '';
+                }
+            });
+        }
+    }
+
+    if (custSelect) {
+        custSelect.addEventListener('change', handleCustomerChange);
+        if (custSelect.value) handleCustomerChange();
+    }
+});
 </script>
 
 @endsection
