@@ -17,6 +17,9 @@ use App\Http\Controllers\Admin\SiteSurveyController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\SettingsController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -65,6 +68,10 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('site-surveys', SiteSurveyController::class)->middleware('module.permission:site_surveys');
             Route::resource('users', UserController::class)->middleware('module.permission:users');
             Route::resource('products', ProductController::class)->middleware('module.permission:products');
+            Route::resource('projects', ProjectController::class)->middleware('module.permission:projects');
+            Route::resource('payments', PaymentController::class)->middleware('module.permission:payments');
+            Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
+            Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
 
             // Reports
             Route::prefix('reports')->middleware('module.permission:reports')->group(function () {

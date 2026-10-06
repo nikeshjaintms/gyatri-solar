@@ -140,7 +140,7 @@
                                 <a href="{{ route('quotations.show', $quotation->id) }}" class="btn-action btn-action-view">
                                     <i class="bi bi-eye"></i> View
                                 </a>
-                                <a href="{{ route('quotations.print', $quotation->id) }}" target="_blank" class="btn-action" style="color: #6366F1; border-color: rgba(99,102,241,0.2); background-color: #EEF2FF;">
+                                <a href="{{ route('quotations.print', $quotation->id) }}" target="_blank" class="btn-action btn-action-view">
                                     <i class="bi bi-printer"></i> Print
                                 </a>
                                 <a href="{{ route('quotations.edit', $quotation->id) }}" class="btn-action btn-action-edit">
@@ -162,7 +162,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-file-earmark-break"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No quotations found</h6>
                                 <p class="text-muted small mb-3">Adjust your filters or generate a quotation for a customer.</p>
-                                <a href="{{ route('quotations.create') }}" class="btn-add-primary" style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                <a href="{{ route('quotations.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Quotation
                                 </a>
                             </div>

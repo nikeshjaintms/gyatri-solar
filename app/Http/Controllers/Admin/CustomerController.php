@@ -18,8 +18,13 @@ class CustomerController extends Controller
                 $q->where('name', 'like', '%' . $search . '%')
                   ->orWhere('email', 'like', '%' . $search . '%')
                   ->orWhere('phone', 'like', '%' . $search . '%')
-                  ->orWhere('city', 'like', '%' . $search . '%');
+                  ->orWhere('city', 'like', '%' . $search . '%')
+                  ->orWhere('pincode', 'like', '%' . $search . '%');
             });
+        }
+
+        if ($request->filled('customer_type') && in_array($request->customer_type, ['Residential', 'Commercial', 'Other'])) {
+            $query->where('customer_type', $request->customer_type);
         }
 
         if ($request->filled('status') && in_array($request->status, ['Active', 'Inactive'])) {
@@ -41,9 +46,13 @@ class CustomerController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:customers,email'],
-            'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:customers,phone'],
+            'phone' => ['required', 'regex:/^[6-9][0-9]{9}$/', 'unique:customers,phone'],
+            'customer_type' => ['required', 'in:Residential,Commercial,Other'],
             'address' => ['nullable', 'string', 'max:1000'],
             'city' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
+            'state' => ['nullable', 'string', 'max:100'],
+            'pincode' => ['nullable', 'regex:/^[0-9]{6}$/'],
+            'notes' => ['nullable', 'string', 'max:5000'],
             'status' => ['required', 'in:Active,Inactive'],
         ]);
 
@@ -60,6 +69,8 @@ class CustomerController extends Controller
     {
         $customer->load([
             'siteSurveys.surveyor',
+            'projects',
+            'payments',
             'quotations.items',
             'serviceRequests.service',
             'serviceRequests.technician',
@@ -81,9 +92,13 @@ class CustomerController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:customers,email,' . $customer->id],
-            'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:customers,phone,' . $customer->id],
+            'phone' => ['required', 'regex:/^[6-9][0-9]{9}$/', 'unique:customers,phone,' . $customer->id],
+            'customer_type' => ['required', 'in:Residential,Commercial,Other'],
             'address' => ['nullable', 'string', 'max:1000'],
             'city' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
+            'state' => ['nullable', 'string', 'max:100'],
+            'pincode' => ['nullable', 'regex:/^[0-9]{6}$/'],
+            'notes' => ['nullable', 'string', 'max:5000'],
             'status' => ['required', 'in:Active,Inactive'],
         ]);
 
@@ -92,14 +107,15 @@ class CustomerController extends Controller
         }, $data);
 
         $customer->update($data);
+        $customer->projects()->update(['customer_type' => $customer->customer_type]);
 
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
     public function destroy(Customer $customer)
     {
-        if ($customer->serviceRequests()->exists() || $customer->invoices()->exists()) {
-            return redirect()->route('customers.index')->with('error', 'Cannot delete customer because they have active service requests or invoices.');
+        if ($customer->projects()->exists() || $customer->payments()->exists() || $customer->serviceRequests()->exists() || $customer->invoices()->exists() || $customer->quotations()->exists() || $customer->siteSurveys()->exists()) {
+            return redirect()->route('customers.index')->with('error', 'Cannot delete customer because they have linked projects, quotations, payments, or service records.');
         }
         try {
             $customer->delete();

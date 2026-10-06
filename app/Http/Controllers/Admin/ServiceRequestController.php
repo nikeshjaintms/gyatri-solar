@@ -7,7 +7,9 @@ use App\Models\ServiceRequest;
 use App\Models\Customer;
 use App\Models\Service;
 use App\Models\Technician;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ServiceRequestController extends Controller
 {
@@ -16,15 +18,17 @@ class ServiceRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ServiceRequest::with(['customer', 'service', 'technician']);
+        $query = ServiceRequest::with(['customer', 'service', 'technician', 'project']);
 
         // Search by customer name, service name, or technician name
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('customer', fn($c) => $c->where('name', 'like', "%{$search}%"))
+                                $q->where('service_number', 'like', "%{$search}%")
+                                    ->orWhereHas('customer', fn($c) => $c->where('name', 'like', "%{$search}%"))
                   ->orWhereHas('service',  fn($s) => $s->where('service_name', 'like', "%{$search}%"))
-                  ->orWhereHas('technician', fn($t) => $t->where('name', 'like', "%{$search}%"));
+                                    ->orWhereHas('technician', fn($t) => $t->where('name', 'like', "%{$search}%"))
+                                    ->orWhereHas('project', fn($p) => $p->where('project_name', 'like', "%{$search}%"));
             });
         }
 
@@ -53,8 +57,9 @@ class ServiceRequestController extends Controller
         $customers   = Customer::where('status', 'Active')->orderBy('name')->get();
         $services    = Service::where('status', 'Active')->orderBy('service_name')->get();
         $technicians = Technician::where('status', 'Active')->orderBy('name')->get();
+        $projects    = Project::with('customer')->orderBy('project_name')->get();
 
-        return view('admin.service_requests.create', compact('customers', 'services', 'technicians'));
+        return view('admin.service_requests.create', compact('customers', 'services', 'technicians', 'projects'));
     }
 
     /**
@@ -64,6 +69,7 @@ class ServiceRequestController extends Controller
     {
         $validated = $request->validate([
             'customer_id'   => ['required', 'exists:customers,id'],
+            'project_id'    => ['nullable', Rule::exists('projects', 'id')->where('customer_id', $request->input('customer_id'))],
             'service_id'    => ['required', 'exists:services,id'],
             'technician_id' => ['nullable', 'exists:technicians,id'],
             'request_date'  => ['required', 'date'],
@@ -75,7 +81,8 @@ class ServiceRequestController extends Controller
             'remarks'       => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $data = $request->all();
+        $data = $validated;
+        $data['service_number'] = ServiceRequest::generateServiceNumber();
         if (isset($data['address'])) $data['address'] = trim(strip_tags($data['address']));
         if (isset($data['description'])) $data['description'] = trim(strip_tags($data['description']));
         if (isset($data['remarks'])) $data['remarks'] = trim(strip_tags($data['remarks']));
@@ -96,7 +103,7 @@ class ServiceRequestController extends Controller
      */
     public function show(ServiceRequest $serviceRequest)
     {
-        $serviceRequest->load(['customer', 'service', 'technician']);
+        $serviceRequest->load(['customer', 'service', 'technician', 'project']);
 
         return view('admin.service_requests.show', compact('serviceRequest'));
     }
@@ -109,8 +116,9 @@ class ServiceRequestController extends Controller
         $customers   = Customer::orderBy('name')->get();
         $services    = Service::orderBy('service_name')->get();
         $technicians = Technician::orderBy('name')->get();
+        $projects    = Project::with('customer')->orderBy('project_name')->get();
 
-        return view('admin.service_requests.edit', compact('serviceRequest', 'customers', 'services', 'technicians'));
+        return view('admin.service_requests.edit', compact('serviceRequest', 'customers', 'services', 'technicians', 'projects'));
     }
 
     /**
@@ -120,6 +128,7 @@ class ServiceRequestController extends Controller
     {
         $validated = $request->validate([
             'customer_id'   => ['required', 'exists:customers,id'],
+            'project_id'    => ['nullable', Rule::exists('projects', 'id')->where('customer_id', $request->input('customer_id'))],
             'service_id'    => ['required', 'exists:services,id'],
             'technician_id' => ['nullable', 'exists:technicians,id'],
             'request_date'  => ['required', 'date'],
@@ -131,7 +140,7 @@ class ServiceRequestController extends Controller
             'remarks'       => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         if (isset($data['address'])) $data['address'] = trim(strip_tags($data['address']));
         if (isset($data['description'])) $data['description'] = trim(strip_tags($data['description']));
         if (isset($data['remarks'])) $data['remarks'] = trim(strip_tags($data['remarks']));

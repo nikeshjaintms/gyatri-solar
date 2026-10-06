@@ -463,6 +463,11 @@
 ════════════════════════════════════════════════════ --}}
 <p class="d-section-label"><i class="bi bi-lightning-charge-fill"></i> Quick Actions</p>
 <div class="d-quick-actions mb-4">
+    @if(Route::has('projects.create'))
+    <a href="{{ route('projects.create') }}" class="d-qa-btn d-qa-primary">
+        <i class="bi bi-sun"></i> New Project
+    </a>
+    @endif
     @if(Route::has('customers.create'))
     <a href="{{ route('customers.create') }}" class="d-qa-btn d-qa-primary">
         <i class="bi bi-person-plus-fill"></i> Add Customer
@@ -483,6 +488,11 @@
         <i class="bi bi-receipt"></i> New Invoice
     </a>
     @endif
+    @if(Route::has('payments.create'))
+    <a href="{{ route('payments.create') }}" class="d-qa-btn d-qa-outline">
+        <i class="bi bi-cash-stack"></i> Record Payment
+    </a>
+    @endif
     @if(Route::has('reports.index'))
     <a href="{{ route('reports.index') }}" class="d-qa-btn d-qa-outline">
         <i class="bi bi-bar-chart-line"></i> View Reports
@@ -497,45 +507,9 @@
 
 <div class="row g-3 mb-2">
 
-    {{-- Total Technicians --}}
-    <div class="col-6 col-md-4 col-xl-3">
-        <div class="d-kpi-card" style="--kpi-color:#3B82F6; --kpi-color-dark:#1E3A8A; --kpi-color-glow:rgba(59,130,246,0.35);">
-            <div class="d-kpi-icon"><i class="bi bi-person-badge-fill"></i></div>
-            <div class="d-kpi-body">
-                <div class="d-kpi-label">Total Technicians</div>
-                <div class="d-kpi-value">{{ number_format($stats['total_technicians'] ?? 0) }}</div>
-                <div class="d-kpi-sub">Field engineers</div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Total Services --}}
-    <div class="col-6 col-md-4 col-xl-3">
-        <div class="d-kpi-card" style="--kpi-color:#8B5CF6; --kpi-color-dark:#4C1D95; --kpi-color-glow:rgba(139,92,246,0.35);">
-            <div class="d-kpi-icon"><i class="bi bi-wrench-adjustable-circle-fill"></i></div>
-            <div class="d-kpi-body">
-                <div class="d-kpi-label">Total Services</div>
-                <div class="d-kpi-value">{{ number_format($stats['total_services'] ?? 0) }}</div>
-                <div class="d-kpi-sub">Service catalogue</div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Total Service Requests / Bookings --}}
-    <div class="col-6 col-md-4 col-xl-3">
-        <div class="d-kpi-card" style="--kpi-color:#6366F1; --kpi-color-dark:#312E81; --kpi-color-glow:rgba(99,102,241,0.35);">
-            <div class="d-kpi-icon"><i class="bi bi-clipboard2-data-fill"></i></div>
-            <div class="d-kpi-body">
-                <div class="d-kpi-label">Total Bookings</div>
-                <div class="d-kpi-value">{{ number_format($stats['total_requests'] ?? 0) }}</div>
-                <div class="d-kpi-sub">All-time requests</div>
-            </div>
-        </div>
-    </div>
-
     {{-- Total Customers --}}
     <div class="col-6 col-md-4 col-xl-3">
-        <div class="d-kpi-card" style="--kpi-color:#F58220; --kpi-color-dark:#7C2D12; --kpi-color-glow:rgba(245,130,32,0.35);">
+        <div class="d-kpi-card" style="--kpi-color:#3B82F6; --kpi-color-dark:#1E3A8A; --kpi-color-glow:rgba(59,130,246,0.35);">
             <div class="d-kpi-icon"><i class="bi bi-people-fill"></i></div>
             <div class="d-kpi-body">
                 <div class="d-kpi-label">Total Customers</div>
@@ -545,19 +519,55 @@
         </div>
     </div>
 
+    {{-- Total Projects --}}
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="d-kpi-card" style="--kpi-color:#8B5CF6; --kpi-color-dark:#4C1D95; --kpi-color-glow:rgba(139,92,246,0.35);">
+            <div class="d-kpi-icon"><i class="bi bi-sun-fill"></i></div>
+            <div class="d-kpi-body">
+                <div class="d-kpi-label">Total Projects</div>
+                <div class="d-kpi-value">{{ number_format($stats['total_projects'] ?? 0) }}</div>
+                <div class="d-kpi-sub">Solar installations</div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Pending Projects --}}
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="d-kpi-card" style="--kpi-color:#6366F1; --kpi-color-dark:#312E81; --kpi-color-glow:rgba(99,102,241,0.35);">
+            <div class="d-kpi-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="d-kpi-body">
+                <div class="d-kpi-label">Pending Projects</div>
+                <div class="d-kpi-value">{{ number_format($stats['pending_projects'] ?? 0) }}</div>
+                <div class="d-kpi-sub">New or in progress</div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Completed Projects --}}
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="d-kpi-card" style="--kpi-color:#F58220; --kpi-color-dark:#7C2D12; --kpi-color-glow:rgba(245,130,32,0.35);">
+            <div class="d-kpi-icon"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="d-kpi-body">
+                <div class="d-kpi-label">Completed Projects</div>
+                <div class="d-kpi-value">{{ number_format($stats['completed_projects'] ?? 0) }}</div>
+                <div class="d-kpi-sub">Installation complete</div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {{-- KPI Row 2 — Job Statuses --}}
 <div class="row g-3 mb-2">
 
-    {{-- Pending Jobs --}}
+    {{-- Total Service Requests --}}
     <div class="col-6 col-md-4 col-xl-3">
         <div class="d-kpi-card" style="--kpi-color:#F59E0B; --kpi-color-dark:#78350F; --kpi-color-glow:rgba(245,158,11,0.35);">
-            <div class="d-kpi-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="d-kpi-icon"><i class="bi bi-clipboard2-data-fill"></i></div>
             <div class="d-kpi-body">
-                <div class="d-kpi-label">Pending Jobs</div>
-                <div class="d-kpi-value">{{ number_format($stats['pending_requests'] ?? 0) }}</div>
-                <div class="d-kpi-sub">Awaiting action</div>
+                <div class="d-kpi-label">Service Requests</div>
+                <div class="d-kpi-value">{{ number_format($stats['total_requests'] ?? 0) }}</div>
+                <div class="d-kpi-sub">All-time requests</div>
             </div>
         </div>
     </div>
@@ -567,9 +577,9 @@
         <div class="d-kpi-card" style="--kpi-color:#3B82F6; --kpi-color-dark:#1E3A8A; --kpi-color-glow:rgba(59,130,246,0.35);">
             <div class="d-kpi-icon"><i class="bi bi-person-check-fill"></i></div>
             <div class="d-kpi-body">
-                <div class="d-kpi-label">Assigned Jobs</div>
-                <div class="d-kpi-value{{ ($stats['assigned_requests'] ?? 0) > 0 ? '' : '' }}">{{ number_format($stats['assigned_requests'] ?? 0) }}</div>
-                <div class="d-kpi-sub">Technician allocated</div>
+                <div class="d-kpi-label">Pending Requests</div>
+                <div class="d-kpi-value">{{ number_format($stats['pending_requests'] ?? 0) }}</div>
+                <div class="d-kpi-sub">Awaiting action</div>
             </div>
         </div>
     </div>
@@ -870,6 +880,37 @@
                             <i class="bi bi-calendar2-x"></i>
                             <p>No job assignments yet.</p>
                         </div></td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12">
+        <div class="d-recent-card">
+            <div class="d-recent-header">
+                <h6 class="d-recent-title"><i class="bi bi-sun-fill"></i> Recent Projects</h6>
+                @if(Route::has('projects.index'))
+                    <a href="{{ route('projects.index') }}" class="d-view-all">View All <i class="bi bi-arrow-right"></i></a>
+                @endif
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="d-rtable">
+                    <thead><tr><th>Project</th><th>Customer</th><th>Type</th><th>Capacity</th><th>Status</th></tr></thead>
+                    <tbody>
+                        @forelse($recentProjects as $project)
+                            <tr>
+                                <td class="td-name">{{ $project->project_name }}</td>
+                                <td>{{ $project->customer->name ?? '—' }}</td>
+                                <td>{{ $project->customer_type }}</td>
+                                <td>{{ number_format((float) $project->solar_capacity, 2) }} kW</td>
+                                <td><span class="d-badge {{ $project->status === 'Completed' ? 'db-completed' : ($project->status === 'Cancelled' ? 'db-cancelled' : 'db-pending') }}">{{ $project->status }}</span></td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="5"><div class="d-table-empty"><i class="bi bi-sun"></i><p>No projects yet.</p></div></td></tr>
                         @endforelse
                     </tbody>
                 </table>

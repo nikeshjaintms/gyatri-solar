@@ -20,10 +20,10 @@
         Quotation Details: {{ $quotation->quotation_number }}
     </h1>
     <div class="d-flex gap-2">
-        <a href="{{ route('quotations.print', $quotation->id) }}" target="_blank" class="btn-add-primary" style="background-color: #6366F1;">
+        <a href="{{ route('quotations.print', $quotation->id) }}" target="_blank" class="btn-secondary-action">
             <i class="bi bi-printer"></i> Print Quotation
         </a>
-        <a href="{{ route('quotations.edit', $quotation->id) }}" class="btn-add-primary" style="background-color: #3B82F6;">
+        <a href="{{ route('quotations.edit', $quotation->id) }}" class="btn-edit-primary">
             <i class="bi bi-pencil"></i> Edit Quotation
         </a>
         <a href="{{ route('quotations.index') }}" class="btn-back">

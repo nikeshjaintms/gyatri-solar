@@ -71,6 +71,23 @@
                     </div>
                 </div>
 
+                <!-- Project -->
+                <div class="col-12 col-md-4">
+                    <label class="field-label">Project <span class="text-muted">(optional)</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-sun field-icon"></i>
+                        <select name="project_id" class="form-field form-field-select @error('project_id') is-invalid @enderror">
+                            <option value="">-- No Project --</option>
+                            @foreach($projects as $project)
+                                <option value="{{ $project->id }}" @selected((string) old('project_id', $quotation->project_id) === (string) $project->id)>
+                                    {{ $project->project_name }} - {{ $project->customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('project_id')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
                 <!-- Quotation Date -->
                 <div class="col-12 col-md-4">
                     <label class="field-label">Quotation Date <span class="req">*</span></label>

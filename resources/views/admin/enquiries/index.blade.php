@@ -178,7 +178,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-chat-left-text"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No enquiries found</h6>
                                 <p class="text-muted small mb-3">Adjust your filter options or add a new customer lead.</p>
-                                <a href="{{ route('enquiries.create') }}" class="btn-add-primary" style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                <a href="{{ route('enquiries.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Enquiry
                                 </a>
                             </div>

@@ -8,7 +8,9 @@ use App\Models\Customer;
 use App\Models\Service;
 use App\Models\ServiceRequest;
 use App\Models\JobAssignment;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class InvoiceController extends Controller
 {
@@ -75,6 +77,7 @@ class InvoiceController extends Controller
     public function create()
     {
         $customers       = Customer::orderBy('name')->get();
+        $projects        = Project::with('customer')->orderBy('project_name')->get();
         $services        = Service::where('status', 'Active')->orderBy('service_name')->get();
         $serviceRequests = ServiceRequest::with(['customer', 'service'])
                             ->whereNotIn('status', ['Cancelled'])
@@ -84,7 +87,7 @@ class InvoiceController extends Controller
         $invoiceNo       = Invoice::generateInvoiceNo();
 
         return view('admin.invoices.create', compact(
-            'customers', 'services', 'serviceRequests', 'jobAssignments', 'invoiceNo'
+            'customers', 'projects', 'services', 'serviceRequests', 'jobAssignments', 'invoiceNo'
         ));
     }
 
@@ -93,6 +96,7 @@ class InvoiceController extends Controller
     {
         $validated = $request->validate([
             'customer_id'        => ['required', 'exists:customers,id'],
+            'project_id'         => ['nullable', Rule::exists('projects', 'id')->where('customer_id', $request->input('customer_id'))],
             'service_id'         => ['nullable', 'exists:services,id'],
             'service_request_id' => ['nullable', 'exists:service_requests,id'],
             'job_assignment_id'  => ['nullable', 'exists:job_assignments,id'],
@@ -106,7 +110,7 @@ class InvoiceController extends Controller
             'notes'              => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         if (isset($data['notes'])) {
             $data['notes'] = trim(strip_tags($data['notes']));
         }
@@ -128,7 +132,7 @@ class InvoiceController extends Controller
     /* ─── show ─── */
     public function show(Invoice $invoice)
     {
-        $invoice->load(['customer', 'service', 'serviceRequest', 'jobAssignment.technician']);
+        $invoice->load(['customer', 'project', 'service', 'serviceRequest', 'jobAssignment.technician']);
         return view('admin.invoices.show', compact('invoice'));
     }
 
@@ -136,6 +140,7 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         $customers       = Customer::orderBy('name')->get();
+        $projects        = Project::with('customer')->orderBy('project_name')->get();
         $services        = Service::orderBy('service_name')->get();
         $serviceRequests = ServiceRequest::with(['customer', 'service'])
                             ->orderBy('request_date', 'desc')->get();
@@ -143,7 +148,7 @@ class InvoiceController extends Controller
                             ->orderBy('assigned_date', 'desc')->get();
 
         return view('admin.invoices.edit', compact(
-            'invoice', 'customers', 'services', 'serviceRequests', 'jobAssignments'
+            'invoice', 'customers', 'projects', 'services', 'serviceRequests', 'jobAssignments'
         ));
     }
 
@@ -152,6 +157,7 @@ class InvoiceController extends Controller
     {
         $validated = $request->validate([
             'customer_id'        => ['required', 'exists:customers,id'],
+            'project_id'         => ['nullable', Rule::exists('projects', 'id')->where('customer_id', $request->input('customer_id'))],
             'service_id'         => ['nullable', 'exists:services,id'],
             'service_request_id' => ['nullable', 'exists:service_requests,id'],
             'job_assignment_id'  => ['nullable', 'exists:job_assignments,id'],
@@ -165,7 +171,7 @@ class InvoiceController extends Controller
             'notes'              => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         if (isset($data['notes'])) {
             $data['notes'] = trim(strip_tags($data['notes']));
         }

@@ -128,7 +128,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-wrench-adjustable"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No records found</h6>
                                 <p class="text-muted small mb-3">Adjust your search or add a new service.</p>
-                                <a href="{{ route('services.create') }}" class="btn-add-primary" style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                <a href="{{ route('services.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Service
                                 </a>
                             </div>

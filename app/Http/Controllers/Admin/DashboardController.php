@@ -10,6 +10,9 @@ use App\Models\ServiceRequest;
 use App\Models\JobAssignment;
 use App\Models\JobStatusTracking;
 use App\Models\Invoice;
+use App\Models\Project;
+use App\Models\Payment;
+use App\Models\Quotation;
 
 class DashboardController extends Controller
 {
@@ -19,10 +22,24 @@ class DashboardController extends Controller
         $cnt = fn(callable $q, int $d = 0): int => $this->safe($q, $d);
         $sum = fn(callable $q): float            => $this->safe($q, 0.0);
 
+        $projectAmount = $sum(fn() => Quotation::whereIn('id', function ($query) {
+            $query->selectRaw('MAX(id)')
+                ->from('quotations')
+                ->whereNotNull('project_id')
+                ->where('status', 'Accepted')
+                ->groupBy('project_id');
+        })->sum('grand_total'));
+        $projectPaid = $sum(fn() => Payment::whereNotNull('project_id')->sum('amount'));
+        $unlinkedInvoicePaid = $sum(fn() => Invoice::whereNull('project_id')->sum('paid_amount'));
+        $unlinkedInvoicePending = $sum(fn() => Invoice::whereNull('project_id')->sum('balance_amount'));
+
         /* ── KPI counts ── */
         $stats = [
             // People & services
             'total_customers'   => $cnt(fn() => Customer::count()),
+            'total_projects'    => $cnt(fn() => Project::count()),
+            'pending_projects'  => $cnt(fn() => Project::whereIn('status', ['New', 'In Progress'])->count()),
+            'completed_projects' => $cnt(fn() => Project::where('status', 'Completed')->count()),
             'total_technicians' => $cnt(fn() => Technician::count()),
             'total_services'    => $cnt(fn() => Service::count()),
 
@@ -35,9 +52,9 @@ class DashboardController extends Controller
 
             // Invoices
             'total_invoices'    => $cnt(fn() => Invoice::count()),
-            'total_revenue'     => $sum(fn() => Invoice::sum('total_amount')),
-            'paid_amount'       => $sum(fn() => Invoice::sum('paid_amount')),
-            'pending_amount'    => $sum(fn() => Invoice::sum('balance_amount')),
+            'total_revenue'     => $projectAmount + $sum(fn() => Invoice::whereNull('project_id')->sum('total_amount')),
+            'paid_amount'       => $projectPaid + $unlinkedInvoicePaid,
+            'pending_amount'    => max(0, $projectAmount - $projectPaid) + $unlinkedInvoicePending,
         ];
 
         /* ── Service Request breakdown ── */
@@ -75,6 +92,11 @@ class DashboardController extends Controller
             collect()
         );
 
+        $recentProjects = $this->safe(
+            fn() => Project::with('customer')->latest()->limit(5)->get(),
+            collect()
+        );
+
         $recentJobs = $this->safe(
             fn() => JobAssignment::with(['serviceRequest.customer', 'serviceRequest.service', 'technician'])
                 ->latest()->limit(5)->get(),
@@ -93,6 +115,7 @@ class DashboardController extends Controller
             'jaSummary',
             'paySummary',
             'recentRequests',
+            'recentProjects',
             'recentJobs',
             'recentInvoices'
         ));

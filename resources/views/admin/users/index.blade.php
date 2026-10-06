@@ -167,7 +167,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-people-fill"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No users found</h6>
                                 <p class="text-muted small mb-3">Adjust your filters or register a new system operator user.</p>
-                                <a href="{{ route('users.create') }}" class="btn-add-primary" style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                <a href="{{ route('users.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add User
                                 </a>
                             </div>

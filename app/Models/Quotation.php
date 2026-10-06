@@ -12,6 +12,7 @@ class Quotation extends Model
         'quotation_number',
         'enquiry_id',
         'customer_id',
+        'project_id',
         'quotation_date',
         'valid_until',
         'subtotal',
@@ -98,6 +99,11 @@ class Quotation extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     /**

@@ -198,8 +198,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-tools"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No records found</h6>
                                 <p class="text-muted small mb-3">Adjust your filters or create a new job assignment.</p>
-                                <a href="{{ route('job-assignments.create') }}" class="btn-add-primary"
-                                   style="border-radius:20px;padding:8px 20px;font-size:0.82rem;">
+                                          <a href="{{ route('job-assignments.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> New Assignment
                                 </a>
                             </div>

@@ -158,8 +158,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-person-workspace"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No employee records found</h6>
                                 <p class="text-muted small mb-3">Adjust your search or add a new employee.</p>
-                                <a href="{{ route('employees.create') }}" class="btn-add-primary"
-                                   style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                          <a href="{{ route('employees.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Employee
                                 </a>
                             </div>

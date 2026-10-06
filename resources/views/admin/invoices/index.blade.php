@@ -151,8 +151,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-receipt"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No records found</h6>
                                 <p class="text-muted small mb-3">Adjust your search filters or create a new invoice.</p>
-                                <a href="{{ route('invoices.create') }}" class="btn-add-primary"
-                                   style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                          <a href="{{ route('invoices.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Invoice
                                 </a>
                             </div>

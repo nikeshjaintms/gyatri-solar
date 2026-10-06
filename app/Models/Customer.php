@@ -10,8 +10,12 @@ class Customer extends Model
         'name',
         'email',
         'phone',
+        'customer_type',
         'address',
         'city',
+        'state',
+        'pincode',
+        'notes',
         'status',
     ];
 
@@ -38,5 +42,15 @@ class Customer extends Model
     public function enquiries()
     {
         return $this->hasMany(Enquiry::class, 'customer_id');
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

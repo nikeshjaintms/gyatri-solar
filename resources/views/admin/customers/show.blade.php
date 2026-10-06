@@ -233,6 +233,7 @@
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <h2 class="text-white mb-0 fw-bold fs-4">{{ $customer->name }}</h2>
+                    <span class="badge bg-warning text-dark">{{ $customer->customer_type ?? 'Residential' }}</span>
                     @if($customer->status == 'Active')
                         <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2.5 py-1 rounded-pill small">
                             <i class="bi bi-circle-fill me-1" style="font-size: 0.45rem;"></i> Active Customer
@@ -257,6 +258,9 @@
             </a>
             <a href="{{ route('customers.edit', $customer->id) }}" class="btn-flow-action py-2">
                 <i class="bi bi-pencil-square"></i> Edit Customer
+            </a>
+            <a href="{{ route('projects.create', ['customer_id' => $customer->id]) }}" class="btn-flow-action-secondary py-2">
+                <i class="bi bi-sun"></i> Add Project
             </a>
         </div>
     </div>
@@ -283,7 +287,7 @@
 
         <div class="customer-meta-chip">
             <i class="bi bi-building"></i>
-            <span>{{ $customer->city ?: 'City not set' }}</span>
+            <span>{{ collect([$customer->city, $customer->state, $customer->pincode])->filter()->join(', ') ?: 'Address location not set' }}</span>
         </div>
 
         <div class="customer-meta-chip flex-grow-1">

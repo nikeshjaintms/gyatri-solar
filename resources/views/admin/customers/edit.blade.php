@@ -62,15 +62,29 @@
 
                 {{-- Phone --}}
                 <div class="col-12 col-md-6">
-                    <label class="field-label">Phone Number</label>
+                    <label class="field-label">Mobile Number <span class="req">*</span></label>
                     <div class="field-input-wrap">
                         <i class="bi bi-telephone field-icon"></i>
-                        <input type="text" name="phone"
+                        <input type="tel" name="phone" inputmode="numeric" maxlength="10" required
                                class="form-field @error('phone') is-invalid @enderror"
                                value="{{ old('phone', $customer->phone) }}"
-                               placeholder="e.g. +1 (555) 000-0000">
+                               placeholder="10-digit Indian mobile number">
                     </div>
+                    <div class="field-hint">Enter a valid 10-digit Indian mobile number.</div>
                     @error('phone')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <label class="field-label">Customer Type <span class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-people field-icon"></i>
+                        <select name="customer_type" class="form-field form-field-select @error('customer_type') is-invalid @enderror" required>
+                            @foreach(['Residential', 'Commercial', 'Other'] as $type)
+                                <option value="{{ $type }}" {{ old('customer_type', $customer->customer_type) === $type ? 'selected' : '' }}>{{ $type }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('customer_type')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- City --}}
@@ -86,6 +100,18 @@
                     @error('city')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
 
+                <div class="col-12 col-md-6">
+                    <label class="field-label">State</label>
+                    <input type="text" name="state" class="form-field @error('state') is-invalid @enderror" value="{{ old('state', $customer->state) }}">
+                    @error('state')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <label class="field-label">Pincode</label>
+                    <input type="text" name="pincode" inputmode="numeric" maxlength="6" class="form-field @error('pincode') is-invalid @enderror" value="{{ old('pincode', $customer->pincode) }}">
+                    @error('pincode')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
                 {{-- Status --}}
                 <div class="col-12 col-md-6">
                     <label class="field-label">Status <span class="req">*</span></label>
@@ -98,6 +124,12 @@
                         </select>
                     </div>
                     @error('status')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="col-12">
+                    <label class="field-label">Notes</label>
+                    <textarea name="notes" rows="3" class="form-field form-field-textarea @error('notes') is-invalid @enderror">{{ old('notes', $customer->notes) }}</textarea>
+                    @error('notes')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Address --}}

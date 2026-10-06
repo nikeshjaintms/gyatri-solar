@@ -68,6 +68,9 @@
             {{ $serviceRequest->service->service_name ?? 'Service Request' }}
         </h2>
         <div class="hero-meta">
+            @if($serviceRequest->service_number)
+                <span class="hero-meta-chip"><i class="bi bi-upc"></i>{{ $serviceRequest->service_number }}</span>
+            @endif
             <span class="hero-meta-chip">
                 <i class="bi bi-person"></i>
                 {{ $serviceRequest->customer->name ?? '—' }}
@@ -118,6 +121,14 @@
         <div>
             <div class="detail-label">Customer</div>
             <div class="detail-value">{{ $serviceRequest->customer->name ?? '—' }}</div>
+        </div>
+    </div>
+
+    <div class="detail-card">
+        <div class="detail-card-icon icon-solar-orange"><i class="bi bi-sun"></i></div>
+        <div>
+            <div class="detail-label">Project</div>
+            <div class="detail-value">{{ $serviceRequest->project->project_name ?? '—' }}</div>
         </div>
     </div>
 

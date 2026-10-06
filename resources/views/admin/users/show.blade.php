@@ -24,7 +24,7 @@
         User Account Profile
     </h1>
     <div class="d-flex gap-2">
-        <a href="{{ route('users.edit', $user->id) }}" class="btn-add-primary" style="background-color: #3B82F6;">
+        <a href="{{ route('users.edit', $user->id) }}" class="btn-edit-primary">
             <i class="bi bi-pencil"></i> Edit Profile
         </a>
         <a href="{{ route('users.index') }}" class="btn-back">

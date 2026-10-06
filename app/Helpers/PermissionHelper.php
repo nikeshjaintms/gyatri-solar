@@ -22,6 +22,15 @@ class PermissionHelper
                         'delete_customers' => 'Delete Customer',
                     ],
                 ],
+                'Projects' => [
+                    'icon' => 'bi-sun',
+                    'permissions' => [
+                        'view_projects' => 'View Projects',
+                        'create_projects' => 'Create Project',
+                        'update_projects' => 'Edit Project',
+                        'delete_projects' => 'Delete Project',
+                    ],
+                ],
                 'Site Surveys' => [
                     'icon' => 'bi-map',
                     'permissions' => [
@@ -97,6 +106,15 @@ class PermissionHelper
                         'create_invoices' => 'Create Invoice',
                         'update_invoices' => 'Edit Invoice',
                         'delete_invoices' => 'Delete Invoice',
+                    ],
+                ],
+                'Payments' => [
+                    'icon' => 'bi-cash-stack',
+                    'permissions' => [
+                        'view_payments' => 'View Payments',
+                        'create_payments' => 'Record Payment',
+                        'update_payments' => 'Edit Payment',
+                        'delete_payments' => 'Delete Payment',
                     ],
                 ],
             ],

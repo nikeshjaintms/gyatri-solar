@@ -7,6 +7,7 @@ use App\Models\Quotation;
 use App\Models\QuotationItem;
 use App\Models\Enquiry;
 use App\Models\Customer;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +58,7 @@ class QuotationController extends Controller
     {
         $enquiries = Enquiry::whereNotIn('status', ['Closed', 'Cancelled'])->orderBy('enquiry_number', 'desc')->get();
         $customers = Customer::orderBy('name')->get();
+        $projects = Project::with('customer')->orderBy('project_name')->get();
         $products = \App\Models\Product::where('status', 'Active')->orderBy('name')->get();
         $quotation = new Quotation();
 
@@ -65,7 +67,7 @@ class QuotationController extends Controller
         $nextId = $latest ? ($latest->id + 1) : 1;
         $quotationNumber = 'QT-' . date('Ym') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
 
-        return view('admin.quotations.create', compact('enquiries', 'customers', 'quotationNumber', 'products', 'quotation'));
+        return view('admin.quotations.create', compact('enquiries', 'customers', 'projects', 'quotationNumber', 'products', 'quotation'));
     }
 
     public function store(Request $request)
@@ -132,6 +134,7 @@ class QuotationController extends Controller
             'quotation_number' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:quotations,quotation_number'],
             'enquiry_id' => ['nullable', 'exists:enquiries,id'],
             'customer_id' => ['required', 'exists:customers,id'],
+            'project_id' => ['nullable', Rule::exists('projects', 'id')->where('customer_id', $request->input('customer_id'))],
             'quotation_date' => ['required', 'date'],
             'valid_until' => ['required', 'date', 'after_or_equal:quotation_date'],
             'terms_conditions' => ['nullable', 'string', 'max:5000'],
@@ -207,6 +210,7 @@ class QuotationController extends Controller
                 'quotation_number' => trim(strip_tags($request->quotation_number)),
                 'enquiry_id' => $request->enquiry_id,
                 'customer_id' => $request->customer_id,
+                'project_id' => $request->project_id,
                 'quotation_date' => $request->quotation_date,
                 'valid_until' => $request->valid_until,
                 'subtotal' => $subtotal,
@@ -264,9 +268,10 @@ class QuotationController extends Controller
         $quotation = Quotation::with('items.product')->findOrFail($id);
         $enquiries = Enquiry::orderBy('enquiry_number', 'desc')->get();
         $customers = Customer::orderBy('name')->get();
+        $projects = Project::with('customer')->orderBy('project_name')->get();
         $products = \App\Models\Product::where('status', 'Active')->orderBy('name')->get();
 
-        return view('admin.quotations.edit', compact('quotation', 'enquiries', 'customers', 'products'));
+        return view('admin.quotations.edit', compact('quotation', 'enquiries', 'customers', 'projects', 'products'));
     }
 
     public function update(Request $request, string $id)
@@ -334,6 +339,7 @@ class QuotationController extends Controller
             'quotation_number' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-\_]+$/', Rule::unique('quotations', 'quotation_number')->ignore($quotation->id)],
             'enquiry_id' => ['nullable', 'exists:enquiries,id'],
             'customer_id' => ['required', 'exists:customers,id'],
+            'project_id' => ['nullable', Rule::exists('projects', 'id')->where('customer_id', $request->input('customer_id'))],
             'quotation_date' => ['required', 'date'],
             'valid_until' => ['required', 'date', 'after_or_equal:quotation_date'],
             'terms_conditions' => ['nullable', 'string', 'max:5000'],
@@ -412,6 +418,7 @@ class QuotationController extends Controller
                 'quotation_number' => trim(strip_tags($request->quotation_number)),
                 'enquiry_id' => $request->enquiry_id,
                 'customer_id' => $request->customer_id,
+                'project_id' => $request->project_id,
                 'quotation_date' => $request->quotation_date,
                 'valid_until' => $request->valid_until,
                 'subtotal' => $subtotal,

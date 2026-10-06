@@ -28,7 +28,18 @@
                            value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-people"></i></span>
+                    <select name="customer_type" class="form-select">
+                        <option value="">All Types</option>
+                        @foreach(['Residential', 'Commercial', 'Other'] as $type)
+                            <option value="{{ $type }}" {{ request('customer_type') === $type ? 'selected' : '' }}>{{ $type }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-funnel"></i></span>
                     <select name="status" class="form-select">
@@ -60,6 +71,7 @@
                     <th>Customer</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Type</th>
                     <th>City</th>
                     <th>Status</th>
                     <th class="text-end" style="width:200px;">Actions</th>
@@ -82,6 +94,7 @@
                         </td>
                         <td style="color:#6B7280;">{{ $customer->email ?? '—' }}</td>
                         <td style="color:#6B7280;">{{ $customer->phone ?? '—' }}</td>
+                        <td>{{ $customer->customer_type }}</td>
                         <td style="color:#6B7280;">{{ $customer->city ?? '—' }}</td>
                         <td>
                             @if($customer->status == 'Active')
@@ -109,13 +122,12 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="empty-state">
                                 <div class="empty-state-icon"><i class="bi bi-people"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No records found</h6>
                                 <p class="text-muted small mb-3">Adjust your search or add a new customer.</p>
-                                <a href="{{ route('customers.create') }}" class="btn-add-primary"
-                                   style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                          <a href="{{ route('customers.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Customer
                                 </a>
                             </div>

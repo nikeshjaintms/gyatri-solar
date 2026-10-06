@@ -21,7 +21,7 @@
         Site Survey Details: {{ $survey->survey_number }}
     </h1>
     <div class="d-flex gap-2">
-        <a href="{{ route('site-surveys.edit', $survey->id) }}" class="btn-add-primary" style="background-color: #3B82F6;">
+        <a href="{{ route('site-surveys.edit', $survey->id) }}" class="btn-edit-primary">
             <i class="bi bi-pencil"></i> Edit Survey
         </a>
         <a href="{{ route('site-surveys.index') }}" class="btn-back">

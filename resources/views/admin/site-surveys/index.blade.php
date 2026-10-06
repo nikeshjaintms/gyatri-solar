@@ -32,7 +32,7 @@
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control"
-                           placeholder="Search Survey #, customer, address..."
+                           placeholder="Search Survey , customer, address..."
                            value="{{ request('search') }}">
                 </div>
             </div>
@@ -176,7 +176,7 @@
                                 <div class="empty-state-icon"><i class="bi bi-map-fill"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No site surveys found</h6>
                                 <p class="text-muted small mb-3">Adjust your filter options or add a new site inspection survey.</p>
-                                <a href="{{ route('site-surveys.create') }}" class="btn-add-primary" style="border-radius:20px; padding:8px 20px; font-size:0.82rem;">
+                                <a href="{{ route('site-surveys.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> Add Site Survey
                                 </a>
                             </div>

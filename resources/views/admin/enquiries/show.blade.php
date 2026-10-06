@@ -22,7 +22,7 @@
         Enquiry Details: {{ $enquiry->enquiry_number }}
     </h1>
     <div class="d-flex gap-2">
-        <a href="{{ route('enquiries.edit', $enquiry->id) }}" class="btn-add-primary" style="background-color: #3B82F6;">
+        <a href="{{ route('enquiries.edit', $enquiry->id) }}" class="btn-edit-primary">
             <i class="bi bi-pencil"></i> Edit Lead
         </a>
         <a href="{{ route('enquiries.index') }}" class="btn-back">

@@ -8,6 +8,8 @@ class ServiceRequest extends Model
 {
     protected $fillable = [
         'customer_id',
+        'project_id',
+        'service_number',
         'service_id',
         'technician_id',
         'request_date',
@@ -29,6 +31,18 @@ class ServiceRequest extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public static function generateServiceNumber(): string
+    {
+        $next = (static::max('id') ?? 0) + 1;
+
+        return 'SRV-' . now()->format('Ym') . '-' . str_pad((string) $next, 5, '0', STR_PAD_LEFT);
     }
 
     public function service()

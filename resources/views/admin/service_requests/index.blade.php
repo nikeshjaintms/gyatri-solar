@@ -65,7 +65,7 @@
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control"
-                           placeholder="Search customer, service, technician..."
+                           placeholder="Search request number, customer, service, technician..."
                            value="{{ request('search') }}">
                 </div>
             </div>
@@ -110,6 +110,7 @@
             <thead>
                 <tr>
                     <th style="width:50px;">#</th>
+                    <th>Service No.</th>
                     <th>Customer</th>
                     <th>Service</th>
                     <th>Technician</th>
@@ -136,6 +137,7 @@
                     @endphp
                     <tr>
                         <td><span class="sr-badge">{{ $srNo }}</span></td>
+                        <td class="fw-semibold">{{ $sr->service_number ?? '—' }}</td>
                         <td>
                             <div class="rel-cell">
                                 <span class="rel-primary">{{ $sr->customer->name ?? '—' }}</span>
@@ -194,13 +196,12 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9">
+                        <td colspan="10">
                             <div class="empty-state">
                                 <div class="empty-state-icon"><i class="bi bi-clipboard2-x"></i></div>
                                 <h6 class="fw-semibold text-secondary mb-1">No records found</h6>
                                 <p class="text-muted small mb-3">Adjust your filters or create a new service request.</p>
-                                <a href="{{ route('service-requests.create') }}" class="btn-add-primary"
-                                   style="border-radius:20px;padding:8px 20px;font-size:0.82rem;">
+                                          <a href="{{ route('service-requests.create') }}" class="btn-add-primary">
                                     <i class="bi bi-plus-lg"></i> New Request
                                 </a>
                             </div>

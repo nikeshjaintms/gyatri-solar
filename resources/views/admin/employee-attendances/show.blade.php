@@ -69,7 +69,7 @@
         Attendance Details
     </h1>
     <div class="d-flex gap-2">
-        <a href="{{ route('employee-attendances.edit', $attendance->id) }}" class="btn-add-primary" style="background-color: #3B82F6;">
+        <a href="{{ route('employee-attendances.edit', $attendance->id) }}" class="btn-edit-primary">
             <i class="bi bi-pencil"></i> Edit Record
         </a>
         <a href="{{ route('employee-attendances.index') }}" class="btn-back">

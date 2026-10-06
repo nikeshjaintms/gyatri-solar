@@ -103,6 +103,21 @@
                     @error('customer_id')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
 
+                    {{-- Project --}}
+                    <div class="col-12 col-md-4">
+                        <label class="field-label">Project <span style="color:#9CA3AF;">(optional)</span></label>
+                        <div class="field-input-wrap">
+                            <i class="bi bi-sun field-icon"></i>
+                            <select name="project_id" class="form-field form-field-select @error('project_id') is-invalid @enderror">
+                                <option value="">— Select Project —</option>
+                                @foreach($projects as $project)
+                                    <option value="{{ $project->id }}" @selected((string) old('project_id') === (string) $project->id)>{{ $project->project_name }} — {{ $project->customer->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('project_id')<div class="field-error">{{ $message }}</div>@enderror
+                    </div>
+
                 {{-- Service Request --}}
                 <div class="col-12 col-md-4">
                     <label class="field-label">Service Request <span style="color:#9CA3AF;">(optional)</span></label>

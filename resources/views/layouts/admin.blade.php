@@ -574,13 +574,14 @@
                         return false;
                     };
 
-                    $canSales = $canAny(['view_customers', 'create_customers', 'update_customers', 'view_site_surveys', 'create_site_surveys', 'view_quotations', 'create_quotations', 'view_enquiries', 'create_enquiries']);
+                    $canSales = $canAny(['view_customers', 'create_customers', 'update_customers', 'view_projects', 'create_projects', 'view_site_surveys', 'create_site_surveys', 'view_quotations', 'create_quotations', 'view_enquiries', 'create_enquiries']);
                     $canOperations = $canAny(['view_service_requests', 'view_job_assignments', 'view_job_status_tracking', 'view_technicians']);
                     $canMasters = $canAny(['view_products', 'view_services']);
                     $canStaff = $canAny(['view_employees', 'view_employee_attendances', 'view_users']);
                     $canBilling = $canAny(['view_invoices', 'create_invoices']);
+                    $canPayments = $canAny(['view_payments', 'create_payments', 'update_payments']);
                     $canAnalytics = $can('view_reports');
-                    $canDashboard = $isAdmin || $can('view_dashboard') || $canSales || $canOperations;
+                    $canDashboard = $isAdmin || $can('view_dashboard') || $canSales || $canOperations || $canBilling || $canPayments;
                 @endphp
 
                 @if($canDashboard)
@@ -600,7 +601,7 @@
                         <li class="menu-item">
                             <a href="{{ route('products.index') }}" class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                                 <i class="bi bi-box-seam menu-icon"></i>
-                                <span class="menu-text">Product Master</span>
+                                <span class="menu-text">Products</span>
                             </a>
                         </li>
                     @endif
@@ -608,7 +609,7 @@
                         <li class="menu-item">
                             <a href="{{ route('services.index') }}" class="menu-link {{ request()->routeIs('services.*') ? 'active' : '' }}">
                                 <i class="bi bi-wrench-adjustable menu-icon"></i>
-                                <span class="menu-text">Services Master</span>
+                                <span class="menu-text">Services</span>
                             </a>
                         </li>
                     @endif
@@ -622,6 +623,14 @@
                             <a href="{{ route('customers.index') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                                 <i class="bi bi-people menu-icon"></i>
                                 <span class="menu-text">Customers</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($can('view_projects') || $can('create_projects'))
+                        <li class="menu-item">
+                            <a href="{{ route('projects.index') }}" class="menu-link {{ request()->routeIs('projects.*') ? 'active' : '' }}">
+                                <i class="bi bi-sun menu-icon"></i>
+                                <span class="menu-text">Projects</span>
                             </a>
                         </li>
                     @endif
@@ -689,14 +698,20 @@
                 @endif
 
                 {{-- BILLING --}}
-                @if($canBilling)
+                @if($canBilling || $canPayments)
                     <div class="menu-header">BILLING</div>
-                    <li class="menu-item">
+                    @if($canBilling)<li class="menu-item">
                         <a href="{{ route('invoices.index') }}" class="menu-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
                             <i class="bi bi-receipt menu-icon"></i>
-                            <span class="menu-text">Invoices / Payments</span>
+                            <span class="menu-text">Invoices</span>
                         </a>
-                    </li>
+                    </li>@endif
+                    @if($canPayments)<li class="menu-item">
+                        <a href="{{ route('payments.index') }}" class="menu-link {{ request()->routeIs('payments.*') ? 'active' : '' }}">
+                            <i class="bi bi-cash-stack menu-icon"></i>
+                            <span class="menu-text">Payments</span>
+                        </a>
+                    </li>@endif
                 @endif
 
                 {{-- STAFF & ACCESS --}}
@@ -723,6 +738,14 @@
                             <a href="{{ route('users.index') }}" class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                                 <i class="bi bi-person-gear menu-icon"></i>
                                 <span class="menu-text">Users</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if($isAdmin)
+                        <li class="menu-item">
+                            <a href="{{ route('settings.edit') }}" class="menu-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                                <i class="bi bi-gear menu-icon"></i>
+                                <span class="menu-text">Settings</span>
                             </a>
                         </li>
                     @endif
@@ -790,6 +813,24 @@
                                 Customer Details
                             @elseif(request()->routeIs('customers.*'))
                                 Customers
+                            @elseif(request()->routeIs('projects.create'))
+                                Add Project
+                            @elseif(request()->routeIs('projects.edit'))
+                                Edit Project
+                            @elseif(request()->routeIs('projects.show'))
+                                Project Details
+                            @elseif(request()->routeIs('projects.*'))
+                                Projects
+                            @elseif(request()->routeIs('payments.create'))
+                                Record Payment
+                            @elseif(request()->routeIs('payments.edit'))
+                                Edit Payment
+                            @elseif(request()->routeIs('payments.show'))
+                                Payment Details
+                            @elseif(request()->routeIs('payments.*'))
+                                Payments
+                            @elseif(request()->routeIs('settings.*'))
+                                Company Settings
                             @elseif(request()->routeIs('enquiries.create'))
                                 Add Enquiry
                             @elseif(request()->routeIs('enquiries.edit'))
