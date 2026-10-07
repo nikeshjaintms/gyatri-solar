@@ -144,48 +144,39 @@
 {{-- Summary Cards --}}
 <p class="section-heading no-print">Payment Summary</p>
 <div class="row g-3 mb-4 pay-summary-section no-print">
-    <div class="col-6 col-md-4 col-lg">
-        <div class="pay-summary-card">
-            <div class="pay-icon pay-icon-blue"><i class="bi bi-currency-rupee"></i></div>
-            <div>
-                <div class="pay-val">₹{{ number_format($summary['total_invoice_amount'], 0) }}</div>
-                <div class="pay-lbl">Total Invoice</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
+    <div class="col-6 col-md-3">
         <div class="pay-summary-card">
             <div class="pay-icon pay-icon-green"><i class="bi bi-cash-stack"></i></div>
             <div>
-                <div class="pay-val">₹{{ number_format($summary['total_paid_amount'], 0) }}</div>
-                <div class="pay-lbl">Total Paid</div>
+                <div class="pay-val">₹{{ number_format($summary['total_paid_amount'] ?? 0, 2) }}</div>
+                <div class="pay-lbl">Total Collected</div>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-4 col-lg">
+    <div class="col-6 col-md-3">
         <div class="pay-summary-card">
-            <div class="pay-icon pay-icon-red"><i class="bi bi-exclamation-circle"></i></div>
+            <div class="pay-icon pay-icon-blue"><i class="bi bi-receipt"></i></div>
             <div>
-                <div class="pay-val">₹{{ number_format($summary['total_balance_amount'], 0) }}</div>
-                <div class="pay-lbl">Total Balance</div>
+                <div class="pay-val">{{ number_format($summary['total_transactions'] ?? 0) }}</div>
+                <div class="pay-lbl">Transactions</div>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-4 col-lg">
+    <div class="col-6 col-md-3">
         <div class="pay-summary-card">
-            <div class="pay-icon pay-icon-orange"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="pay-icon pay-icon-orange"><i class="bi bi-cash"></i></div>
             <div>
-                <div class="pay-val">{{ number_format($summary['paid_count']) }}</div>
-                <div class="pay-lbl">Paid Invoices</div>
+                <div class="pay-val">₹{{ number_format($summary['cash_amount'] ?? 0, 2) }}</div>
+                <div class="pay-lbl">Cash Payments</div>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-4 col-lg">
+    <div class="col-6 col-md-3">
         <div class="pay-summary-card">
-            <div class="pay-icon pay-icon-gray"><i class="bi bi-x-circle-fill"></i></div>
+            <div class="pay-icon pay-icon-blue"><i class="bi bi-bank"></i></div>
             <div>
-                <div class="pay-val">{{ number_format($summary['unpaid_count']) }}</div>
-                <div class="pay-lbl">Unpaid Invoices</div>
+                <div class="pay-val">₹{{ number_format($summary['online_amount'] ?? 0, 2) }}</div>
+                <div class="pay-lbl">Digital/Bank Transfers</div>
             </div>
         </div>
     </div>
@@ -195,7 +186,7 @@
     <div class="report-card-header">
         <h5 class="report-card-title">
             <i class="bi bi-wallet2"></i>
-            Payment Report
+            Payment Transactions Report
         </h5>
         <div class="d-flex gap-2 no-print">
             <button class="btn-print" onclick="window.print()">
@@ -207,24 +198,15 @@
     <div class="filter-section no-print">
         <form method="GET" action="{{ route('reports.payments') }}">
             <div class="row g-3 align-items-end">
-                <div class="col-6 col-sm-4 col-md-2">
+                <div class="col-6 col-sm-4 col-md-3">
                     <div class="filter-label">From Date</div>
                     <input type="date" name="from_date" class="filter-control" value="{{ request('from_date') }}">
                 </div>
-                <div class="col-6 col-sm-4 col-md-2">
+                <div class="col-6 col-sm-4 col-md-3">
                     <div class="filter-label">To Date</div>
                     <input type="date" name="to_date" class="filter-control" value="{{ request('to_date') }}">
                 </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <div class="filter-label">Payment Status</div>
-                    <select name="payment_status" class="filter-control">
-                        <option value="">All Status</option>
-                        @foreach($paymentStatuses as $s)
-                            <option value="{{ $s }}" {{ request('payment_status') == $s ? 'selected' : '' }}>{{ $s }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
+                <div class="col-6 col-sm-4 col-md-3">
                     <div class="filter-label">Payment Mode</div>
                     <select name="payment_mode" class="filter-control">
                         <option value="">All Modes</option>
@@ -250,14 +232,14 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Invoice No</th>
+                    <th>Payment No</th>
                     <th>Customer</th>
-                    <th>Invoice Date</th>
-                    <th>Total Amount</th>
-                    <th>Paid Amount</th>
-                    <th>Balance Amount</th>
-                    <th>Payment Status</th>
+                    <th>Project</th>
+                    <th>Payment Date</th>
+                    <th>Amount</th>
                     <th>Payment Mode</th>
+                    <th>Reference / UTR</th>
+                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
@@ -266,35 +248,25 @@
                     <td style="color:#9CA3AF;font-size:.78rem;">{{ $i + 1 }}</td>
                     <td>
                         <span style="font-weight:700;color:#F58220;font-size:.82rem;letter-spacing:.3px;">
-                            {{ $row->invoice_no ?? '—' }}
+                            {{ $row->payment_number ?? '—' }}
                         </span>
                     </td>
                     <td style="font-weight:600;color:#1F2937;">{{ optional($row->customer)->name ?? '—' }}</td>
-                    <td>{{ $row->invoice_date ? $row->invoice_date->format('d M Y') : '—' }}</td>
-                    <td class="amount-neutral">₹{{ number_format($row->total_amount ?? 0, 2) }}</td>
-                    <td class="amount-positive">₹{{ number_format($row->paid_amount ?? 0, 2) }}</td>
-                    <td class="{{ ($row->balance_amount ?? 0) > 0 ? 'amount-negative' : 'amount-positive' }}">
-                        ₹{{ number_format($row->balance_amount ?? 0, 2) }}
-                    </td>
+                    <td>{{ optional($row->project)->project_name ?? '—' }}</td>
+                    <td>{{ $row->payment_date ? $row->payment_date->format('d M Y') : '—' }}</td>
+                    <td class="amount-positive">₹{{ number_format($row->amount ?? 0, 2) }}</td>
                     <td>
-                        @php
-                            $psClass = match(strtolower($row->payment_status ?? '')) {
-                                'paid'    => 'badge-paid',
-                                'unpaid'  => 'badge-unpaid',
-                                'partial' => 'badge-partial',
-                                default   => 'badge-unpaid',
-                            };
-                        @endphp
-                        <span class="badge-status {{ $psClass }}">{{ $row->payment_status ?? '—' }}</span>
+                        <span class="badge bg-light text-dark border">{{ $row->payment_mode ?? '—' }}</span>
                     </td>
-                    <td>{{ $row->payment_mode ?? '—' }}</td>
+                    <td>{{ $row->reference_number ?? '—' }}</td>
+                    <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ $row->notes }}">{{ $row->notes ?? '—' }}</td>
                 </tr>
                 @empty
                 <tr>
                     <td colspan="9">
                         <div class="empty-state">
                             <i class="bi bi-wallet-fill"></i>
-                            <p>No records found</p>
+                            <p>No payment records found</p>
                         </div>
                     </td>
                 </tr>
@@ -303,11 +275,9 @@
             @if($records->count())
             <tfoot>
                 <tr>
-                    <td colspan="4" style="text-align:right;padding-right:20px;">Totals:</td>
-                    <td>₹{{ number_format($summary['total_invoice_amount'], 2) }}</td>
-                    <td>₹{{ number_format($summary['total_paid_amount'], 2) }}</td>
-                    <td>₹{{ number_format($summary['total_balance_amount'], 2) }}</td>
-                    <td colspan="2"></td>
+                    <td colspan="5" style="text-align:right;padding-right:20px;">Total Collections:</td>
+                    <td class="amount-positive">₹{{ number_format($summary['total_paid_amount'], 2) }}</td>
+                    <td colspan="3"></td>
                 </tr>
             </tfoot>
             @endif

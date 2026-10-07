@@ -114,7 +114,7 @@
                         </td>
                         <td>
                             @if($service->price !== null)
-                                <span class="price-cell">${{ number_format($service->price, 2) }}</span>
+                                <span class="price-cell">₹{{ number_format($service->price, 2) }}</span>
                             @else
                                 <span style="color:#9CA3AF;">—</span>
                             @endif

@@ -28,7 +28,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Employee Routes
     Route::middleware(['employee'])->group(function () {
-        Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'create'])->name('employee.attendance');
+        Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'punchView'])->name('employee.attendance');
         Route::post('/employee/attendance/punch-in', [EmployeeAttendanceController::class, 'store'])->name('employee.attendance.punch-in');
         Route::put('/employee/attendance/punch-out/{id}', [EmployeeAttendanceController::class, 'update'])->name('employee.attendance.punch-out');
     });

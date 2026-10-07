@@ -180,11 +180,12 @@ class ProductController extends Controller
      */
     private function generateProductCode()
     {
-        $latest = Product::orderBy('id', 'desc')->first();
-        if ($latest) {
-            $number = intval(substr($latest->product_code, 4));
-            return 'PROD' . str_pad($number + 1, 4, '0', STR_PAD_LEFT);
-        }
-        return 'PROD0001';
+        $maxId = (Product::max('id') ?? 0) + 1;
+        do {
+            $code = 'PROD' . str_pad($maxId, 4, '0', STR_PAD_LEFT);
+            $maxId++;
+        } while (Product::where('product_code', $code)->exists());
+
+        return $code;
     }
 }

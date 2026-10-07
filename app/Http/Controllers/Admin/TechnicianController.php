@@ -50,7 +50,7 @@ class TechnicianController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:technicians,email'],
             'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:technicians,phone'],
             'specialization' => ['nullable', 'string', 'max:255'],
@@ -90,7 +90,7 @@ class TechnicianController extends Controller
     public function update(Request $request, Technician $technician)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:technicians,email,' . $technician->id],
             'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:technicians,phone,' . $technician->id],
             'specialization' => ['nullable', 'string', 'max:255'],

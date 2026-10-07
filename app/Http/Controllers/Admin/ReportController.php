@@ -14,6 +14,7 @@ use App\Models\ServiceRequest;
 use App\Models\JobAssignment;
 use App\Models\JobStatusTracking;
 use App\Models\Invoice;
+use App\Models\Payment;
 
 class ReportController extends Controller
 {
@@ -163,8 +164,8 @@ class ReportController extends Controller
             $records = collect();
         }
 
-        $paymentStatuses = ['Unpaid', 'Partial', 'Paid'];
-        $paymentModes    = ['Cash', 'Bank Transfer', 'Cheque', 'UPI', 'Card', 'Online'];
+        $paymentStatuses = ['Unpaid', 'Partially Paid', 'Paid', 'Cancelled'];
+        $paymentModes    = ['Cash', 'UPI', 'Bank Transfer', 'Cheque', 'Card'];
 
         return view('admin.reports.invoices', compact('records', 'paymentStatuses', 'paymentModes'));
     }
@@ -175,17 +176,14 @@ class ReportController extends Controller
     public function payments(Request $request)
     {
         try {
-            $query = Invoice::with(['customer'])
-                ->orderByDesc('invoice_date');
+            $query = Payment::with(['customer', 'project'])
+                ->orderByDesc('payment_date');
 
             if ($request->filled('from_date')) {
-                $query->whereDate('invoice_date', '>=', $request->from_date);
+                $query->whereDate('payment_date', '>=', $request->from_date);
             }
             if ($request->filled('to_date')) {
-                $query->whereDate('invoice_date', '<=', $request->to_date);
-            }
-            if ($request->filled('payment_status')) {
-                $query->where('payment_status', $request->payment_status);
+                $query->whereDate('payment_date', '<=', $request->to_date);
             }
             if ($request->filled('payment_mode')) {
                 $query->where('payment_mode', $request->payment_mode);
@@ -194,26 +192,23 @@ class ReportController extends Controller
             $records = $query->get();
 
             $summary = [
-                'total_invoice_amount' => $records->sum('total_amount'),
-                'total_paid_amount'    => $records->sum('paid_amount'),
-                'total_balance_amount' => $records->sum('balance_amount'),
-                'paid_count'           => $records->where('payment_status', 'Paid')->count(),
-                'unpaid_count'         => $records->where('payment_status', 'Unpaid')->count(),
+                'total_paid_amount'  => (float) $records->sum('amount'),
+                'total_transactions' => $records->count(),
+                'cash_amount'        => (float) $records->where('payment_mode', 'Cash')->sum('amount'),
+                'online_amount'      => (float) $records->whereIn('payment_mode', ['RTGS', 'NEFT', 'Mobile Banking', 'UPI', 'Bank Transfer', 'Card'])->sum('amount'),
             ];
         } catch (\Throwable $e) {
             $records = collect();
             $summary = [
-                'total_invoice_amount' => 0,
-                'total_paid_amount'    => 0,
-                'total_balance_amount' => 0,
-                'paid_count'           => 0,
-                'unpaid_count'         => 0,
+                'total_paid_amount'  => 0,
+                'total_transactions' => 0,
+                'cash_amount'        => 0,
+                'online_amount'      => 0,
             ];
         }
 
-        $paymentStatuses = ['Unpaid', 'Partial', 'Paid'];
-        $paymentModes    = ['Cash', 'Bank Transfer', 'Cheque', 'UPI', 'Card', 'Online'];
+        $paymentModes = ['Cash', 'Mobile Banking', 'RTGS', 'NEFT', 'Bank Transfer', 'UPI', 'Cheque', 'Other'];
 
-        return view('admin.reports.payments', compact('records', 'summary', 'paymentStatuses', 'paymentModes'));
+        return view('admin.reports.payments', compact('records', 'summary', 'paymentModes'));
     }
 }

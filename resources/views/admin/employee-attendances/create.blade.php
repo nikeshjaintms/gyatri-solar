@@ -1,310 +1,207 @@
-@extends(in_array(Auth::user()->role ?? '', ['Super Admin', 'Admin', 'Manager']) ? 'layouts.admin' : 'layouts.employee')
+@extends('layouts.admin')
 
 @section('content')
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <div class="form-page-header">
     <h1 class="form-page-title">
         <span class="title-icon"><i class="bi bi-clock-history"></i></span>
-        Daily attendance Punch
+        Record Employee Attendance
     </h1>
-    @if(in_array(Auth::user()->role ?? '', ['Super Admin', 'Admin', 'Manager']))
-        <a href="{{ route('employee-attendances.index') }}" class="btn-back">
-            <i class="bi bi-list-check"></i> View History
-        </a>
-    @endif
+    <a href="{{ route('employee-attendances.index') }}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
 </div>
 
-<div class="row justify-content-center mt-4">
-    <div class="col-12 col-md-8 col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 p-4" style="background: #ffffff; border: 1px solid #dee2e6 !important;">
-            
-            {{-- Alert message if permission denied --}}
-            <div id="locationAlert" class="alert alert-danger d-none" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <span id="locationAlertText">Please enable location permission.</span>
-            </div>
+<div class="form-card">
+    <div class="form-card-header">
+        <div class="section-dot"></div>
+        <h6>Attendance Details</h6>
+    </div>
 
-            @include('admin.partials.alerts')
+    @include('admin.partials.alerts')
 
-            {{-- Today's Status Header --}}
-            <div class="text-center mb-4">
-                <h5 class="text-secondary fw-semibold mb-2">Today's Date</h5>
-                <h3 class="fw-bold text-dark mb-3">{{ date('d M Y') }}</h3>
-                
-                <div class="d-inline-block py-2 px-4 rounded-3 border" style="background: #FFF7ED; border-color: rgba(245,130,32,0.2) !important;">
-                    <span class="text-muted small d-block">Current Status</span>
-                    @if(!$todayAttendance)
-                        <span class="fw-bold" style="color: var(--brand-orange);">Not Punched In</span>
-                    @elseif($todayAttendance && !$todayAttendance->punch_out_time)
-                        <span class="fw-bold text-success">Punched In ({{ \Carbon\Carbon::parse($todayAttendance->punch_in_time)->format('h:i A') }})</span>
-                    @else
-                        <span class="fw-bold text-secondary">Attendance Completed</span>
-                    @endif
-                </div>
-            </div>
+    <form action="{{ route('employee-attendances.store') }}" method="POST">
+        @csrf
+        
+        <div class="form-card-body">
 
-            <div class="row g-3">
-                {{-- Punch In Form --}}
-                <div class="col-6">
-                    <form action="{{ route('employee.attendance.punch-in') }}" method="POST" id="punchInForm">
-                        @csrf
-                        <input type="hidden" name="latitude" class="lat-field">
-                        <input type="hidden" name="longitude" class="lon-field">
-                        <input type="hidden" name="address" class="addr-field">
-                        
-                        <button type="button" id="btnPunchIn" class="w-100 py-4 btn rounded-4 fw-bold border-0 text-white d-flex flex-column align-items-center justify-content-center gap-2"
-                                style="background: linear-gradient(135deg, #F58220 0%, #FF9F43 100%); transition: all 0.3s;"
-                                {{ $todayAttendance ? 'disabled' : '' }}>
-                            <i class="bi bi-box-arrow-in-right fs-1"></i>
-                            <span>Punch In</span>
-                        </button>
-                    </form>
-                </div>
+            <p class="section-label">Basic Information</p>
+            <div class="row g-4 mb-2">
 
-                {{-- Punch Out Form --}}
-                <div class="col-6">
-                    @if($todayAttendance)
-                        <form action="{{ route('employee.attendance.punch-out', $todayAttendance->id) }}" method="POST" id="punchOutForm">
-                            @csrf
-                            @method('PUT')
-                            <input type="hidden" name="latitude" class="lat-field">
-                            <input type="hidden" name="longitude" class="lon-field">
-                            <input type="hidden" name="address" class="addr-field">
-                            
-                            <button type="button" id="btnPunchOut" class="w-100 py-4 btn rounded-4 fw-bold border-0 text-white d-flex flex-column align-items-center justify-content-center gap-2"
-                                    style="background: #111111; transition: all 0.3;"
-                                    {{ $todayAttendance->punch_out_time ? 'disabled' : '' }}>
-                                <i class="bi bi-box-arrow-left fs-1" style="color: var(--brand-orange);"></i>
-                                <span style="color: var(--brand-orange);">Punch Out</span>
-                            </button>
-                        </form>
-                    @else
-                        <button type="button" class="w-100 py-4 btn rounded-4 fw-bold border-0 text-muted d-flex flex-column align-items-center justify-content-center gap-2"
-                                style="background: #e9ecef; cursor: not-allowed;" disabled>
-                            <i class="bi bi-box-arrow-left fs-1"></i>
-                            <span>Punch Out</span>
-                        </button>
-                    @endif
-                </div>
-            </div>
-
-            @if($todayAttendance && $todayAttendance->punch_out_time)
-                <div class="text-center mt-4">
-                    <span class="badge bg-success px-4 py-2 rounded-pill fs-6 fw-bold">
-                        <i class="bi bi-check-circle-fill me-1"></i> Attendance Completed
-                    </span>
-                </div>
-            @endif
-
-            {{-- Live Location Detail Card --}}
-            <div class="mt-4 p-3 rounded-3 border" style="background: #fafafa;">
-                <div class="d-flex align-items-center justify-content-between mb-2 text-secondary">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-geo-alt-fill text-warning"></i>
-                        <span class="small fw-semibold">Live GPS Location Details</span>
+                <!-- Employee Name Dropdown -->
+                <div class="col-12 col-md-6">
+                    <label class="field-label">Employee Name <span class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-person field-icon"></i>
+                        <select name="employee_id" class="form-field form-field-select @error('employee_id') is-invalid @enderror" required>
+                            <option value="">Select Employee</option>
+                            @foreach($employees as $employee)
+                                <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
+                                    {{ $employee->name }} ({{ $employee->role ?? 'User' }})
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                    <span id="gpsAccuracyBadge" class="badge bg-secondary small">Accuracy: --</span>
+                    @error('employee_id')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
-                <div id="gpsStatus" class="small text-muted mb-2">
-                    Checking location permissions...
+
+                <!-- Attendance Date -->
+                <div class="col-12 col-md-6">
+                    <label class="field-label">Attendance Date <span class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-calendar-event field-icon"></i>
+                        <input type="date" name="attendance_date" class="form-field @error('attendance_date') is-invalid @enderror"
+                               value="{{ old('attendance_date', date('Y-m-d')) }}" required>
+                    </div>
+                    @error('attendance_date')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
-                <div id="liveMap" style="height: 200px; border-radius: 8px; border: 1px solid #dee2e6; display: none; z-index: 1;"></div>
+
+                <!-- Status -->
+                <div class="col-12 col-md-6">
+                    <label class="field-label">Status <span class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-info-circle field-icon"></i>
+                        <select name="status" id="status" class="form-field form-field-select @error('status') is-invalid @enderror" required>
+                            <option value="Present" {{ old('status', 'Present') == 'Present' ? 'selected' : '' }}>Present</option>
+                            <option value="Absent" {{ old('status') == 'Absent' ? 'selected' : '' }}>Absent</option>
+                            <option value="Half Day" {{ old('status') == 'Half Day' ? 'selected' : '' }}>Half Day</option>
+                            <option value="Leave" {{ old('status') == 'Leave' ? 'selected' : '' }}>Leave</option>
+                        </select>
+                    </div>
+                    @error('status')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+            </div>
+
+            <p class="section-label mt-3">Timing &amp; Hours</p>
+            <div class="row g-4 mb-2">
+
+                <!-- Check In Time -->
+                <div class="col-12 col-md-4">
+                    <label class="field-label">Check In Time <span id="check_in_req" class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-box-arrow-in-right field-icon"></i>
+                        <input type="time" name="check_in_time" id="check_in_time" 
+                               class="form-field @error('check_in_time') is-invalid @enderror"
+                               value="{{ old('check_in_time', '09:00') }}">
+                    </div>
+                    @error('check_in_time')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+                <!-- Check Out Time -->
+                <div class="col-12 col-md-4">
+                    <label class="field-label">Check Out Time <span id="check_out_req" class="req">*</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-box-arrow-left field-icon"></i>
+                        <input type="time" name="check_out_time" id="check_out_time" 
+                               class="form-field @error('check_out_time') is-invalid @enderror"
+                               value="{{ old('check_out_time', '18:00') }}">
+                    </div>
+                    @error('check_out_time')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
+
+                <!-- Work Hours (Read-Only) -->
+                <div class="col-12 col-md-4">
+                    <label class="field-label">Work Hours <span class="text-muted">(Calculated)</span></label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-clock field-icon"></i>
+                        <input type="text" id="work_hours_display" class="form-field" 
+                               style="background-color: #F3F4F6;" readonly value="—">
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="section-label mt-3">Remarks</p>
+            <div class="row g-4">
+                <div class="col-12">
+                    <label class="field-label">Remarks / Notes</label>
+                    <div class="field-input-wrap">
+                        <i class="bi bi-chat-text field-icon field-icon-textarea"></i>
+                        <textarea name="remarks" rows="3"
+                                  class="form-field form-field-textarea @error('remarks') is-invalid @enderror"
+                                  placeholder="Enter remarks or notes if applicable...">{{ old('remarks') }}</textarea>
+                    </div>
+                    @error('remarks')<div class="field-error">{{ $message }}</div>@enderror
+                </div>
             </div>
 
         </div>
-    </div>
+
+        <div class="form-footer">
+            <a href="{{ route('employee-attendances.index') }}" class="btn-cancel">
+                <i class="bi bi-x-lg"></i> Cancel
+            </a>
+            <button type="submit" class="btn-save">
+                <i class="bi bi-check-lg"></i> Save Attendance
+            </button>
+        </div>
+    </form>
 </div>
 
+{{-- ── Javascript for dynamic Work Hours calculation & input enabling ── --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const latFields = document.querySelectorAll('.lat-field');
-    const lonFields = document.querySelectorAll('.lon-field');
-    const addrFields = document.querySelectorAll('.addr-field');
-    const gpsStatus = document.getElementById('gpsStatus');
-    const locationAlert = document.getElementById('locationAlert');
-    const locationAlertText = document.getElementById('locationAlertText');
-    const btnPunchIn = document.getElementById('btnPunchIn');
-    const btnPunchOut = document.getElementById('btnPunchOut');
+    const statusSelect = document.getElementById('status');
+    const checkInInput = document.getElementById('check_in_time');
+    const checkOutInput = document.getElementById('check_out_time');
+    const workHoursDisplay = document.getElementById('work_hours_display');
+    const checkInReq = document.getElementById('check_in_req');
+    const checkOutReq = document.getElementById('check_out_req');
 
-    let latitude = null;
-    let longitude = null;
-    let address = "";
-    let watchId = null;
-    let map = null;
-    let marker = null;
-    let lastLat = null;
-    let lastLon = null;
-    let addressTimeout = null;
-
-    // Disable button styling helper
-    function updateButtonStates(allowed) {
-        if (!allowed) {
-            if (btnPunchIn) {
-                btnPunchIn.style.opacity = '0.5';
-                btnPunchIn.style.cursor = 'not-allowed';
-            }
-            if (btnPunchOut) {
-                btnPunchOut.style.opacity = '0.5';
-                btnPunchOut.style.cursor = 'not-allowed';
-            }
+    function toggleTimeFields() {
+        const status = statusSelect.value;
+        if (status === 'Present' || status === 'Half Day') {
+            checkInInput.disabled = false;
+            checkOutInput.disabled = false;
+            if (checkInReq) checkInReq.style.display = 'inline';
+            if (checkOutReq) checkOutReq.style.display = 'inline';
+            calculateWorkHours();
         } else {
-            if (btnPunchIn && !btnPunchIn.disabled) {
-                btnPunchIn.style.opacity = '1';
-                btnPunchIn.style.cursor = 'pointer';
-            }
-            if (btnPunchOut && !btnPunchOut.disabled) {
-                btnPunchOut.style.opacity = '1';
-                btnPunchOut.style.cursor = 'pointer';
-            }
+            checkInInput.disabled = true;
+            checkOutInput.disabled = true;
+            checkInInput.value = '';
+            checkOutInput.value = '';
+            if (checkInReq) checkInReq.style.display = 'none';
+            if (checkOutReq) checkOutReq.style.display = 'none';
+            workHoursDisplay.value = '—';
         }
     }
 
-    // Function to acquire geolocation coordinates
-    function requestLocation() {
-        if (!navigator.geolocation) {
-            gpsStatus.innerHTML = '<span class="text-danger">Geolocation is not supported by your browser.</span>';
-            locationAlertText.textContent = "Geolocation is not supported by your browser.";
-            locationAlert.classList.remove('d-none');
-            updateButtonStates(false);
+    function calculateWorkHours() {
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+
+        if (!checkIn || !checkOut) {
+            workHoursDisplay.value = '—';
             return;
         }
 
-        gpsStatus.innerHTML = '<span class="text-warning"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Acquiring GPS Signal...</span>';
+        const [inH, inM] = checkIn.split(':').map(Number);
+        const [outH, outM] = checkOut.split(':').map(Number);
 
-        watchId = navigator.geolocation.watchPosition(
-            function(position) {
-                latitude = position.coords.latitude;
-                longitude = position.coords.longitude;
-                const accuracy = position.coords.accuracy;
-                locationAlert.classList.add('d-none');
+        let diffMins = (outH * 60 + outM) - (inH * 60 + inM);
 
-                latFields.forEach(f => f.value = latitude);
-                lonFields.forEach(f => f.value = longitude);
+        if (diffMins < 0) {
+            workHoursDisplay.value = 'Check Out must be after Check In';
+            return;
+        }
 
-                // Update Accuracy Badge
-                const accuracyBadge = document.getElementById('gpsAccuracyBadge');
-                if (accuracyBadge) {
-                    accuracyBadge.textContent = `Accuracy: ±${Math.round(accuracy)}m`;
-                    if (accuracy <= 15) {
-                        accuracyBadge.className = "badge bg-success small";
-                    } else if (accuracy <= 50) {
-                        accuracyBadge.className = "badge bg-warning text-dark small";
-                    } else {
-                        accuracyBadge.className = "badge bg-danger small";
-                    }
-                }
+        const hours = Math.floor(diffMins / 60);
+        const minutes = diffMins % 60;
 
-                // Initialize or update Map
-                const mapDiv = document.getElementById('liveMap');
-                if (mapDiv) {
-                    mapDiv.style.display = 'block';
-                    if (!map) {
-                        map = L.map('liveMap', {
-                            zoomControl: true,
-                            attributionControl: false
-                        }).setView([latitude, longitude], 17);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                        marker = L.marker([latitude, longitude]).addTo(map);
-                    } else {
-                        map.setView([latitude, longitude]);
-                        marker.setLatLng([latitude, longitude]);
-                    }
-                    // Trigger resize to fix dynamic render issues
-                    setTimeout(() => { map.invalidateSize(); }, 200);
-                }
+        const formattedHours = String(hours).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');
 
-                // If accuracy is very low (e.g. > 100 meters), show alert/status info
-                let accuracyWarning = "";
-                if (accuracy > 100) {
-                    accuracyWarning = `<span class="text-danger d-block mt-1 fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>Low GPS accuracy. Please wait for a better signal or step outside.</span>`;
-                }
-
-                // Debounced reverse geocoding
-                if (addressTimeout) clearTimeout(addressTimeout);
-                addressTimeout = setTimeout(function() {
-                    // Only request if shifted significantly
-                    if (lastLat === null || Math.abs(lastLat - latitude) > 0.0001 || Math.abs(lastLon - longitude) > 0.0001) {
-                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`)
-                            .then(response => response.json())
-                            .then(data => {
-                                address = data.display_name || `Lat: ${latitude}, Lon: ${longitude}`;
-                                addrFields.forEach(f => f.value = address);
-                                gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span>${accuracyWarning}<br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
-                                lastLat = latitude;
-                                lastLon = longitude;
-                                updateButtonStates(true);
-                            })
-                            .catch(err => {
-                                address = `Lat: ${latitude}, Lon: ${longitude}`;
-                                addrFields.forEach(f => f.value = address);
-                                gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span>${accuracyWarning}<br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
-                                updateButtonStates(true);
-                            });
-                    } else {
-                        gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>GPS Signal Lock (${latitude.toFixed(5)}, ${longitude.toFixed(5)})</span>${accuracyWarning}<br><span class="text-dark mt-1 d-block font-monospace" style="font-size:0.75rem;">${address}</span>`;
-                        updateButtonStates(true);
-                    }
-                }, 1000);
-
-            },
-            function(error) {
-                let errorMsg = "Please enable location permission.";
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMsg = "Location permission denied. Please enable location services in your browser.";
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMsg = "Location information is unavailable.";
-                        break;
-                    case error.TIMEOUT:
-                        errorMsg = "The request to get user location timed out.";
-                        break;
-                }
-                gpsStatus.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>${errorMsg}</span>`;
-                locationAlertText.textContent = errorMsg;
-                locationAlert.classList.remove('d-none');
-                updateButtonStates(false);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 0
-            }
-        );
+        workHoursDisplay.value = `${formattedHours} Hours ${formattedMinutes} Minutes`;
     }
 
-    // Call geolocation watch on page load
-    requestLocation();
+    statusSelect.addEventListener('change', toggleTimeFields);
+    checkInInput.addEventListener('change', calculateWorkHours);
+    checkOutInput.addEventListener('change', calculateWorkHours);
 
-    // Event listener triggers check location before submit
-    if (btnPunchIn) {
-        btnPunchIn.addEventListener('click', function(e) {
-            if (!latitude || !longitude) {
-                locationAlertText.textContent = "Please enable location permission and wait for GPS signal.";
-                locationAlert.classList.remove('d-none');
-                return;
-            }
-            btnPunchIn.disabled = true;
-            btnPunchIn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Punching In...';
-            document.getElementById('punchInForm').submit();
-        });
-    }
-
-    if (btnPunchOut) {
-        btnPunchOut.addEventListener('click', function(e) {
-            if (!latitude || !longitude) {
-                locationAlertText.textContent = "Please enable location permission and wait for GPS signal.";
-                locationAlert.classList.remove('d-none');
-                return;
-            }
-            btnPunchOut.disabled = true;
-            btnPunchOut.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Punching Out...';
-            document.getElementById('punchOutForm').submit();
-        });
-    }
+    // Initial state setup
+    toggleTimeFields();
 });
 </script>
 

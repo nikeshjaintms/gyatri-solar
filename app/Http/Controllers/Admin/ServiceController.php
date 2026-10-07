@@ -54,7 +54,7 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'service_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
+            'service_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'service_code' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:services,service_code'],
             'category'     => ['required', 'in:' . implode(',', Service::CATEGORIES)],
             'price'        => ['required', 'numeric', 'min:0'],
@@ -94,7 +94,7 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $data = $request->validate([
-            'service_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-]+$/'],
+            'service_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s\.\-\(\)]+$/'],
             'service_code' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\-\_]+$/', 'unique:services,service_code,' . $service->id],
             'category'     => ['required', 'in:' . implode(',', Service::CATEGORIES)],
             'price'        => ['required', 'numeric', 'min:0'],

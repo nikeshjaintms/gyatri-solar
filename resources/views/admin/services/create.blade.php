@@ -78,9 +78,9 @@
             <div class="row g-4 mb-2">
 
                 <div class="col-12 col-md-6">
-                    <label class="field-label">Price ($)</label>
+                    <label class="field-label">Price (₹)</label>
                     <div class="field-input-wrap">
-                        <i class="bi bi-currency-dollar field-icon"></i>
+                        <i class="bi bi-currency-rupee field-icon"></i>
                         <input type="number" name="price" step="0.01" min="0"
                                class="form-field @error('price') is-invalid @enderror"
                                value="{{ old('price') }}" placeholder="e.g. 150.00">

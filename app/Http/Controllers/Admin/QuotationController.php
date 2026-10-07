@@ -244,10 +244,6 @@ class QuotationController extends Controller
             }
         });
 
-        if ($request->customer_id) {
-            return redirect()->route('customers.show', $request->customer_id)->with('success', 'Quotation created successfully for this customer.');
-        }
-
         return redirect()->route('quotations.index')->with('success', 'Quotation created successfully.');
     }
 

@@ -40,7 +40,7 @@
     @if($service->price !== null)
         <div class="hero-price">
             <div class="hero-price-label">Service Price</div>
-            <div class="hero-price-value"><span>$</span>{{ number_format($service->price, 2) }}</div>
+            <div class="hero-price-value"><span>₹</span>{{ number_format($service->price, 2) }}</div>
         </div>
     @endif
 </div>
@@ -66,11 +66,11 @@
         </div>
     </div>
     <div class="detail-card">
-        <div class="detail-card-icon icon-solar-green"><i class="bi bi-currency-dollar"></i></div>
+        <div class="detail-card-icon icon-solar-green"><i class="bi bi-currency-rupee"></i></div>
         <div>
             <div class="detail-label">Price</div>
             <div class="detail-value {{ $service->price === null ? 'empty' : 'price-val' }}">
-                {{ $service->price !== null ? '$'.number_format($service->price, 2) : 'Not set' }}
+                {{ $service->price !== null ? '₹'.number_format($service->price, 2) : 'Not set' }}
             </div>
         </div>
     </div>

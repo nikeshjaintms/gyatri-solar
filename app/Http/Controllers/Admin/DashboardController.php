@@ -82,7 +82,7 @@ class DashboardController extends Controller
             'total_balance'  => $sum(fn() => Invoice::sum('balance_amount')),
             'paid_count'     => $cnt(fn() => Invoice::where('payment_status', 'Paid')->count()),
             'unpaid_count'   => $cnt(fn() => Invoice::where('payment_status', 'Unpaid')->count()),
-            'partial_count'  => $cnt(fn() => Invoice::where('payment_status', 'Partial')->count()),
+            'partial_count'  => $cnt(fn() => Invoice::where('payment_status', 'Partially Paid')->count()),
         ];
 
         /* ── Recent records ── */

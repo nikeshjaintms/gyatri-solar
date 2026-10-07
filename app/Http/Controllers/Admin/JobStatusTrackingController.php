@@ -107,7 +107,7 @@ class JobStatusTrackingController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'job_assignment_id' => 'required|exists:job_assignments,id',
             'status'            => 'required|in:Assigned,Accepted,On The Way,In Progress,Hold,Completed,Cancelled',
             'status_date'       => 'required|date',
@@ -116,7 +116,11 @@ class JobStatusTrackingController extends Controller
             'notes'             => 'nullable|string',
         ]);
 
-        $track = JobStatusTracking::create($request->all());
+        $data = $validated;
+        if (isset($data['work_progress'])) $data['work_progress'] = trim(strip_tags($data['work_progress']));
+        if (isset($data['notes'])) $data['notes'] = trim(strip_tags($data['notes']));
+
+        $track = JobStatusTracking::create($data);
         $this->syncUpstream($track);
 
         return redirect()->route('job-status-tracking.index')
@@ -147,7 +151,7 @@ class JobStatusTrackingController extends Controller
 
     public function update(Request $request, JobStatusTracking $jobStatusTracking)
     {
-        $request->validate([
+        $validated = $request->validate([
             'job_assignment_id' => 'required|exists:job_assignments,id',
             'status'            => 'required|in:Assigned,Accepted,On The Way,In Progress,Hold,Completed,Cancelled',
             'status_date'       => 'required|date',
@@ -156,7 +160,11 @@ class JobStatusTrackingController extends Controller
             'notes'             => 'nullable|string',
         ]);
 
-        $jobStatusTracking->update($request->all());
+        $data = $validated;
+        if (isset($data['work_progress'])) $data['work_progress'] = trim(strip_tags($data['work_progress']));
+        if (isset($data['notes'])) $data['notes'] = trim(strip_tags($data['notes']));
+
+        $jobStatusTracking->update($data);
         $this->syncUpstream($jobStatusTracking->fresh());
 
         return redirect()->route('job-status-tracking.index')

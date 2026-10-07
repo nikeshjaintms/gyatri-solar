@@ -87,12 +87,7 @@ class ServiceRequestController extends Controller
         if (isset($data['description'])) $data['description'] = trim(strip_tags($data['description']));
         if (isset($data['remarks'])) $data['remarks'] = trim(strip_tags($data['remarks']));
 
-        $sr = ServiceRequest::create($data);
-
-        if ($sr->customer_id) {
-            return redirect()->route('customers.show', $sr->customer_id)
-                             ->with('success', 'Service request created successfully for this customer.');
-        }
+        ServiceRequest::create($data);
 
         return redirect()->route('service-requests.index')
                          ->with('success', 'Service request created successfully.');

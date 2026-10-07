@@ -56,23 +56,80 @@ class EmployeeAttendanceController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show self attendance GPS punch view for employees.
      */
-    public function create()
+    public function punchView()
     {
         $user = Auth::user();
         $todayAttendance = EmployeeAttendance::where('employee_id', $user->id)
             ->whereDate('attendance_date', Carbon::today()->toDateString())
             ->first();
 
-        return view('admin.employee-attendances.create', compact('user', 'todayAttendance'));
+        return view('admin.employee-attendances.punch', compact('user', 'todayAttendance'));
     }
 
     /**
-     * Store a newly created resource in storage (Punch In).
+     * Show the form for creating a new resource (Admin).
+     */
+    public function create()
+    {
+        $user = Auth::user();
+        if (in_array($user->role, ['Employee', 'Technician'])) {
+            return redirect()->route('employee.attendance');
+        }
+
+        $employees = User::where('status', 'Active')->orderBy('name')->get();
+        return view('admin.employee-attendances.create', compact('employees'));
+    }
+
+    /**
+     * Store a newly created resource in storage (Admin creation or Employee Punch In).
      */
     public function store(Request $request)
     {
+        // ── Admin manual attendance creation ──
+        if ($request->has('employee_id') && $request->has('attendance_date')) {
+            $request->validate([
+                'employee_id' => ['required', 'exists:users,id'],
+                'attendance_date' => ['required', 'date'],
+                'status' => ['required', 'in:Present,Absent,Half Day,Leave'],
+                'check_in_time' => ['nullable'],
+                'check_out_time' => ['nullable'],
+                'remarks' => ['nullable', 'string', 'max:1000'],
+            ]);
+
+            $existing = EmployeeAttendance::where('employee_id', $request->employee_id)
+                ->whereDate('attendance_date', $request->attendance_date)
+                ->first();
+
+            if ($existing) {
+                return redirect()->back()->withInput()->with('error', 'Attendance record already exists for this employee on the selected date.');
+            }
+
+            $workMinutes = null;
+            if ($request->filled('check_in_time') && $request->filled('check_out_time')) {
+                $in = Carbon::parse($request->check_in_time);
+                $out = Carbon::parse($request->check_out_time);
+                $workMinutes = $in->diffInMinutes($out);
+            }
+
+            EmployeeAttendance::create([
+                'employee_id' => $request->employee_id,
+                'attendance_date' => $request->attendance_date,
+                'status' => $request->status,
+                'punch_in_time' => $request->check_in_time,
+                'check_in_time' => $request->check_in_time,
+                'punch_out_time' => $request->check_out_time,
+                'check_out_time' => $request->check_out_time,
+                'work_minutes' => $workMinutes,
+                'remarks' => $request->filled('remarks') ? trim(strip_tags($request->remarks)) : null,
+            ]);
+
+            return redirect()->route('employee-attendances.index')
+                ->with('success', 'Attendance record created successfully.');
+        }
+
+        // ── Employee GPS Punch In ──
         $user = Auth::user();
         
         // Validation: One Punch In per day only

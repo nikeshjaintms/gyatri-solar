@@ -113,18 +113,12 @@ class JobAssignmentController extends Controller
             'remarks'            => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         if (isset($data['work_notes'])) $data['work_notes'] = trim(strip_tags($data['work_notes']));
         if (isset($data['remarks'])) $data['remarks'] = trim(strip_tags($data['remarks']));
 
         $job = JobAssignment::create($data);
         $this->syncServiceRequestStatus($job);
-
-        $customerId = $job->serviceRequest?->customer_id;
-        if ($customerId) {
-            return redirect()->route('customers.show', $customerId)
-                             ->with('success', 'Job assignment created successfully.');
-        }
 
         return redirect()->route('job-assignments.index')
                          ->with('success', 'Job assignment created successfully.');
@@ -171,7 +165,7 @@ class JobAssignmentController extends Controller
             'remarks'            => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         if (isset($data['work_notes'])) $data['work_notes'] = trim(strip_tags($data['work_notes']));
         if (isset($data['remarks'])) $data['remarks'] = trim(strip_tags($data['remarks']));
 
