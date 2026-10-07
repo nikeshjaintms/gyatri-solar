@@ -436,8 +436,6 @@
     .d-hero-badge { display: none; }
     .dash-wrap { padding: 12px 8px; }
     .d-kpi-card { padding: 16px 14px; }
-    .d-kpi-icon { width:44px; height:44px; font-size:1.1rem; }
-}
 </style>
 
 <div class="dash-wrap">

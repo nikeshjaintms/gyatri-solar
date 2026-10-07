@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Gayatri Solar Energy Brand CSS -->
-    <link rel="stylesheet" href="{{ asset('css/brand.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/brand.css') }}?v={{ file_exists(public_path('css/brand.css')) ? filemtime(public_path('css/brand.css')) : time() }}">
 
     <style>
         :root {
@@ -584,8 +584,16 @@
                     $canDashboard = $isAdmin || $can('view_dashboard') || $canSales || $canOperations || $canBilling || $canPayments;
                 @endphp
 
+                <div class="menu-header">CORE</div>
+                @if(!$isAdmin)
+                    <li class="menu-item">
+                        <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance*') ? 'active' : '' }}">
+                            <i class="bi bi-clock-history menu-icon"></i>
+                            <span class="menu-text">Punch Attendance</span>
+                        </a>
+                    </li>
+                @endif
                 @if($canDashboard)
-                    <div class="menu-header">CORE</div>
                     <li class="menu-item">
                         <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                             <i class="bi bi-speedometer2 menu-icon"></i>
@@ -759,17 +767,6 @@
                            class="menu-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                             <i class="bi bi-bar-chart-line menu-icon"></i>
                             <span class="menu-text">Reports</span>
-                        </a>
-                    </li>
-                @endif
-
-                {{-- SELF SERVICE --}}
-                @if(!$isAdmin)
-                    <div class="menu-header">SELF SERVICE</div>
-                    <li class="menu-item">
-                        <a href="{{ route('employee.attendance') }}" class="menu-link {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
-                            <i class="bi bi-clock-history menu-icon"></i>
-                            <span class="menu-text">Punch Attendance</span>
                         </a>
                     </li>
                 @endif
@@ -1502,5 +1499,19 @@
             });
         });
     </script>
+
+    @if(auth()->check())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.Android) {
+                Android.setUserData(
+                    @json(auth()->id()),
+                    @json(auth()->user()->employee_id),
+                    @json(auth()->user()->name)
+                );
+            }
+        });
+    </script> 
+    @endif
 </body>
 </html>

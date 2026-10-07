@@ -104,7 +104,7 @@
     <!-- Top Navbar -->
     <header class="navbar-employee">
         <div class="d-flex align-items-center gap-4">
-            <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+            <a href="{{ route('employee.attendance') }}" class="d-flex align-items-center gap-2 text-decoration-none">
                 <img src="{{ asset('assets/images/logo.jpg') }}" class="brand-logo-img" alt="GSE Logo">
                 <span class="fw-bold tracking-wide text-white" style="font-size: 1.1rem; letter-spacing: 0.5px;">GAYATRI <span style="color: var(--brand-orange);">SOLAR</span></span>
             </a>
@@ -444,5 +444,19 @@
             });
         });
     </script>
+
+    @if(auth()->check())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.Android) {
+                Android.setUserData(
+                    @json(auth()->id()),
+                    @json(auth()->user()->employee_id),
+                    @json(auth()->user()->name)
+                );
+            }
+        });
+    </script> 
+    @endif
 </body>
 </html>

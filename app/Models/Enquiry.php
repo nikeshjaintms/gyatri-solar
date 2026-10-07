@@ -68,4 +68,19 @@ class Enquiry extends Model
     {
         return $this->hasMany(SiteSurvey::class, 'enquiry_id');
     }
+
+    /**
+     * Generate clean, short sequential enquiry number (e.g. ENQ-0001)
+     */
+    public static function generateEnquiryNumber(): string
+    {
+        $next = (int) (static::query()->max('id') ?? 0) + 1;
+
+        do {
+            $number = 'ENQ-' . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+            $next++;
+        } while (static::query()->where('enquiry_number', $number)->exists());
+
+        return $number;
+    }
 }

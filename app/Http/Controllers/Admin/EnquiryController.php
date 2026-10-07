@@ -70,10 +70,8 @@ class EnquiryController extends Controller
         $customers = Customer::orderBy('name')->get();
         $employees = User::orderBy('name')->get();
         
-        // Auto-generate Enquiry Number
-        $latest = Enquiry::latest('id')->first();
-        $nextId = $latest ? ($latest->id + 1) : 1;
-        $enquiryNumber = 'ENQ-' . date('Ym') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+        // Auto-generate clean, short Enquiry Number (e.g. ENQ-0001)
+        $enquiryNumber = Enquiry::generateEnquiryNumber();
 
         return view('admin.enquiries.create', compact('customers', 'employees', 'enquiryNumber'));
     }

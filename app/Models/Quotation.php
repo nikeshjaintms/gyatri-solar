@@ -113,4 +113,19 @@ class Quotation extends Model
     {
         return $this->hasMany(QuotationItem::class, 'quotation_id');
     }
+
+    /**
+     * Generate clean, short sequential quotation number (e.g. QT-0001)
+     */
+    public static function generateQuotationNumber(): string
+    {
+        $next = (int) (static::query()->max('id') ?? 0) + 1;
+
+        do {
+            $number = 'QT-' . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+            $next++;
+        } while (static::query()->where('quotation_number', $number)->exists());
+
+        return $number;
+    }
 }

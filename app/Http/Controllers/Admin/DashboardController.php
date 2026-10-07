@@ -13,11 +13,24 @@ use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\Payment;
 use App\Models\Quotation;
+use App\Models\EmployeeAttendance;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        $todayAttendance = null;
+        if ($user) {
+            $todayAttendance = $this->safe(
+                fn() => EmployeeAttendance::where('employee_id', $user->id)
+                    ->whereDate('attendance_date', Carbon::today()->toDateString())
+                    ->first(),
+                null
+            );
+        }
         /* ── Safe helpers ── */
         $cnt = fn(callable $q, int $d = 0): int => $this->safe($q, $d);
         $sum = fn(callable $q): float            => $this->safe($q, 0.0);
@@ -110,6 +123,7 @@ class DashboardController extends Controller
         );
 
         return view('admin.dashboard', compact(
+            'todayAttendance',
             'stats',
             'srSummary',
             'jaSummary',

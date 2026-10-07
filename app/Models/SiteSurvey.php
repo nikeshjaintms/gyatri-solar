@@ -57,4 +57,19 @@ class SiteSurvey extends Model
     {
         return $this->belongsTo(User::class, 'surveyor_id');
     }
+
+    /**
+     * Generate clean, short sequential survey number (e.g. SURV-0001)
+     */
+    public static function generateSurveyNumber(): string
+    {
+        $next = (int) (static::query()->max('id') ?? 0) + 1;
+
+        do {
+            $number = 'SURV-' . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+            $next++;
+        } while (static::query()->where('survey_number', $number)->exists());
+
+        return $number;
+    }
 }

@@ -34,11 +34,10 @@ class Payment extends Model
 
     public static function generateNumber(): string
     {
-        $prefix = 'PAY-' . now()->format('Ym');
         $next = (static::query()->max('id') ?? 0) + 1;
 
         do {
-            $number = $prefix . '-' . str_pad((string) $next, 5, '0', STR_PAD_LEFT);
+            $number = 'PAY-' . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
             $next++;
         } while (static::query()->where('payment_number', $number)->exists());
 

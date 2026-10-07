@@ -65,10 +65,8 @@ class SiteSurveyController extends Controller
         $customers = Customer::orderBy('name')->get();
         $surveyors = User::orderBy('name')->get();
 
-        // Auto-generate unique Survey Number
-        $latest = SiteSurvey::latest('id')->first();
-        $nextId = $latest ? ($latest->id + 1) : 1;
-        $surveyNumber = 'SURV-' . date('Ym') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+        // Auto-generate unique Survey Number (e.g. SURV-0001)
+        $surveyNumber = SiteSurvey::generateSurveyNumber();
 
         return view('admin.site-surveys.create', compact('enquiries', 'customers', 'surveyors', 'surveyNumber'));
     }

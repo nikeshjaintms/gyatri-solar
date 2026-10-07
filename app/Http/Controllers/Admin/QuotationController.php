@@ -62,10 +62,8 @@ class QuotationController extends Controller
         $products = \App\Models\Product::where('status', 'Active')->orderBy('name')->get();
         $quotation = new Quotation();
 
-        // Auto-generate unique Quotation Number
-        $latest = Quotation::latest('id')->first();
-        $nextId = $latest ? ($latest->id + 1) : 1;
-        $quotationNumber = 'QT-' . date('Ym') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+        // Auto-generate clean, short Quotation Number (e.g. QT-0001)
+        $quotationNumber = Quotation::generateQuotationNumber();
 
         return view('admin.quotations.create', compact('enquiries', 'customers', 'projects', 'quotationNumber', 'products', 'quotation'));
     }

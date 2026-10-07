@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = \Illuminate\Support\Facades\Auth::user();
-        if ($user->role === 'Technician') {
+        if (in_array($user->role, ['Employee', 'Technician']) || $user->hasRole('Employee') || $user->hasRole('Technician')) {
             return redirect()->route('employee.attendance');
         }
 

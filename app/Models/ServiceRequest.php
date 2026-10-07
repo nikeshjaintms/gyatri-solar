@@ -40,9 +40,14 @@ class ServiceRequest extends Model
 
     public static function generateServiceNumber(): string
     {
-        $next = (static::max('id') ?? 0) + 1;
+        $next = (int) (static::max('id') ?? 0) + 1;
 
-        return 'SRV-' . now()->format('Ym') . '-' . str_pad((string) $next, 5, '0', STR_PAD_LEFT);
+        do {
+            $number = 'SRV-' . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+            $next++;
+        } while (static::where('service_number', $number)->exists());
+
+        return $number;
     }
 
     public function service()

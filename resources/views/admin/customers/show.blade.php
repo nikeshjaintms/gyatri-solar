@@ -5,60 +5,173 @@
 <style>
     /* ─── Customer Details Specific Premium Styles ─── */
     .customer-hero {
-        background: linear-gradient(135deg, #111111 0%, #1e140a 50%, #0c0c0c 100%);
-        border: 1px solid rgba(245, 130, 32, 0.28);
-        border-radius: 16px;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #111827 100%);
+        border: 1px solid rgba(245, 130, 32, 0.25);
+        border-radius: 18px;
         padding: 24px 28px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.18), 0 0 24px -4px rgba(245, 130, 32, 0.1);
         margin-bottom: 24px;
     }
     .customer-hero::before {
         content: '';
         position: absolute;
-        top: -50px; right: -50px;
-        width: 220px; height: 220px;
-        background: radial-gradient(circle, rgba(245, 130, 32, 0.18) 0%, transparent 70%);
+        top: -60px; right: -60px;
+        width: 240px; height: 240px;
+        background: radial-gradient(circle, rgba(245, 130, 32, 0.2) 0%, rgba(245, 130, 32, 0.05) 50%, transparent 70%);
         pointer-events: none;
         border-radius: 50%;
     }
     .hero-avatar-circle {
-        width: 64px;
-        height: 64px;
+        width: 62px;
+        height: 62px;
         border-radius: 16px;
-        background: linear-gradient(135deg, #F58220, #d96a0b);
-        color: #fff;
+        background: linear-gradient(135deg, #F58220 0%, #EA580C 100%);
+        color: #FFFFFF;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.6rem;
+        font-size: 1.65rem;
         font-weight: 800;
-        box-shadow: 0 4px 16px rgba(245, 130, 32, 0.4);
+        box-shadow: 0 6px 18px rgba(245, 130, 32, 0.35);
+        border: 2px solid rgba(255, 255, 255, 0.15);
         flex-shrink: 0;
     }
+    .hero-title {
+        color: #FFFFFF;
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin: 0;
+    }
+    .hero-meta-row {
+        color: #94A3B8;
+        font-size: 0.86rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 4px;
+    }
+    .hero-meta-row strong {
+        color: #F8FAFC;
+        font-weight: 600;
+    }
+    .hero-meta-row .meta-dot {
+        color: #64748B;
+        font-size: 0.75rem;
+    }
+
+    /* ─── Hero Buttons ─── */
+    .btn-hero-ghost {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #F1F5F9;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.84rem;
+        padding: 8px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-hero-ghost:hover {
+        background: rgba(255, 255, 255, 0.16);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #FFFFFF;
+        transform: translateY(-1px);
+    }
+    .btn-hero-primary {
+        background: linear-gradient(135deg, #F58220 0%, #E06D09 100%);
+        border: 1px solid #F58220;
+        color: #FFFFFF;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.84rem;
+        padding: 8px 18px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(245, 130, 32, 0.35);
+        transition: all 0.2s ease;
+    }
+    .btn-hero-primary:hover {
+        background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%);
+        border-color: #EA580C;
+        color: #FFFFFF;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(245, 130, 32, 0.45);
+    }
+    .btn-hero-accent {
+        background: rgba(245, 130, 32, 0.12);
+        border: 1px solid rgba(245, 130, 32, 0.35);
+        color: #FFA756;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.84rem;
+        padding: 8px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-hero-accent:hover {
+        background: rgba(245, 130, 32, 0.22);
+        border-color: #F58220;
+        color: #FFBD7A;
+        transform: translateY(-1px);
+    }
+
+    /* ─── Contact Info Chips ─── */
+    .customer-meta-chips-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 16px;
+        margin-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
     .customer-meta-chip {
-        background: rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 10px;
         padding: 8px 14px;
-        color: #E5E7EB;
+        color: #E2E8F0;
         font-size: 0.84rem;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        backdrop-filter: blur(4px);
+        gap: 9px;
+        backdrop-filter: blur(6px);
+        transition: all 0.2s ease;
+    }
+    .customer-meta-chip:hover {
+        background: rgba(255, 255, 255, 0.09);
+        border-color: rgba(245, 130, 32, 0.35);
+        color: #FFFFFF;
     }
     .customer-meta-chip i {
         color: #F58220;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        flex-shrink: 0;
     }
     .customer-meta-chip a {
-        color: #E5E7EB;
+        color: #E2E8F0;
         text-decoration: none;
+        transition: color 0.15s ease;
     }
     .customer-meta-chip a:hover {
-        color: #FF9D4D;
+        color: #FFA756;
+    }
+    .customer-meta-chip.chip-address {
+        flex-grow: 1;
+        min-width: 260px;
     }
 
     /* ─── Stepper Pipeline Tabs ─── */
@@ -80,64 +193,95 @@
     }
     .flow-step-card {
         background: #FFFFFF;
-        border: 2px solid #E5E7EB;
+        border: 1.5px solid #E2E8F0;
         border-radius: 14px;
         padding: 16px 18px;
         cursor: pointer;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         text-align: left;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
     }
     .flow-step-card:hover {
         transform: translateY(-2px);
-        border-color: #F58220;
-        box-shadow: 0 6px 16px rgba(245, 130, 32, 0.12);
+        border-color: #CBD5E1;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
     }
     .flow-step-card.active {
-        background: #FFFFFF;
+        background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%);
         border-color: #F58220;
-        box-shadow: 0 6px 20px rgba(245, 130, 32, 0.18);
+        box-shadow: 0 8px 22px -3px rgba(245, 130, 32, 0.18), 0 2px 6px rgba(245, 130, 32, 0.08);
     }
-    .flow-step-card.active::after {
+    .flow-step-card.active::before {
         content: '';
         position: absolute;
-        bottom: -2px;
-        left: 20px;
-        right: 20px;
-        height: 3px;
-        background: #F58220;
-        border-radius: 3px 3px 0 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3.5px;
+        background: linear-gradient(90deg, #F58220, #FFA756);
+        border-radius: 14px 14px 0 0;
     }
     .step-badge-num {
         width: 26px;
         height: 26px;
-        border-radius: 50%;
-        background: #F3F4F6;
-        color: #4B5563;
+        border-radius: 8px;
+        background: #F1F5F9;
+        color: #475569;
         font-weight: 700;
         font-size: 0.78rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: all 0.2s ease;
     }
     .flow-step-card.active .step-badge-num {
         background: #F58220;
         color: #FFFFFF;
+        box-shadow: 0 2px 8px rgba(245, 130, 32, 0.4);
+    }
+    .step-card-title {
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #1E293B;
+        text-transform: uppercase;
+    }
+    .step-card-desc {
+        font-size: 0.78rem;
+        color: #64748B;
+        margin-top: 3px;
+    }
+    .step-count-pill {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+    .step-count-pill.has-items {
+        background: #ECFDF5;
+        color: #047857;
+        border: 1px solid #A7F3D0;
+    }
+    .step-count-pill.empty-items {
+        background: #F8FAFC;
+        color: #94A3B8;
+        border: 1px solid #E2E8F0;
     }
 
     /* ─── Step Content Panels ─── */
     .flow-panel-card {
         background: #FFFFFF;
-        border: 1px solid #E5E7EB;
-        border-radius: 14px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
         margin-bottom: 24px;
         overflow: hidden;
     }
     .flow-panel-header {
-        padding: 16px 22px;
-        background: #FAFBFD;
+        padding: 18px 24px;
+        background: #F8FAFC;
         border-bottom: 1px solid #EEF2F6;
         display: flex;
         align-items: center;
@@ -146,61 +290,64 @@
         gap: 12px;
     }
     .btn-flow-action {
-        background: linear-gradient(135deg, #F58220, #e06d09);
+        background: linear-gradient(135deg, #F58220 0%, #E06D09 100%);
         color: #FFFFFF;
-        border: none;
-        border-radius: 9px;
-        padding: 8px 16px;
+        border: 1px solid #F58220;
+        border-radius: 10px;
+        padding: 8px 18px;
         font-weight: 600;
         font-size: 0.84rem;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 7px;
         text-decoration: none;
-        box-shadow: 0 2px 8px rgba(245, 130, 32, 0.25);
-        transition: all 0.2s;
+        box-shadow: 0 2px 10px rgba(245, 130, 32, 0.25);
+        transition: all 0.2s ease;
     }
     .btn-flow-action:hover {
-        background: linear-gradient(135deg, #e06d09, #c75c02);
+        background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%);
+        border-color: #EA580C;
         color: #FFFFFF;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(245, 130, 32, 0.35);
+        box-shadow: 0 4px 14px rgba(245, 130, 32, 0.35);
     }
     .btn-flow-action-secondary {
         background: #FFFFFF;
-        color: #374151;
+        color: #334155;
         border: 1.5px solid #D1D5DB;
-        border-radius: 9px;
-        padding: 7px 14px;
+        border-radius: 10px;
+        padding: 7px 16px;
         font-weight: 600;
         font-size: 0.84rem;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 7px;
         text-decoration: none;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
     }
     .btn-flow-action-secondary:hover {
-        background: #F9FAFB;
-        border-color: #9CA3AF;
-        color: #111827;
+        background: #F8FAFC;
+        border-color: #94A3B8;
+        color: #0F172A;
+        transform: translateY(-1px);
     }
 
     .empty-step-box {
-        padding: 42px 20px;
+        padding: 48px 24px;
         text-align: center;
     }
     .empty-step-icon {
-        width: 58px;
-        height: 58px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         background: #FFF7ED;
         color: #F58220;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.6rem;
-        margin-bottom: 12px;
+        font-size: 1.75rem;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 12px rgba(245, 130, 32, 0.15);
     }
 
     .table-modern thead th {
@@ -210,14 +357,17 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        padding: 12px 18px;
+        padding: 14px 20px;
         border-bottom: 1px solid #E2E8F0;
     }
     .table-modern tbody td {
-        padding: 13px 18px;
+        padding: 14px 20px;
         vertical-align: middle;
         font-size: 0.88rem;
         border-bottom: 1px solid #F1F5F9;
+    }
+    .table-modern tbody tr:last-child td {
+        border-bottom: none;
     }
 </style>
 
@@ -225,14 +375,14 @@
      CUSTOMER PROFILE HERO (Unified Header & Profile Card)
 ══════════════════════════════════════════════════════════════════════ --}}
 <div class="customer-hero">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
             <div class="hero-avatar-circle">
                 {{ strtoupper(substr($customer->name, 0, 1)) }}
             </div>
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <h2 class="text-white mb-0 fw-bold fs-4">{{ $customer->name }}</h2>
+                    <h2 class="hero-title">{{ $customer->name }}</h2>
                     <span class="badge rounded-pill fw-semibold px-2.5 py-1 text-xs" style="
                         @if(($customer->customer_type ?? 'Residential') === 'Residential') background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD;
                         @elseif(($customer->customer_type ?? '') === 'Commercial') background: #EDE9FE; color: #5B21B6; border: 1px solid #C4B5FD;
@@ -241,38 +391,38 @@
                         <i class="bi bi-tag-fill me-1"></i>{{ $customer->customer_type ?? 'Residential' }}
                     </span>
                     @if($customer->status == 'Active')
-                        <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2.5 py-1 rounded-pill small">
+                        <span class="badge rounded-pill px-2.5 py-1 text-xs fw-semibold" style="background: rgba(16, 185, 129, 0.18); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.35);">
                             <i class="bi bi-circle-fill me-1" style="font-size: 0.45rem;"></i> Active Customer
                         </span>
                     @else
-                        <span class="badge bg-secondary bg-opacity-25 text-light border border-secondary border-opacity-50 px-2.5 py-1 rounded-pill small">
+                        <span class="badge rounded-pill px-2.5 py-1 text-xs fw-semibold" style="background: rgba(148, 163, 184, 0.18); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.35);">
                             <i class="bi bi-circle-fill me-1" style="font-size: 0.45rem;"></i> Inactive
                         </span>
                     @endif
                 </div>
-                <div class="text-muted small mt-1">
-                    Customer ID: <strong class="text-white">#CUST-{{ str_pad($customer->id, 4, '0', STR_PAD_LEFT) }}</strong>
-                    <span class="mx-2 text-secondary">•</span>
-                    Registered: <span class="text-light">{{ $customer->created_at ? $customer->created_at->format('M d, Y') : '—' }}</span>
+                <div class="hero-meta-row">
+                    <span>Customer ID: <strong>#CUST-{{ str_pad($customer->id, 4, '0', STR_PAD_LEFT) }}</strong></span>
+                    <span class="meta-dot">•</span>
+                    <span>Registered: <strong>{{ $customer->created_at ? $customer->created_at->format('M d, Y') : '—' }}</strong></span>
                 </div>
             </div>
         </div>
 
         <div class="d-flex align-items-center gap-2 flex-wrap">
-            <a href="{{ route('customers.index') }}" class="btn-flow-action-secondary py-2">
+            <a href="{{ route('customers.index') }}" class="btn-hero-ghost">
                 <i class="bi bi-arrow-left"></i> Back to List
             </a>
-            <a href="{{ route('customers.edit', $customer->id) }}" class="btn-flow-action py-2">
+            <a href="{{ route('customers.edit', $customer->id) }}" class="btn-hero-primary">
                 <i class="bi bi-pencil-square"></i> Edit Customer
             </a>
-            <a href="{{ route('projects.create', ['customer_id' => $customer->id]) }}" class="btn-flow-action-secondary py-2">
+            <a href="{{ route('projects.create', ['customer_id' => $customer->id]) }}" class="btn-hero-accent">
                 <i class="bi bi-sun"></i> Add Project
             </a>
         </div>
     </div>
 
     {{-- Contact Info Chips --}}
-    <div class="d-flex flex-wrap gap-2 pt-2 border-top border-secondary border-opacity-25">
+    <div class="customer-meta-chips-grid">
         <div class="customer-meta-chip">
             <i class="bi bi-telephone-fill"></i>
             @if($customer->phone)
@@ -296,9 +446,9 @@
             <span>{{ collect([$customer->city, $customer->state, $customer->pincode])->filter()->join(', ') ?: 'Address location not set' }}</span>
         </div>
 
-        <div class="customer-meta-chip flex-grow-1">
+        <div class="customer-meta-chip chip-address">
             <i class="bi bi-geo-alt-fill"></i>
-            <span class="text-truncate" style="max-width: 480px;">{{ $customer->address ?: 'Installation address not set' }}</span>
+            <span class="text-truncate" style="max-width: 520px;" title="{{ $customer->address }}">{{ $customer->address ?: 'Installation address not set' }}</span>
         </div>
     </div>
 </div>
@@ -312,13 +462,13 @@
         <div class="d-flex align-items-center justify-content-between mb-1">
             <div class="d-flex align-items-center gap-2">
                 <span class="step-badge-num">1</span>
-                <span class="fw-bold small text-dark">SITE SURVEYS</span>
+                <span class="step-card-title">SITE SURVEYS</span>
             </div>
-            <span class="badge rounded-pill {{ $customer->siteSurveys->count() > 0 ? 'bg-success' : 'bg-light text-secondary border' }}">
+            <span class="step-count-pill {{ $customer->siteSurveys->count() > 0 ? 'has-items' : 'empty-items' }}">
                 {{ $customer->siteSurveys->count() }}
             </span>
         </div>
-        <div class="small text-muted text-truncate">Roof &amp; capacity survey</div>
+        <div class="step-card-desc text-truncate">Roof &amp; capacity survey</div>
     </div>
 
     {{-- Step 2: Quotation --}}
@@ -326,13 +476,13 @@
         <div class="d-flex align-items-center justify-content-between mb-1">
             <div class="d-flex align-items-center gap-2">
                 <span class="step-badge-num">2</span>
-                <span class="fw-bold small text-dark">QUOTATIONS</span>
+                <span class="step-card-title">QUOTATIONS</span>
             </div>
-            <span class="badge rounded-pill {{ $customer->quotations->count() > 0 ? 'bg-success' : 'bg-light text-secondary border' }}">
+            <span class="step-count-pill {{ $customer->quotations->count() > 0 ? 'has-items' : 'empty-items' }}">
                 {{ $customer->quotations->count() }}
             </span>
         </div>
-        <div class="small text-muted text-truncate">Proposals &amp; pricing</div>
+        <div class="step-card-desc text-truncate">Proposals &amp; pricing</div>
     </div>
 
     {{-- Step 3: Service Requests & Jobs --}}
@@ -340,13 +490,13 @@
         <div class="d-flex align-items-center justify-content-between mb-1">
             <div class="d-flex align-items-center gap-2">
                 <span class="step-badge-num">3</span>
-                <span class="fw-bold small text-dark">JOB / SERVICES</span>
+                <span class="step-card-title">JOB / SERVICES</span>
             </div>
-            <span class="badge rounded-pill {{ $customer->serviceRequests->count() > 0 ? 'bg-success' : 'bg-light text-secondary border' }}">
+            <span class="step-count-pill {{ $customer->serviceRequests->count() > 0 ? 'has-items' : 'empty-items' }}">
                 {{ $customer->serviceRequests->count() }}
             </span>
         </div>
-        <div class="small text-muted text-truncate">Technician assignment</div>
+        <div class="step-card-desc text-truncate">Technician assignment</div>
     </div>
 
     {{-- Step 4: Invoices --}}
@@ -354,13 +504,13 @@
         <div class="d-flex align-items-center justify-content-between mb-1">
             <div class="d-flex align-items-center gap-2">
                 <span class="step-badge-num">4</span>
-                <span class="fw-bold small text-dark">INVOICES</span>
+                <span class="step-card-title">INVOICES</span>
             </div>
-            <span class="badge rounded-pill {{ $customer->invoices->count() > 0 ? 'bg-success' : 'bg-light text-secondary border' }}">
+            <span class="step-count-pill {{ $customer->invoices->count() > 0 ? 'has-items' : 'empty-items' }}">
                 {{ $customer->invoices->count() }}
             </span>
         </div>
-        <div class="small text-muted text-truncate">Billing &amp; payments</div>
+        <div class="step-card-desc text-truncate">Billing &amp; payments</div>
     </div>
 </div>
 
@@ -372,7 +522,7 @@
         <div>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-warning-subtle text-warning-emphasis p-1.5 rounded"><i class="bi bi-map fs-6"></i></span>
-                <h6 class="mb-0 fw-bold text-dark">Step 1: Site Surveys (સાઇટ સરવે)</h6>
+                <h6 class="mb-0 fw-bold text-dark">Step 1: Site Surveys</h6>
             </div>
             <p class="text-muted small mb-0 mt-0.5">Physical inspection, shadow analysis, roof structure, and technical feasibility.</p>
         </div>
@@ -454,7 +604,7 @@
         <div>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-primary-subtle text-primary-emphasis p-1.5 rounded"><i class="bi bi-file-earmark-ruled fs-6"></i></span>
-                <h6 class="mb-0 fw-bold text-dark">Step 2: Quotations &amp; Proposals (કોટેશન)</h6>
+                <h6 class="mb-0 fw-bold text-dark">Step 2: Quotations &amp; Proposals</h6>
             </div>
             <p class="text-muted small mb-0 mt-0.5">Customized proposal, system sizing, MNRE subsidy, and formal quotation printing.</p>
         </div>
@@ -534,7 +684,7 @@
         <div>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-success-subtle text-success-emphasis p-1.5 rounded"><i class="bi bi-tools fs-6"></i></span>
-                <h6 class="mb-0 fw-bold text-dark">Step 3: Service Requests &amp; Job Assignments (જોબ અસાઇનમેન્ટ)</h6>
+                <h6 class="mb-0 fw-bold text-dark">Step 3: Service Requests &amp; Job Assignments</h6>
             </div>
             <p class="text-muted small mb-0 mt-0.5">Execution work orders, dispatching technician teams, and live field status tracking.</p>
         </div>
@@ -588,7 +738,7 @@
                                 <td>
                                     @if($sr->jobAssignments && $sr->jobAssignments->count() > 0)
                                         @foreach($sr->jobAssignments as $ja)
-                                            <div class="small mb-1">
+                                             <div class="small mb-1">
                                                 <i class="bi bi-person-badge text-primary me-1"></i>{{ $ja->technician?->name ?? 'Tech' }} 
                                                 <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ $ja->status }}</span>
                                             </div>
@@ -633,7 +783,7 @@
         <div>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-purple-subtle text-purple-emphasis p-1.5 rounded" style="background:#f3e8ff;color:#6b21a8;"><i class="bi bi-receipt fs-6"></i></span>
-                <h6 class="mb-0 fw-bold text-dark">Step 4: Invoices &amp; Payments (બિલિંગ અને પેમેન્ટ)</h6>
+                <h6 class="mb-0 fw-bold text-dark">Step 4: Invoices &amp; Payments</h6>
             </div>
             <p class="text-muted small mb-0 mt-0.5">Tax invoices, payment receipts, balance settlements, and financial tracking.</p>
         </div>

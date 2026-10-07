@@ -22,6 +22,13 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingsController;
 
 Route::get('/', function () {
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        if (in_array($user->role, ['Employee', 'Technician']) || $user->hasRole('Employee') || $user->hasRole('Technician')) {
+            return redirect()->route('employee.attendance');
+        }
+        return redirect()->route('dashboard');
+    }
     return redirect()->route('login');
 });
 
