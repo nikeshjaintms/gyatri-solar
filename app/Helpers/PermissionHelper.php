@@ -157,6 +157,12 @@ class PermissionHelper
                         'delete_employee_attendances' => 'Delete Attendance',
                     ],
                 ],
+                'Employee GPS Tracking' => [
+                    'icon' => 'bi-geo-alt-fill',
+                    'permissions' => [
+                        'view_employee_locations' => 'View Live GPS Tracking',
+                    ],
+                ],
                 'Users' => [
                     'icon' => 'bi-person-gear',
                     'permissions' => [

@@ -34,6 +34,7 @@ class PermissionSeeder extends Seeder
             'Invoices',
             'Payments',
             'Employees',
+            'Employee Locations',
             'Employee Attendances',
             'Users',
             'Reports',

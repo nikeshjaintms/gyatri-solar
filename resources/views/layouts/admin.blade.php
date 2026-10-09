@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Gayatri Solar Energy - Admin Panel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -577,7 +578,7 @@
                     $canSales = $canAny(['view_customers', 'create_customers', 'update_customers', 'view_projects', 'create_projects', 'view_site_surveys', 'create_site_surveys', 'view_quotations', 'create_quotations', 'view_enquiries', 'create_enquiries']);
                     $canOperations = $canAny(['view_service_requests', 'view_job_assignments', 'view_job_status_tracking', 'view_technicians']);
                     $canMasters = $canAny(['view_products', 'view_services']);
-                    $canStaff = $canAny(['view_employees', 'view_employee_attendances', 'view_users']);
+                    $canStaff = $canAny(['view_employees', 'view_employee_attendances', 'view_users', 'view_employee_locations']);
                     $canBilling = $canAny(['view_invoices', 'create_invoices']);
                     $canPayments = $canAny(['view_payments', 'create_payments', 'update_payments']);
                     $canAnalytics = $can('view_reports');
@@ -733,6 +734,14 @@
                             </a>
                         </li>
                     @endif
+                    @if($can('view_employee_locations'))
+                        <li class="menu-item">
+                            <a href="{{ route('employee-locations.index') }}" class="menu-link {{ request()->routeIs('employee-locations.*') ? 'active' : '' }}">
+                                <i class="bi bi-geo-alt-fill menu-icon"></i>
+                                <span class="menu-text">Live GPS Tracking</span>
+                            </a>
+                        </li>
+                    @endif
                     @if($can('view_employee_attendances'))
                         <li class="menu-item">
                             <a href="{{ route('employee-attendances.index') }}" class="menu-link {{ request()->routeIs('employee-attendances.*') ? 'active' : '' }}">
@@ -878,6 +887,8 @@
                                 Attendance Details
                             @elseif(request()->routeIs('employee-attendances.*'))
                                 Employee Attendance
+                            @elseif(request()->routeIs('employee-locations.*'))
+                                Live Employee GPS Tracking
                             @elseif(request()->routeIs('services.create'))
                                 Add Service
                             @elseif(request()->routeIs('services.edit'))
@@ -993,6 +1004,8 @@
                                 @elseif(request()->routeIs('employee-attendances.show'))
                                     <a href="{{ route('employee-attendances.index') }}">Employee Attendance</a> &nbsp;/&nbsp; <span>Details</span>
                                 @endif
+                            @elseif(request()->routeIs('employee-locations.*'))
+                                &nbsp;/&nbsp; <span>Live GPS Tracking</span>
                             @elseif(request()->routeIs('enquiries.*'))
                                 &nbsp;/&nbsp;
                                 @if(request()->routeIs('enquiries.index'))
@@ -1512,6 +1525,9 @@
             }
         });
     </script> 
+    @if(in_array(auth()->user()->role ?? '', ['Employee', 'Technician']) || auth()->user()->employee)
+    <script src="{{ asset('js/employee-tracker.js') }}?v={{ file_exists(public_path('js/employee-tracker.js')) ? filemtime(public_path('js/employee-tracker.js')) : time() }}"></script>
+    @endif
     @endif
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Gayatri Solar Energy - Employee Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap 5 CSS -->
@@ -457,6 +458,7 @@
             }
         });
     </script> 
+    <script src="{{ asset('js/employee-tracker.js') }}?v={{ file_exists(public_path('js/employee-tracker.js')) ? filemtime(public_path('js/employee-tracker.js')) : time() }}"></script>
     @endif
 </body>
 </html>

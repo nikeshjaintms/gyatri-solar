@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Employee extends Model
 {
@@ -23,11 +25,18 @@ class Employee extends Model
         'salary' => 'decimal:2',
     ];
 
-    /**
-     * Get the user record associated with the employee.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function locations(): HasMany
+    {
+        return $this->hasMany(EmployeeLocation::class, 'employee_id');
+    }
+
+    public function latestLocation(): HasOne
+    {
+        return $this->hasOne(EmployeeLocation::class, 'employee_id')->latestOfMany('tracked_at');
     }
 }

@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'punchView'])->name('employee.attendance');
         Route::post('/employee/attendance/punch-in', [EmployeeAttendanceController::class, 'store'])->name('employee.attendance.punch-in');
         Route::put('/employee/attendance/punch-out/{id}', [EmployeeAttendanceController::class, 'update'])->name('employee.attendance.punch-out');
+        Route::post('/locations/sync', [\App\Http\Controllers\Api\EmployeeLocationController::class, 'store'])->name('employee.locations.sync');
     });
 
     // Admin-only & Authorized Employee Routes
@@ -51,6 +52,13 @@ Route::middleware(['auth'])->group(function () {
             Route::post('employees/{employee}/toggle-status', [EmployeeController::class, 'toggleStatus'])
                 ->name('employees.toggle-status')
                 ->middleware('module.permission:employees');
+
+            Route::get('employee-locations', [\App\Http\Controllers\Admin\EmployeeLocationController::class, 'index'])
+                ->name('employee-locations.index')
+                ->middleware('module.permission:employee_locations');
+            Route::get('employee-locations/data', [\App\Http\Controllers\Admin\EmployeeLocationController::class, 'getData'])
+                ->name('employee-locations.data')
+                ->middleware('module.permission:employee_locations');
 
             Route::resource('technicians', TechnicianController::class)->middleware('module.permission:technicians');
             Route::resource('services', ServiceController::class)->middleware('module.permission:services');
